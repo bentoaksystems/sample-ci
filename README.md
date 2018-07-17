@@ -1,5 +1,6 @@
-# Persian Mode Server
+# HIS server
 
+* including multiple subsystem implemented based on DDD, CQRS and event sourcing
 * make a .env file in root of project to set local environment variable in development mode
 * Change **INIT_DB** in .env to the database that already exists in your Postgres (e.g. 'postgres' in Windows, and your user name in Linux)
 * If you use windows, in **package.json** change npm/test to:
