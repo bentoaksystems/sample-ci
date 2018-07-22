@@ -60,6 +60,14 @@ const redisHost = getEnvValue(process.env.REDIS_HOST);
 const redisPort = getEnvValue(process.env.REDIS_PORT);
 const redisPass = getEnvValue(process.env.REDIS_PASSWORD);
 
+/**
+ * Upload URLs
+ */
+const uploadEMRDocument = 'public/documents/emr';
+const uploadUserDocument = 'public/documents/user';
+const uploadEquipmentDocument = 'public/documents/equipment';
+const uploadStockPurchaseDocument = 'public/documents/purchase';
+
 
 /**
  *  in some cases env var name which is declared in .env file is not compatible with server env var in production mode.
