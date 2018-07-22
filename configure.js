@@ -27,7 +27,7 @@ dbHelper.create(false)
     console.log('-> ', 'admin role created successfully');
     return Staff.model().findOne({
       where: {role_id: adminRole.get({plain: true})}.id,
-      include: [{model: Person}]
+      include: [{model :Person.model()}]
     })
   })
   .then(res => {
@@ -65,7 +65,7 @@ dbHelper.create(false)
       }
     })
       .spread((staff, created) => {
-        return Promise.resolve(role.get({plain: true}))
+        return Promise.resolve(staff.get({plain: true}))
       })
   })
   .then(res => {

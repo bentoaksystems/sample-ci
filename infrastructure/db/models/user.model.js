@@ -17,24 +17,14 @@ const init = (seq) => {
     password: {
       type: Sequelize.STRING,
       unique: true
-    },
-    staff_id: {
-      type: Sequelize.UUID,
-      references: {
-        model: 'staff',
-        key: 'id',
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-      }
     }
   }, {
       tableName: 'user',
       timestamps: false,
+      underscored: true
     });
 
-  User.prototype.getName = function () {
-    return this.username;
-  };
-
+  User.belongsTo(Staff.model())
 }
 
 
