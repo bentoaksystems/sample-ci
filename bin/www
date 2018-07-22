@@ -4,30 +4,43 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('server:server');
-var http = require('http');
+const debug = require('debug')('server:server');
+const http = require('http');
+const env = require('../env');
+// Can add socket if needed
 
 /**
  * Get port from environment and store in Express.
  */
-
 var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
 
-/**
- * Create HTTP server.
- */
+let app, server;
+appWaiter = setInterval(() => {
+  if (require('../app/app').isReady()) {
+    console.log('App is set up');
+    clearInterval(appWaiter);
+    app = require('../app/app').get();
+    app.set('port', port);
 
-var server = http.createServer(app);
+    /**
+    * Create HTTP server.
+    */
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+    server = http.createServer(app);
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+    /**
+    * Listen on provided port, on all network interfaces.
+    */
+
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+
+    // Setup socket
+  } else {
+    console.log('App is being set up ...');
+  }
+}, 100);
 
 /**
  * Normalize a port into a number, string, or false.
