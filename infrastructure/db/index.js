@@ -7,18 +7,18 @@ const env = require('../../env');
 namespace = cls.createNamespace('HIS-NS');
 Sequelize.useCLS(namespace);
 
-
+let sequelize;
 isReady = (isTest) => {
 
   const uri = isTest ? env.db_uri_test : env.db_uri;
-  const sequelize = new Sequelize(uri, {
+  sequelize = new Sequelize(uri, {
     dialect: 'postgres',
     logging: false
   });
 
   return sequelize.authenticate()
     .then(() => {
-      console.log('-> ', 'Connection has been established successfully :)');
+      console.log('-> ', 'Connection to db has been established successfully :)');
       [
         require('./models/person.model'),
         require('./models/role.model'),
@@ -38,6 +38,7 @@ isReady = (isTest) => {
 
 }
 module.exports = {
-  isReady
+  isReady,
+  sequelize : () => sequelize,
 };
 
