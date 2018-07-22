@@ -7,21 +7,23 @@ const Context = require('../../context');
 
 function apiResponse() {
   return (function (req, res) {
-    const isCommand = req.body.is_command;
-    const context = req.body.context;
-    const name = req.body.name;
-    const body = req.body.body;
-
     // Check access
     // Context.Sys.CommandHandler.
 
-    Context[context]['handler'][name](body, req.user)
+    Context[context]['handler'](req.body, req.user)
+      .then(data => {
+        res.status(200).json(data);
+      })
+      .catch(err => {
+        console.log(`Error in  ${context} context in ${isCommand ? 'CommandHandler' : 'QueryHandler'}: `, err);
+        res.status(err.status || 500).send(err.message || err);
+      });
   });
 }
 
 // General APIs (except authentication)
 router.use('/image', function (req, res, next) {
-  
+
 });
 router.post('/image', apiResponse());
 

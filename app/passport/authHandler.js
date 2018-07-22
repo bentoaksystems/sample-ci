@@ -1,5 +1,5 @@
 let localStrategy = (req, username, password, done) => {
-
+  
 }
 
 let serialized = (person, done) => {
