@@ -11,7 +11,7 @@ function apiResponse() {
     const name = req.body.name;
     const body = req.body.body;
 
-    // Check access (page and functionality (event))
+    // Check access 
   });
 }
 
