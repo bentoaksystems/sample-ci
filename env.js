@@ -42,7 +42,7 @@ const port = getEnvValue(process.env.PORT);
  * Database
  */
 const database = getEnvValue(process.env.DATABASE);
-const database_test = getEnvValue(process.env.DATABASE) + '_Test';
+const database_test = getEnvValue(process.env.DATABASE) + '_test';
 const db_host = getEnvValue(process.env.DB_HOST);
 const db_username = getEnvValue(process.env.DB_USERNAME) ;
 const db_password = getEnvValue(process.env.DB_PASSWORD);

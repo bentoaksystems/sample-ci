@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
-const db = require('../../index');
+const Staff = require('./staff.model');
 
 let User;
-db.subscribe(sequelize => {
+const init = (seq) => {
 
-  User = sequelize.define('user', {
+  User = seq.define('user', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
@@ -12,23 +12,34 @@ db.subscribe(sequelize => {
     },
     username: {
       type: Sequelize.STRING,
-      unique: true 
+      unique: true
     },
     password: {
       type: Sequelize.STRING,
-      unique: true 
+      unique: true
+    },
+    staff_id: {
+      type: Sequelize.UUID,
+      references: {
+        model: 'staff',
+        key: 'id',
+        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+      }
     }
-  });
-})
+  }, {
+      tableName: 'user',
+      timestamps: false,
+    });
+
+  User.prototype.getName = function () {
+    return this.username;
+  };
+
+}
 
 
-module.exports = () => new Promise((resolve, reject) => {
+module.exports = {
+  init,
+  model: () => User
+};
 
-  function isReady() {
-    if (User)
-      resolve({User});
-    else
-      setTimeout(isReady, 1000);
-  }
-  isReady();
-});

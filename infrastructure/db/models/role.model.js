@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
-const db = require('../../index');
 
 let Role;
-db.subscribe(sequelize => {
 
-  Role = sequelize.define('person', {
+const init = (seq) => {
+
+  Role = seq.define('role', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
@@ -12,19 +12,16 @@ db.subscribe(sequelize => {
     },
     name: {
       type: Sequelize.STRING,
-      unique: true 
+      unique: true
     }
+  },{
+    tableName: 'role',
+    timestamps: false,
   });
-})
+}
 
 
-module.exports = () => new Promise((resolve, reject) => {
-
-  function isReady() {
-    if (Role)
-      resolve({Role});
-    else
-      setTimeout(isReady, 1000);
-  }
-  isReady();
-});
+module.exports =  {
+  init,
+  model: () => Role
+};
