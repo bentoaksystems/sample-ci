@@ -7,9 +7,9 @@ const bycript = require('./utils/bcrypt');
 const db = require('./infrastructure/db');
 
 let adminRole, adminStaff, adminUser;
-dbHelper.create(false)
+dbHelper.create()
   .then(res => {
-    return db.isReady(false);
+    return db.isReady();
   })
   .then(result => {
     console.log('-> ', 'database created successfully :)');

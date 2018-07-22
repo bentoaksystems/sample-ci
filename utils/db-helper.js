@@ -1,7 +1,7 @@
 const env = require('../env');
 const {Client} = require('pg')
 
-const create = async (isTest) => {
+const create = async (isTest = false) => {
 
   const config = {
     user: env.db_username,

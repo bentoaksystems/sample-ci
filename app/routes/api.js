@@ -5,13 +5,19 @@ const path = require('path');
 const passport = require('passport');
 const Context = require('../../context');
 const authHandler = require('../passport/authHandler');
+const db = require('../../infrastructure/db');
 
 function apiResponse() {
   return (function (req, res) {
     // Check access
     // Context.Sys.CommandHandler.
 
-    Context[req.body.context](req.body, req.user)
+    db.isReady()
+      .then(res => {
+        console.log('============>res: ', res);
+
+        return Context[req.body.context](req.body, req.user)
+      })
       .then(data => {
         res.status(200).json(data);
       })
@@ -23,10 +29,10 @@ function apiResponse() {
 }
 
 // General APIs (except authentication)
-router.use('/image', function (req, res, next) {
+router.use('/uploading', function (req, res, next) {
 
 });
-router.post('/image', apiResponse());
+router.post('/uploading', apiResponse());
 
 router.post('/', apiResponse());
 
