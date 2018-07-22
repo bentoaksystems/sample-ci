@@ -17,11 +17,10 @@ queryhandler = async (query) => {
 
     case 'loginUser':
       const user = await UserRepository.load(query.payload.username, query.payload.password);
-      return queries[query.name];
       break;
   }
 
-
+  return queries[query.name](user, query.payload);
 
 }
 
