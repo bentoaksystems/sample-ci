@@ -1,12 +1,12 @@
 const User = require('../../../../../infrastructure/db/models/user.model');
 
-load = (username) => {
+load = async (username) => {
 
   return User.model().findOne({
-
-    where: {username: 'aProject'},
-
+    where: {username},
   })
+}
 
-
+module.exports = {
+  load
 }
