@@ -8,7 +8,7 @@ let localStrategy = (req, username, password, done) => {
       username: username,
       password: password,
     },
-    name: 'loginUSer',
+    name: 'loginUser',
   })
     .then(foundPerson => {
       done(null, foundPerson);

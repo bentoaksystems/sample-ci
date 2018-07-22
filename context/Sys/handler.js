@@ -15,12 +15,16 @@ queryhandler = async (query, user) => {
 
   try {
     let result;
-    switch (quezry.name) {
+    switch (query.name) {
 
       case 'loginUser':
-        result = await UserRepository.load(query.payload.username, query.payload.password);
+        result = await UserRepository.load(query.payload.username);
+        break;
+      case 'checkAccess':
+        result = await UserRepository.load(query.payload.id);
         break;
     }
+    
     /**
      * all queries will be called sequentially one after each other
      * each query change state of user and passed it along with payload to next query 

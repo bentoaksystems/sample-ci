@@ -18,9 +18,6 @@ const init = (seq) => {
     surname: {
       type: Sequelize.STRING
     },
-    password: {
-      type: Sequelize.STRING
-    },
     national_code: {
       type: Sequelize.STRING(10),
       unique: true

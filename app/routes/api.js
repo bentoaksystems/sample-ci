@@ -11,7 +11,7 @@ function apiResponse() {
     // Check access
     // Context.Sys.CommandHandler.
 
-    Context[context](req.body, req.user)
+    Context[req.body.context](req.body, req.user)
       .then(data => {
         res.status(200).json(data);
       })
