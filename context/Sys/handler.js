@@ -14,15 +14,18 @@ queryhandler = async (query, user) => {
     throw errors.queryNotFound;
 
   try {
-    let returnValue;
-    switch (query.name) {
+    let result;
+    switch (quezry.name) {
 
       case 'loginUser':
-        returnValue = await UserRepository.load(query.payload.username, query.payload.password);
+        result = await UserRepository.load(query.payload.username, query.payload.password);
         break;
     }
-
-    return queries[query.name](returnValue, query.payload);
+    /**
+     * all queries will be called sequentially one after each other
+     * each query change state of user and passed it along with payload to next query 
+     */
+    return queries[query.name].reduce((x, y) => x.then(y), Promise.resolve(result, query.payload));
   }
   catch (err) {
     throw err;
