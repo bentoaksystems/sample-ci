@@ -6,8 +6,8 @@ const authHandler = require('./authHandler');
 let setup = (app) => {
   app.use(passport.initialize());
   app.use(passport.session());
-  passport.serializeUser(authHandler.serialized);
-  passport.deserializeUser(authHandler.desrialized);
+  passport.serializeUser(authHandler.serialize);
+  passport.deserializeUser(authHandler.deserialize);
   passport.use(new LocalStrategy(
     {
       passReqToCallback: true,

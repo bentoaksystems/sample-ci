@@ -1,5 +1,5 @@
-const HR = require('./HR');
-const Sys = require('./Sys');
+const HR = require('./HR/handler');
+const Sys = require('./Sys/handler');
 
 module.exports = {
   HR,

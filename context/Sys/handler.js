@@ -8,37 +8,37 @@ const queries = {
   ]
 }
 
-queryhandler = async (query) => {
+queryhandler = async (query, user) => {
 
   if (!queries[query.name])
     throw errors.queryNotFound;
 
   try {
-    let user;
+    let returnValue;
     switch (query.name) {
 
       case 'loginUser':
-        user = await UserRepository.load(query.payload.username, query.payload.password);
+        returnValue = await UserRepository.load(query.payload.username, query.payload.password);
         break;
     }
 
-    return queries[query.name](user, query.payload);
+    return queries[query.name](returnValue, query.payload);
   }
   catch (err) {
     throw err;
   }
 }
 
-commandHandler = async (body) => {
+commandHandler = async (body, user) => {
 }
 
-handler = async (body) => {
+handler = async (body, user) => {
 
   try {
     if (body.is_command)
-      return commandHandler(body);
+      return commandHandler(body, user);
     else
-      return queryhandler(body);
+      return queryhandler(body, user);
   } catch (err) {
     throw err;
   }
