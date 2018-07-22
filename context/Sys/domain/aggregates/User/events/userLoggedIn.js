@@ -1,0 +1,7 @@
+userLoggedIn = (user, payload) =>{
+
+
+
+
+
+}
