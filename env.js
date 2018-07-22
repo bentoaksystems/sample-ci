@@ -15,8 +15,6 @@ const isDev = env === 'development';
  * PORT
  * DATABASE
  * DB_URI
- * MONGO_HOST
- * MONGO_PORT
  * REDIS_HOST
  *
  * a .env file that might work for many:
@@ -26,13 +24,7 @@ const isDev = env === 'development';
  APP_ADDRESS=http://localhost:3000
  PORT=3000
  DATABASE=PersianMode
- DB_URI=mongodb://127.0.0.1:27017/PersianMode
- MONGO_HOST=localhost
- MONGO_PORT=27017
  REDIS_HOST=127.0.0.1
- GOOGLE_OAUTH_CLIENTID = 636231560622-k29avsd6knviv7bu7ni9sf6r6okac3bt.apps.googleusercontent.com
- GOOGLE_OAUTH_CLIENTSECRET = A7cwgIu3p8H37m69VqrjrW2J
- GOOGLE_OAUTH_CALLBACKURL = http://127.0.0.1:3000/api/login/google/callback
  # REDIS_PASSWORD=123465
  ** END **
  */
@@ -51,27 +43,14 @@ const port = getEnvValue(process.env.PORT);
  */
 const database = getEnvValue(process.env.DATABASE);
 const database_test = getEnvValue(process.env.DATABASE) + '_test';
-const db_uri = getEnvValue(process.env.DB_URI);
-const db_uri_test = getEnvValue(process.env.DB_URI_TEST);
-const googleAuth_clientId = getEnvValue(process.env.GOOGLE_OAUTH_CLIENTID);
-const googleAuth_clientSecret = getEnvValue(process.env.GOOGLE_OAUTH_CLIENTSECRET);
-const googleAuth_callbackUrl = getEnvValue(process.env.GOOGLE_OAUTH_CALLBACKURL);
+const db_host = getEnvValue(process.env.DB_HOST);
+const db_username = getEnvValue(process.env.DB_USERNAME) ;
+const db_password = getEnvValue(process.env.DB_PASSWORD);
 
-/**
- * Mail Config
- */
-const mailConfig = {
-  host: "smtp.mailgun.org",
-  port: "465",
-  secure: true,
-  auth: {
-    user: getEnvValue(isDev ? process.env.EMAIL_USERNAME_DEV : process.env.EMAIL_USERNAME),
-    pass: getEnvValue(isDev ? process.env.EMAIL_PASSWORD_DEV : process.env.EMAIL_PASSWORD)
-  },
-  from: `Bank of Style <${getEnvValue(isDev ? process.env.EMAIL_USERNAME_DEV : process.env.EMAIL_USERNAME)}>`
-};
-if (isDev)
-  mailConfig['tls'] = {rejectUnauthorized: false};
+
+const db_uri = getEnvValue(process.env.DB_URI) + database;
+const db_uri_test = getEnvValue(process.env.DB_URI) + database_test;
+
 
 /**
  * Redis
@@ -81,20 +60,6 @@ const redisHost = getEnvValue(process.env.REDIS_HOST);
 const redisPort = getEnvValue(process.env.REDIS_PORT);
 const redisPass = getEnvValue(process.env.REDIS_PASSWORD);
 
-/**
- * upload files
- */
-uploadPath = "public/documents";
-uploadProductImagePath = "public/images/product-image";
-uploadPlacementImagePath = "public/images/placements";
-uploadDeliveryEvidencePath = "public/images/delivery";
-uploadExcelPath = "public/excel/";
-
-/**
- * offline system api
- */
-const onlineWarehouseAPI = getEnvValue(process.env.ONLINE_WAREHOUSE_API);
-const invoiceAPI = getEnvValue(process.env.INVOICE_API);
 
 /**
  *  in some cases env var name which is declared in .env file is not compatible with server env var in production mode.
@@ -123,23 +88,13 @@ module.exports = {
   database_test,
   db_uri,
   db_uri_test,
+  db_host,
+  db_username,
+  db_password,
   redisURL,
   redisHost,
   redisPort,
   redisPass,
-  uploadPath,
-  uploadProductImagePath,
-  uploadPlacementImagePath,
-  uploadDeliveryEvidencePath,
-  uploadExcelPath,
-  googleAuth: {
-    clientID: googleAuth_clientId,
-    clientSecret: googleAuth_clientSecret,
-    callBackURL: googleAuth_callbackUrl,
-  },
-  onlineWarehouseAPI,
-  invoiceAPI,
-  mailConfig,
 };
 
 
