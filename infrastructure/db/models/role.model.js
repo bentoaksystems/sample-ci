@@ -16,6 +16,7 @@ const init = (seq) => {
   },{
     tableName: 'role',
     timestamps: false,
+    underscored: true,
   });
 }
 

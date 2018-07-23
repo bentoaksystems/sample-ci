@@ -4,9 +4,11 @@ const errors = require('../../utils/errors.list');
 
 const queries = {
   'loginUser': [
-    require('./domain/aggregates/User/events/userLoggedIn'),
+    require('./aggregates/User/events/userLoggedIn'),
   ],
-  'userCheck': [],
+  'userCheck': [
+    require('./aggregates/User/events/userHadAccess'),
+  ],
 }
 
 queryhandler = async (query, user) => {
@@ -52,4 +54,7 @@ handler = async (body, user) => {
 }
 
 
-module.exports = handler
+module.exports = {
+  handler,
+  queries,
+};

@@ -1,26 +1,23 @@
 const Sequelize = require('sequelize');
-const Page = require('./page.model');
 const Role = require('./role.model');
+const Action = require('./action.model');
 
-let PageRole;
+let RoleAction;
 const init = (seq) => {
-
-  PageRole = seq.define('page_role', {
+  RoleAction = seq.define('role_action', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     }
   }, {
-      tableName: 'page_role',
-      timestamps: false,
-      underscored: true
-    });
+    tableName: 'role_action',
+    timestamps: false,
+    underscored: true,
+  });
 }
-
 
 module.exports = {
   init,
-  model: () => PageRole
+  model: () => RoleAction,
 };
-
