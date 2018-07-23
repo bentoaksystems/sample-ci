@@ -1,20 +1,21 @@
 
-const UserRepository = require('./domain/aggregates/User/repositories');
+const UserRepository = require('./repositories');
 const errors = require('../../utils/errors.list');
 
 const queries = {
   'loginCheck': [
-    require('./domain/aggregates/User/events/userLoggedIn'),
+    require('./aggregates/User/events/userLoggedIn'),
+    require('./aggregates/User/events/userHadAccess'),
   ],
   'checkAccess': [
-    require('./domain/aggregates/User/events/userHadAccess'),
+    require('./aggregates/User/events/userHadAccess'),
   ],
   'loginUser': [
-    require('./domain/aggregates/User/events/userAdded'),
-    require('./domain/aggregates/User/events/userLoggedIn'),
+    require('./aggregates/User/events/userAdded'),
+    require('./aggregates/User/events/userLoggedIn'),
   ],
   'userCheck': [
-    require('./domain/aggregates/User/events/userAdded'),
+    require('./aggregates/User/events/userAdded'),
   ],
 }
 

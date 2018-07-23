@@ -19,8 +19,10 @@ isReady = (isTest = false) => {
     .then(() => {
       console.log('-> ', 'Connection to db has been established successfully :)');
       [
-        require('./models/person.model'),
+        require('./models/page.model'),
         require('./models/role.model'),
+        require('./models/person.model'),
+        require('./models/page_role.model'),
         require('./models/staff.model'),
         require('./models/user.model'),
       ].forEach(model => {
