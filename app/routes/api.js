@@ -5,7 +5,6 @@ const path = require('path');
 const passport = require('passport');
 const Context = require('../../context');
 const authHandler = require('../passport/authHandler');
-const db = require('../../infrastructure/db');
 
 function apiResponse() {
   return (function (req, res) {

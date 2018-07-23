@@ -73,9 +73,11 @@ dbHelper.create()
         .then(res => {
           console.log('-> ', 'admin user created succesffully');
           adminUser = res;
-
         })
-    });
+    })
+    .then(res =>{
+      process.exit();
+    })
   })
   .catch(err => {
     console.error('-> ', err);

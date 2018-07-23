@@ -9,9 +9,6 @@ Sequelize.useCLS(namespace);
 
 let sequelize;
 isReady = (isTest = false) => {
-  if (sequelize)
-    return Promise.resolve(true);
-
   const uri = isTest ? env.db_uri_test : env.db_uri;
   sequelize = new Sequelize(uri, {
     dialect: 'postgres',
@@ -29,8 +26,8 @@ isReady = (isTest = false) => {
       ].forEach(model => {
         model.init(sequelize);
       });
-      return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-      // return sequelize.sync({force: true});
+      // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      return sequelize.sync({force: true});
 
     })
     .catch(err => {
