@@ -26,8 +26,8 @@ isReady = (isTest = false) => {
       ].forEach(model => {
         model.init(sequelize);
       });
-      // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-      return sequelize.sync({force: true});
+      return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      // return sequelize.sync({force: true});
 
     })
     .catch(err => {

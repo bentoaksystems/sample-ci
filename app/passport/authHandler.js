@@ -11,6 +11,7 @@ let localStrategy = (req, username, password, done) => {
     name: 'loginUser',
   })
     .then(foundPerson => {
+      delete foundPerson.password;
       done(null, foundPerson);
     })
     .catch(err => {
@@ -23,19 +24,20 @@ let serialize = (person, done) => {
   done(null, person.id);
 };
 
-let deserialize = (req, person, done) => {
+let deserialize = (req, id, done) => {
   SysContextHandler({
     is_command: false,
-    payload: {id: person},
+    payload: {id},
     name: 'userCheck',
   })
     .then(foundPerson => {
-      if (person && !foundPerson) {
+      if (id && !foundPerson) {
         req.logout();
         done(errors.noUser);
       } else if (!foundPerson) {
         done(errors.noUser);
       } else {
+        delete foundPerson.password;
         done(null, foundPerson);
       }
     })
@@ -45,31 +47,17 @@ let deserialize = (req, person, done) => {
     });
 };
 
-let afterLogin = (req, res, next) => {
-  const user = req.user;
-  if (!user)
-    res.status(errors.noUser.status).send(errors.noUser.message);
+let afterLogin = () => {
+  return (req, res, next) => {
+    const user = req.user;
+    if (!user)
+      res.status(errors.noUser.status).send(errors.noUser.message);
 
-  SysContextHandler({
-    is_command: false,
-    payload: {
-      id: user.id,
-    },
-    name: 'loadUserById',
-  })
-    .then(foundUser => {
-      if (!foundUser)
-        res.status(errors.noUser.status).send(errors.noUser.message);
-      else {
-        delete foundUser.password;
+    delete user.password;
 
-        // Put accessed_routes and accessed_events on res (user) object
-        res.status(200).json(foundUser);
-      }
-    })
-    .catch(err => {
-      res.status(500).send(err);
-    });
+    // Put accessed_routes and accessed_events on res (user) object
+    res.status(200).json(user);
+  }
 }
 
 module.exports = {

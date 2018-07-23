@@ -1,6 +1,5 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const env = require('../../env');
 const authHandler = require('./authHandler');
 
 let setup = (app) => {
@@ -14,6 +13,8 @@ let setup = (app) => {
     },
     authHandler.localStrategy,
   ));
+
+  console.log('Passport is set up successfully.');
 }
 
 module.exports = {

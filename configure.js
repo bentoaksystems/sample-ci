@@ -76,7 +76,7 @@ dbHelper.create()
         })
     })
     .then(res =>{
-      process.exit();
+      process.exit(0);
     })
   })
   .catch(err => {

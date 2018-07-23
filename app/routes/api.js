@@ -11,12 +11,7 @@ function apiResponse() {
     // Check access
     // Context.Sys.CommandHandler.
 
-    db.isReady()
-      .then(res => {
-        console.log('============>res: ', res);
-
-        return Context[req.body.context](req.body, req.user)
-      })
+    Context[req.body.context](req.body, req.user)
       .then(data => {
         res.status(200).json(data);
       })
@@ -36,7 +31,7 @@ router.post('/uploading', apiResponse());
 router.post('/', apiResponse());
 
 // Authentication APIs
-router.post('/login', passport.authenticate('local', {}), authHandler.afterLogin);
+router.post('/login', passport.authenticate('local', {}), authHandler.afterLogin());
 router.get('/logout', (req, res) => {
   req.logout();
   res.status(200).json('');
