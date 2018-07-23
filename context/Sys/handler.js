@@ -16,9 +16,6 @@ const queries = {
   'userCheck': [
     require('./domain/aggregates/User/events/userAdded'),
   ],
-  'loadUserById': [
-    // require('./domain/aggregates/User/events/userIsAuthenticated'),
-  ],
 }
 
 queryhandler = async (query, user) => {
@@ -31,7 +28,7 @@ queryhandler = async (query, user) => {
     switch (query.name) {
 
       case 'loginCheck':
-        result = await UserRepository.load(query.payload.username);
+        result = await UserRepository.load(query.payload.username); 
         break;
       // case 'checkAccess':
       //   result = await UserRepository.load(query.payload.id);
@@ -48,7 +45,7 @@ queryhandler = async (query, user) => {
      * all queries will be called sequentially one after each other
      * each query change state of user and passed it along with payload to next query 
      */
-    return queries[query.name].length ? queries[query.name].reduce((x, y) => x.then(y), Promise.resolve(result, query.payload)) : Promise.resolve(result);
+    return queries[query.name].length ? queries[query.name].reduce((x, y) => x.then(r => y(r, query.payload)), Promise.resolve(result, query.payload)) : Promise.resolve(result);
   }
   catch (err) {
     throw err;

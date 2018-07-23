@@ -1,6 +1,6 @@
 const bycript = require('../../../../../../utils/bcrypt');
 
 module.exports = (user, payload) => {
-  console.log('user: ', user.get({plain: true}));
-  return bycript.comparePassword(user.get({plain: true}).password, payload.password);
+  return bycript.comparePassword(user.password, payload.password)
+    .then(res => Promise.resolve(user));
 }

@@ -45,31 +45,17 @@ let deserialize = (req, person, done) => {
     });
 };
 
-let afterLogin = (req, res, next) => {
-  const user = req.user;
-  if (!user)
-    res.status(errors.noUser.status).send(errors.noUser.message);
+let afterLogin = () => {
+  return (req, res, next) => {
+    const user = req.user;
+    if (!user)
+      res.status(errors.noUser.status).send(errors.noUser.message);
 
-  SysContextHandler({
-    is_command: false,
-    payload: {
-      id: user.id,
-    },
-    name: 'loadUserById',
-  })
-    .then(foundUser => {
-      if (!foundUser)
-        res.status(errors.noUser.status).send(errors.noUser.message);
-      else {
-        delete foundUser.password;
+    delete user.password;
 
-        // Put accessed_routes and accessed_events on res (user) object
-        res.status(200).json(foundUser);
-      }
-    })
-    .catch(err => {
-      res.status(500).send(err);
-    });
+    // Put accessed_routes and accessed_events on res (user) object
+    res.status(200).json(user);
+  }
 }
 
 module.exports = {
