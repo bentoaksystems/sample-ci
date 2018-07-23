@@ -30,9 +30,6 @@ queryhandler = async (query, user) => {
       case 'loginCheck':
         result = await UserRepository.load(query.payload.username); 
         break;
-      // case 'checkAccess':
-      //   result = await UserRepository.load(query.payload.id);
-      //   break;
       case 'loginUser':
         result = await UserRepository.load(query.payload.username);
         break;
