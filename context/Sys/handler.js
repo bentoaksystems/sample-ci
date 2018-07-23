@@ -13,8 +13,14 @@ const queries = {
     require('./domain/aggregates/User/events/userAdded'),
     require('./domain/aggregates/User/events/userLoggedIn'),
   ],
+<<<<<<< HEAD
   'userCheck': [],
   'loadUserById': [],
+=======
+  'userCheck': [
+    require('./domain/aggregates/User/events/userAdded'),
+  ],
+>>>>>>> master
 }
 
 queryhandler = async (query, user) => {
@@ -27,7 +33,7 @@ queryhandler = async (query, user) => {
     switch (query.name) {
 
       case 'loginCheck':
-        result = await UserRepository.load(query.payload.username);
+        result = await UserRepository.load(query.payload.username); 
         break;
       case 'loginUser':
         result = await UserRepository.load(query.payload.username);

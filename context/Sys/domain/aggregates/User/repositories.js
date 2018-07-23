@@ -7,9 +7,7 @@ load = async (username) => {
 }
 
 loadById = async (id) => {
-  return User.model().findOne({
-    where: {id}
-  });
+  return User.model().findById(id);
 }
 
 module.exports = {
