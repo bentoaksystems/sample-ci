@@ -28,10 +28,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 let isReady = false;
 
-db.isReady()
-  .then(() => {
-    return session.setup(app);
-  })
+db.isReady();
+
+session.setup(app)
   .then(() => {
     isReady = true;
     passport.setup(app);
