@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize');
-let Role;
 
+let Page;
 const init = (seq) => {
 
-  Role = seq.define('role', {
+  Page = seq.define('page', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
@@ -12,15 +12,21 @@ const init = (seq) => {
     name: {
       type: Sequelize.STRING,
       unique: true
+    },
+    url: {
+      type: Sequelize.STRING,
+      unique: true
     }
-  },{
-    tableName: 'role',
-    timestamps: false,
-  });
+  }, {
+      tableName: 'page',
+      timestamps: false,
+      underscored: true
+    });
 }
 
 
-module.exports =  {
+module.exports = {
   init,
-  model: () => Role
+  model: () => Page
 };
+

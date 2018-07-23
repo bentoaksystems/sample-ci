@@ -1,4 +1,4 @@
-const User = require('../../../../../infrastructure/db/models/user.model');
+const User = require('../../infrastructure/db/models/user.model');
 
 load = async (username) => {
   return User.model().findOne({
