@@ -7,7 +7,27 @@ load = async (username) => {
 }
 
 loadById = async (id) => {
-  return User.model().findById(id);
+  return User.model().findById(id, {
+    include: [
+      {
+        model: Staff,
+        as: 'Staff',
+        required: true,
+        include: [
+          {
+            model: 'Person',
+            as: 'Person',
+            required: true,
+          },
+          {
+            model: 'Role',
+            as: 'role',
+            required: true,
+          }
+        ]
+      },
+    ]
+  })
 }
 
 module.exports = {

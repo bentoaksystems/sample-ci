@@ -47,19 +47,6 @@ let deserialize = (req, id, done) => {
     });
 };
 
-let afterLogin = () => {
-  return (req, res, next) => {
-    const user = req.user;
-    if (!user)
-      res.status(errors.noUser.status).send(errors.noUser.message);
-
-    delete user.password;
-
-    // Put accessed_routes and accessed_events on res (user) object
-    res.status(200).json(user);
-  }
-}
-
 module.exports = {
   localStrategy,
   serialize,
