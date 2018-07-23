@@ -8,8 +8,7 @@ namespace = cls.createNamespace('HIS-NS');
 Sequelize.useCLS(namespace);
 
 let sequelize;
-isReady = (isTest) => {
-
+isReady = (isTest = false) => {
   const uri = isTest ? env.db_uri_test : env.db_uri;
   sequelize = new Sequelize(uri, {
     dialect: 'postgres',
@@ -27,8 +26,8 @@ isReady = (isTest) => {
       ].forEach(model => {
         model.init(sequelize);
       });
-      return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-      // return sequelize.sync({force: true});
+      // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      return sequelize.sync({force: true});
 
     })
     .catch(err => {
@@ -39,6 +38,6 @@ isReady = (isTest) => {
 }
 module.exports = {
   isReady,
-  sequelize : () => sequelize,
+  sequelize: () => sequelize,
 };
 
