@@ -13,14 +13,9 @@ const queries = {
     require('./domain/aggregates/User/events/userAdded'),
     require('./domain/aggregates/User/events/userLoggedIn'),
   ],
-<<<<<<< HEAD
-  'userCheck': [],
-  'loadUserById': [],
-=======
   'userCheck': [
     require('./domain/aggregates/User/events/userAdded'),
   ],
->>>>>>> master
 }
 
 queryhandler = async (query, user) => {
