@@ -1,32 +1,57 @@
 const User = require('../../../../../infrastructure/db/models/user.model');
+const Person = require('../../../../../infrastructure/db/models/person.model');
+const Staff = require('../../../../../infrastructure/db/models/staff.model');
+const Role = require('../../../../../infrastructure/db/models/role.model');
 
 load = async (username) => {
   return User.model().findOne({
     where: {username},
-  });
-}
-
-loadById = async (id) => {
-  return User.model().findById(id, {
     include: [
       {
-        model: Staff,
-        as: 'Staff',
+        model: Staff.model(),
+        as: 'staff',
         required: true,
         include: [
           {
-            model: 'Person',
-            as: 'Person',
+            model: Person.model(),
+            as: 'person',
             required: true,
           },
           {
-            model: 'Role',
+            model: Role.model(),
             as: 'role',
             required: true,
           }
         ]
       },
-    ]
+    ],
+    attributes: {exclude: ['password']}
+  });
+}
+
+loadById = async (id) => {
+  return User.model().findOne({
+    where: {id},
+    include: [
+      {
+        model: Staff.model(),
+        as: 'staff',
+        required: true,
+        include: [
+          {
+            model: Person.model(),
+            as: 'person',
+            required: true,
+          },
+          {
+            model: Role.model(),
+            as: 'role',
+            required: true,
+          }
+        ]
+      },
+    ],
+    attributes: {exclude: ['password']}
   })
 }
 

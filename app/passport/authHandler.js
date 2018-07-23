@@ -51,5 +51,4 @@ module.exports = {
   localStrategy,
   serialize,
   deserialize,
-  afterLogin,
 };

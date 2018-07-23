@@ -4,12 +4,9 @@ const errors = require('../../utils/errors.list');
 
 const queries = {
   'loginUser': [
-    require('./domain/aggregates/User/events/userAdded'),
     require('./domain/aggregates/User/events/userLoggedIn'),
   ],
-  'userCheck': [
-    require('./domain/aggregates/User/events/userAdded'),
-  ],
+  'userCheck': [],
 }
 
 queryhandler = async (query, user) => {

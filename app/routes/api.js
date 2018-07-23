@@ -31,7 +31,7 @@ router.post('/uploading', apiResponse());
 router.post('/', apiResponse());
 
 // Authentication APIs
-router.post('/login', passport.authenticate('local', {}), authHandler.afterLogin());
+router.post('/login', passport.authenticate('local', {}));
 router.get('/logout', (req, res) => {
   req.logout();
   res.status(200).json('');
