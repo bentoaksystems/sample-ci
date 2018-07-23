@@ -1,5 +1,5 @@
 
-const UserRepository = require('./domain/aggregates/User/repositories');
+const UserRepository = require('./repositories');
 const errors = require('../../utils/errors.list');
 
 const queries = {

@@ -1,4 +1,4 @@
-const bycript = require('../../../../../../utils/bcrypt');
+const bycript = require('../../../../../utils/bcrypt');
 
 module.exports = (user, payload) => {
   user = user.get({plain: true});
