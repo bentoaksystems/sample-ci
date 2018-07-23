@@ -11,6 +11,7 @@ let localStrategy = (req, username, password, done) => {
     name: 'loginUser',
   })
     .then(foundPerson => {
+      delete foundPerson.password;
       done(null, foundPerson);
     })
     .catch(err => {
@@ -23,19 +24,20 @@ let serialize = (person, done) => {
   done(null, person.id);
 };
 
-let deserialize = (req, person, done) => {
+let deserialize = (req, id, done) => {
   SysContextHandler({
     is_command: false,
-    payload: {id: person},
+    payload: {id},
     name: 'userCheck',
   })
     .then(foundPerson => {
-      if (person && !foundPerson) {
+      if (id && !foundPerson) {
         req.logout();
         done(errors.noUser);
       } else if (!foundPerson) {
         done(errors.noUser);
       } else {
+        delete foundPerson.password;
         done(null, foundPerson);
       }
     })
