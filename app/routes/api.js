@@ -5,18 +5,16 @@ const path = require('path');
 const passport = require('passport');
 const Context = require('../../context');
 const authHandler = require('../passport/authHandler');
+const errors = require('../../utils/errors.list');
 
 function apiResponse() {
   return (function (req, res) {
-    // Check access
-    // Context.Sys.CommandHandler.
-
-    Context[req.body.context](req.body, req.user)
+    Context[req.body.context].handler(req.body, req.user)
       .then(data => {
         res.status(200).json(data);
       })
       .catch(err => {
-        console.log(`Error in  ${context} context in ${isCommand ? 'CommandHandler' : 'QueryHandler'}: `, err);
+        console.log(`Error in ${context} context in ${isCommand ? 'CommandHandler' : 'QueryHandler'}: `, err);
         res.status(err.status || 500).send(err.message || err);
       });
   });
@@ -31,7 +29,12 @@ router.post('/uploading', apiResponse());
 router.post('/', apiResponse());
 
 // Authentication APIs
-router.post('/login', passport.authenticate('local', {}), authHandler.afterLogin());
+router.post('/login', passport.authenticate('local', {}), (req, res) => {
+  if (!req.user)
+    res.status(404).json(errors.noUser);
+  else
+    res.status(200).json(req.user);
+});
 router.get('/logout', (req, res) => {
   req.logout();
   res.status(200).json('');

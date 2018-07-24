@@ -2,9 +2,15 @@ const dbHelper = require('./utils/db-helper');
 const Role = require('./infrastructure/db/models/role.model');
 const Staff = require('./infrastructure/db/models/staff.model');
 const Person = require('./infrastructure/db/models/person.model');
+const Action = require('./infrastructure/db/models/action.model');
+const RoleAction = require('./infrastructure/db/models/role_action');
+const PageRole = require('./infrastructure/db/models/page_role.model');
+const Page = require('./infrastructure/db/models/page.model');
 const User = require('./infrastructure/db/models/user.model');
 const bycript = require('./utils/bcrypt');
 const db = require('./infrastructure/db');
+const Context = require('./context');
+const pageList = require('./utils/pages');
 
 let adminRole, adminStaff, adminUser;
 dbHelper.create()
@@ -27,7 +33,8 @@ dbHelper.create()
             where: {role_id: adminRole.get({plain: true})}.id,
             include: [{model: Person.model()}]
           })
-        }).then(res => {
+        })
+        .then(res => {
 
           adminStaff = res;
 
@@ -73,11 +80,46 @@ dbHelper.create()
         .then(res => {
           console.log('-> ', 'admin user created succesffully');
           adminUser = res;
-        })
-    })
-    .then(res =>{
-      process.exit(0);
-    })
+          return Promise.resolve();
+        });
+    });
+  })
+  .then(() => {
+    let actionList = [];
+
+    Object.keys(Context).forEach(el => {
+      if (!Context[el].queries)
+        return;
+
+      actionList = actionList.concat(Object.keys(Context[el].queries).map(a => {
+        return {context: el, name: a};
+      }));
+    });
+
+    return Promise.all(actionList.map(el => Action.model().findOrCreate({where: {context: el.context, name: el.name}})));
+  })
+  .then(res => {
+    console.log('->  Actions are added successfully');
+    let actionList = res.map(el => {
+      return {action_id: el[0].id, role_id: adminRole.get({plain: true}).id}
+    });
+
+    return RoleAction.model().bulkCreate(actionList);
+  })
+  .then(res => {
+    console.log('->  Assign all actions to Admin role');
+    return Promise.all(pageList.map(x => Page.model().findOrCreate({where: {name: x.name}, defaults: {url: x.url}})));
+  })
+  .then(res => {
+    console.log('->  Pages are added!');
+    let pList = res.map(el => {
+      return {page_id: el[0].id, role_id: adminRole.id};
+    });
+    return PageRole.model().bulkCreate(pList);
+  })
+  .then(() => {
+    console.log('->  Assign all pages to Admin role');
+    process.exit(0);
   })
   .catch(err => {
     console.error('-> ', err);

@@ -1,4 +1,4 @@
-const SysContextHandler = require('../../context/Sys/handler');
+const SysContextHandler = require('../../context/Sys/handler').handler;
 const errors = require('../../utils/errors.list');
 
 let localStrategy = (req, username, password, done) => {
@@ -27,7 +27,11 @@ let serialize = (person, done) => {
 let deserialize = (req, id, done) => {
   SysContextHandler({
     is_command: false,
-    payload: {id},
+    payload: {
+      id,
+      name: req.body.name,
+      context: req.body.context,
+    },
     name: 'userCheck',
   })
     .then(foundPerson => {
@@ -42,27 +46,21 @@ let deserialize = (req, id, done) => {
       }
     })
     .catch(err => {
-      console.error('Error in desrialized function: ', err.message);
-      done(err);
+      if (id) {
+        if (err.status === errors.noUser.status && err.message === errors.noUser.message) {
+          req.logout();
+          done(errors.noUser);
+        } else
+          done(err);
+      } else {
+        console.error('Error in desrialized function: ', err.message);
+        done(err);
+      }
     });
 };
-
-let afterLogin = () => {
-  return (req, res, next) => {
-    const user = req.user;
-    if (!user)
-      res.status(errors.noUser.status).send(errors.noUser.message);
-
-    delete user.password;
-
-    // Put accessed_routes and accessed_events on res (user) object
-    res.status(200).json(user);
-  }
-}
 
 module.exports = {
   localStrategy,
   serialize,
   deserialize,
-  afterLogin,
 };

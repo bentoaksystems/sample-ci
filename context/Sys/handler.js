@@ -3,20 +3,16 @@ const UserRepository = require('./repositories');
 const errors = require('../../utils/errors.list');
 
 const queries = {
-  'loginCheck': [
-    require('./aggregates/User/events/userLoggedIn'),
-    require('./aggregates/User/events/userHadAccess'),
-  ],
-  'checkAccess': [
-    require('./aggregates/User/events/userHadAccess'),
-  ],
   'loginUser': [
-    require('./aggregates/User/events/userAdded'),
     require('./aggregates/User/events/userLoggedIn'),
+    require('./aggregates/User/events/userDataIsFiltered'),
   ],
   'userCheck': [
-    require('./aggregates/User/events/userAdded'),
+    require('./aggregates/User/events/userHadAccess'),
   ],
+  'userIsValid': [
+    require('./aggregates/User/events/userDataIsFiltered'),
+  ]
 }
 
 queryhandler = async (query, user) => {
@@ -27,15 +23,14 @@ queryhandler = async (query, user) => {
   try {
     let result;
     switch (query.name) {
-
-      case 'loginCheck':
-        result = await UserRepository.load(query.payload.username); 
-        break;
       case 'loginUser':
         result = await UserRepository.load(query.payload.username);
         break;
       case 'userCheck':
         result = await UserRepository.loadById(query.payload.id);
+        break;
+      case 'userIsValid':
+        result = await UserRepository.loadById(user.id);
         break;
     }
 
@@ -66,4 +61,7 @@ handler = async (body, user) => {
 }
 
 
-module.exports = handler
+module.exports = {
+  handler,
+  queries,
+};

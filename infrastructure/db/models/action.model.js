@@ -1,33 +1,29 @@
 const Sequelize = require('sequelize');
-const Staff = require('./staff.model');
 
-let User;
+let Action;
 const init = (seq) => {
-
-  User = seq.define('user', {
+  Action = seq.define('action', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
-    username: {
+    context: {
       type: Sequelize.STRING,
-      unique: true
+      unique: 'compositIndex',
     },
-    password: {
+    name: {
       type: Sequelize.STRING,
-      unique: true
+      unique: 'compositIndex',
     }
   }, {
-      tableName: 'user',
-      timestamps: false,
-      underscored: true
-    });
+    tableName: 'action',
+    timestamps: false,
+    underscored: true,
+  });
 }
-
 
 module.exports = {
   init,
-  model: () => User
+  model: () => Action,
 };
-
