@@ -59,30 +59,8 @@ let deserialize = (req, id, done) => {
     });
 };
 
-// let afterLogin = () => {
-//   return (req, res) => {
-//     const user = req.user;
-//     if (!req.user)
-//       res.status(errors.noUser.status).json(errors.noUser.message);
-//     else {
-//       let userObj = {
-//         id: user.id,
-//         username: user.username,
-//         firstname: user.person.firstname,
-//         surname: user.person.surname,
-//         title: user.person.title,
-//         accessed_routes: user.pages,
-//         roles: user.roles,
-//       }
-
-//       res.status(200).json(userObj);
-//     }
-//   }
-// }
-
 module.exports = {
   localStrategy,
   serialize,
   deserialize,
-  // afterLogin,
 };
