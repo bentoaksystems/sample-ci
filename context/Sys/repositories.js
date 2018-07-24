@@ -64,6 +64,11 @@ loadById = async (id) => {
         required: true,
         include: [
           {
+            model: Person.model(),
+            // as: 'person',
+            required: true,
+          },
+          {
             model: Role.model(),
             // as: 'roles',
             required: true,
@@ -75,6 +80,16 @@ loadById = async (id) => {
                   {
                     model: Action.model(),
                     // as: 'action',
+                  }
+                ]
+              },
+              {
+                model: PageRole.model(),
+                // as: 'pageRole',
+                include: [
+                  {
+                    model: Page.model(),
+                    // as: 'page',
                   }
                 ]
               },

@@ -5,10 +5,14 @@ const errors = require('../../utils/errors.list');
 const queries = {
   'loginUser': [
     require('./aggregates/User/events/userLoggedIn'),
+    require('./aggregates/User/events/userDataIsFiltered'),
   ],
   'userCheck': [
     require('./aggregates/User/events/userHadAccess'),
   ],
+  'userIsValid': [
+    require('./aggregates/User/events/userDataIsFiltered'),
+  ]
 }
 
 queryhandler = async (query, user) => {
@@ -24,6 +28,9 @@ queryhandler = async (query, user) => {
         break;
       case 'userCheck':
         result = await UserRepository.loadById(query.payload.id);
+        break;
+      case 'userIsValid':
+        result = await UserRepository.loadById(user.id);
         break;
     }
 

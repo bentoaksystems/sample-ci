@@ -1,4 +1,7 @@
 const errors = require('../../../../../utils/errors.list');
+const ignoreActions = [
+  'userIsValid',
+];
 
 module.exports = (user, payload) => {
   if (!user)
@@ -13,7 +16,8 @@ module.exports = (user, payload) => {
   if (!payload.name || !payload.context)
     return Promise.reject(errors.incompleteData);
 
-  const foundAction = user.actions.find(el => el.context.toLowerCase() === payload.context.toLowerCase() &&
+  const foundAction = ignoreActions.map(el => el.toLowerCase()).includes(payload.name.toLowerCase()) ? true :
+  user.actions.find(el => el.context.toLowerCase() === payload.context.toLowerCase() &&
     el.name.toLowerCase() === payload.name.toLowerCase());
 
   return foundAction ? Promise.resolve(user) : Promise.reject(errors.noAccess);

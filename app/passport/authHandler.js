@@ -29,7 +29,7 @@ let deserialize = (req, id, done) => {
     is_command: false,
     payload: {
       id,
-      action: req.body.name,
+      name: req.body.name,
       context: req.body.context,
     },
     name: 'userCheck',
@@ -47,8 +47,11 @@ let deserialize = (req, id, done) => {
     })
     .catch(err => {
       if (id) {
-        req.logout();
-        done(errors.noUser);
+        if (err.status === errors.noUser.status && err.message === errors.noUser.message) {
+          req.logout();
+          done(errors.noUser);
+        } else
+          done(err);
       } else {
         console.error('Error in desrialized function: ', err.message);
         done(err);
@@ -56,30 +59,30 @@ let deserialize = (req, id, done) => {
     });
 };
 
-let afterLogin = () => {
-  return (req, res) => {
-    const user = req.user;
-    if (!req.user)
-      res.status(errors.noUser.status).json(errors.noUser.message);
-    else {
-      let userObj = {
-        id: user.id,
-        username: user.username,
-        firstname: user.person.firstname,
-        surname: user.person.surname,
-        title: user.person.title,
-        accessed_routes: user.pages,
-        roles: user.roles,
-      }
+// let afterLogin = () => {
+//   return (req, res) => {
+//     const user = req.user;
+//     if (!req.user)
+//       res.status(errors.noUser.status).json(errors.noUser.message);
+//     else {
+//       let userObj = {
+//         id: user.id,
+//         username: user.username,
+//         firstname: user.person.firstname,
+//         surname: user.person.surname,
+//         title: user.person.title,
+//         accessed_routes: user.pages,
+//         roles: user.roles,
+//       }
 
-      res.status(200).json(userObj);
-    }
-  }
-}
+//       res.status(200).json(userObj);
+//     }
+//   }
+// }
 
 module.exports = {
   localStrategy,
   serialize,
   deserialize,
-  afterLogin,
+  // afterLogin,
 };
