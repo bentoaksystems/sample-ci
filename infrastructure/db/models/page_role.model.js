@@ -10,6 +10,9 @@ const init = (seq) => {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
+    },
+    access: {
+      type: Sequelize.STRING,
     }
   }, {
       tableName: 'page_role',
@@ -17,8 +20,8 @@ const init = (seq) => {
       underscored: true
     });
 
-    PageRole.belongsTo(Page.model());
-    PageRole.belongsTo(Role.model());
+  PageRole.belongsTo(Page.model());
+  PageRole.belongsTo(Role.model());
 
 }
 

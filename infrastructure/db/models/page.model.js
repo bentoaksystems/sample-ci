@@ -14,8 +14,7 @@ const init = (seq) => {
       unique: true
     },
     url: {
-      type: Sequelize.STRING,
-      unique: true
+      type: Sequelize.STRING
     }
   }, {
       tableName: 'page',

@@ -3,8 +3,10 @@ const Role = require('./infrastructure/db/models/role.model');
 const Staff = require('./infrastructure/db/models/staff.model');
 const Person = require('./infrastructure/db/models/person.model');
 const User = require('./infrastructure/db/models/user.model');
+const Page = require('./infrastructure/db/models/page.model');
 const bycript = require('./utils/bcrypt');
 const db = require('./infrastructure/db');
+const pageList = require('./utils/pages');
 
 let adminRole, adminStaff, adminUser;
 dbHelper.create()
@@ -73,11 +75,15 @@ dbHelper.create()
         .then(res => {
           console.log('-> ', 'admin user created succesffully');
           adminUser = res;
+          return Promise.all(pageList.map(x => Page.model().findOrCreate({where: {name: x.name}, defaults: {url: x.url}})))
+        })
+        .then(res => {
+          console.log('-> ', 'page are added successfully');
         })
     })
-    .then(res =>{
-      process.exit(0);
-    })
+      .then(res => {
+        process.exit(0);
+      })
   })
   .catch(err => {
     console.error('-> ', err);

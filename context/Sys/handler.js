@@ -1,5 +1,7 @@
 
-const UserRepository = require('./repositories');
+const UserRepository = require('./repositories/userRepository');
+const RoleRepository = require('./repositories/roleRepository');
+const PageRepository = require('./repositories/pageRepository');
 const errors = require('../../utils/errors.list');
 
 const queries = {
@@ -11,12 +13,14 @@ const queries = {
     require('./aggregates/User/events/userHadAccess'),
   ],
   'loginUser': [
-    require('./aggregates/User/events/userAdded'),
+    // require('./aggregates/User/events/userAdded'),
     require('./aggregates/User/events/userLoggedIn'),
   ],
   'userCheck': [
-    require('./aggregates/User/events/userAdded'),
+    // require('./aggregates/User/events/userAdded'),
   ],
+  'showRoles': [],
+  'showPages': [],
 }
 
 queryhandler = async (query, user) => {
@@ -29,13 +33,19 @@ queryhandler = async (query, user) => {
     switch (query.name) {
 
       case 'loginCheck':
-        result = await UserRepository.load(query.payload.username); 
+        result = await UserRepository.load(query.payload.username);
         break;
       case 'loginUser':
         result = await UserRepository.load(query.payload.username);
         break;
       case 'userCheck':
         result = await UserRepository.loadById(query.payload.id);
+        break;
+      case 'showRoles':
+        result = await RoleRepository.load();
+        break;
+      case 'showPages':
+        result = await PageRepository.load();
         break;
     }
 
