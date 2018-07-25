@@ -16,9 +16,6 @@ const init = (seq) => {
       timestamps: false,
       underscored: true
     });
-
-  Staff.belongsTo(Person.model());
-  Staff.belongsTo(Role.model());
 }
 
 

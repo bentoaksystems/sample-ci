@@ -4,10 +4,6 @@ load = () => {
   return Role.model().findAll();
 }
 
-
-
-
-
 module.exports = {
   load
 }

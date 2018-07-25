@@ -1,26 +1,22 @@
 
-const UserRepository = require('./repositories/userRepository');
-const RoleRepository = require('./repositories/roleRepository');
-const PageRepository = require('./repositories/pageRepository');
+const _UserRepository = require('./repositories/userRepository');
+const _RoleRepository = require('./repositories/roleRepository');
+const _PageRepository = require('./repositories/pageRepository');
 const errors = require('../../utils/errors.list');
 
 const queries = {
-  'loginCheck': [
-    require('./aggregates/User/events/userLoggedIn'),
-    require('./aggregates/User/events/userHadAccess'),
-  ],
-  'checkAccess': [
-    require('./aggregates/User/events/userHadAccess'),
-  ],
   'loginUser': [
-    // require('./aggregates/User/events/userAdded'),
     require('./aggregates/User/events/userLoggedIn'),
+    require('./aggregates/User/events/userDataIsFiltered'),
   ],
   'userCheck': [
-    // require('./aggregates/User/events/userAdded'),
+    require('./aggregates/User/events/userHadAccess'),
+  ],
+  'userIsValid': [
+    require('./aggregates/User/events/userDataIsFiltered'),
   ],
   'showRoles': [],
-  'showPages': [],
+  'showPages': []
 }
 
 queryhandler = async (query, user) => {
@@ -29,31 +25,42 @@ queryhandler = async (query, user) => {
     throw errors.queryNotFound;
 
   try {
-    let result;
+    let repo;
     switch (query.name) {
-
-      case 'loginCheck':
-        result = await UserRepository.load(query.payload.username);
-        break;
       case 'loginUser':
-        result = await UserRepository.load(query.payload.username);
+        const UserRepository = await _UserRepository.load(query.payload.username);
+        repo = {UserRepository}
+
         break;
       case 'userCheck':
-        result = await UserRepository.loadById(query.payload.id);
+        const UserRepository = await _UserRepository.loadById(query.payload.id);
+        repo = {UserRepository}
+        break;
+      case 'userIsValid':
+        const UserRepository = await _UserRepository.loadById(user.id);
+        repo = {UserRepository}
         break;
       case 'showRoles':
-        result = await RoleRepository.load();
+        const RoleReopository = await _RoleRepository.load();
+        repo = {RoleReopository}
+
         break;
       case 'showPages':
-        result = await PageRepository.load();
+        const PageRepository = await _PageRepository.load();
+        repo = {PageRepository}
+
         break;
+      case 'showUserAccessiblePages':
+        const PageRepository = await _PageRepository.load();
+        const UserRepository = await _UserRepository.loadById(user.id);
+        rep = {PageRepository, UserRepository};
     }
 
     /**
      * all queries will be called sequentially one after each other
      * each query change state of user and passed it along with payload to next query 
      */
-    return queries[query.name].length ? queries[query.name].reduce((x, y) => x.then(r => y(r, query.payload)), Promise.resolve(result, query.payload)) : Promise.resolve(result);
+    return queries[query.name].length ? queries[query.name].reduce((x, y) => x.then(r => y(r, query.payload)), Promise.resolve(repo, query.payload)) : Promise.resolve(repo);
   }
   catch (err) {
     throw err;
@@ -76,4 +83,7 @@ handler = async (body, user) => {
 }
 
 
-module.exports = handler
+module.exports = {
+  handler,
+  queries,
+};

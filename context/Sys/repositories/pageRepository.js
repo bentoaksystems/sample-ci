@@ -4,10 +4,6 @@ load = () => {
   return Page.model().findAll();
 }
 
-
-
-
-
 module.exports = {
   load
 }

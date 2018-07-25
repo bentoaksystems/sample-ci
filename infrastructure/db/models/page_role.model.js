@@ -19,10 +19,6 @@ const init = (seq) => {
       timestamps: false,
       underscored: true
     });
-
-  PageRole.belongsTo(Page.model());
-  PageRole.belongsTo(Role.model());
-
 }
 
 
