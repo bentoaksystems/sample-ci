@@ -18,13 +18,21 @@ module.exports = async (payload) => {
         return Promise.reject(errors.invalidPassword)
 
         user = user.get({plain: true});
+     
+        let accessed_routes;
+        if (user.username === 'admin')
+          accessed_routes = ['_all_']
+        else
+          accessed_routes = user.staff.role.page_roles.map(el => el.page.url)
+    
+
         return Promise.resolve({
           id: user.id,
           username: user.username,
           firstname: user.staff.person.firstname,
           surname: user.staff.person.surname,
           title: user.staff.person.title,
-          accessed_routes: user.staff.role.page_roles.map(el => el.page.url),
+          accessed_routes,
           roles: user.staff.role,
         });
 
