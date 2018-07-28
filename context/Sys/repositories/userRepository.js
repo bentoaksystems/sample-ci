@@ -86,7 +86,7 @@ getById = async (id, complete = false) => {
   };
 
   if (complete)
-    query.include = completeLoad;
+    query.include = getCompleteQuery();
 
   return User.model().findOne(query);
 }
