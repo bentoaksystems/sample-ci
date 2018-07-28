@@ -1,4 +1,3 @@
-const PersonRepository = require('../../repositories/personRepository');
 
 class Person {
 
@@ -7,8 +6,15 @@ class Person {
         this.address = {};
     }
 
-    async addressAssigned(address) {
-        this.address = await PersonRepository.addressAssignedToPerson(address, this.id);
+    addressAssigned(address) {
+        return new Promise((resolve, reject) => {
+            const PersonRepository = require('../../repositories/personRepository');
+            return PersonRepository.addressAssignedToPerson(address, this.id);
+        })
+        .then(res => {
+            this.address = res;
+            return Promise.resolve();
+        })
     }
 
     getId() {
