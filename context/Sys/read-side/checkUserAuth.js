@@ -13,7 +13,9 @@ module.exports = async (payload) => {
 
     return bycript.comparePassword(user.password, payload.password)
       .then(res => {
-        user = user.get({plain: true});
+        user = user.get({
+          plain: true
+        });
         return Promise.resolve({
           id: user.id,
           username: user.username,

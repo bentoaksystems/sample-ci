@@ -7,6 +7,9 @@ commandNotFound.status = 403;
 let noUser = new Error('User not found');
 noUser.status = 404;
 
+let noAction = new Error('Action not found');
+noAction.status = 404;
+
 let incompleteData = new Error('The passed data is incompleted');
 incompleteData.status = 404;
 
@@ -22,6 +25,7 @@ module.exports = {
   queryNotFound,
   commandNotFound,
   noUser,
+  noAction,
   incompleteData,
   noAccess,
   payloadIsNotDefined

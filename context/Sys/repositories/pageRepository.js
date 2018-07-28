@@ -19,7 +19,9 @@ getIPageById = async (id) => {
     throw new Error('page id is not defined');
 
   const page = await Page.model().findOne({
-    where: {id},
+    where: {
+      id
+    },
   })
 
   return new IPage(page.id, page.name)

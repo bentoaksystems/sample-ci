@@ -1,11 +1,11 @@
-
 const errors = require('../../utils/errors.list');
 const db = require('../../infrastructure/db')
 
 const queries = {
   'checkUserAuth': require('./read-side/checkUserAuth'),
   'checkUserAccess': require('./read-side/checkUserAccess'),
-  'checkUserValidation': require('./read-side/checkUserIsValid')
+  'checkUserValidation': require('./read-side/checkUserIsValid'),
+  'getAllActions': require('./read-side/getAllActions')
 }
 
 const commands = {
