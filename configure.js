@@ -5,7 +5,6 @@ const Person = require('./infrastructure/db/models/person.model');
 const Action = require('./infrastructure/db/models/action.model');
 const RoleAction = require('./infrastructure/db/models/role_action');
 const PageRole = require('./infrastructure/db/models/page_role.model');
-const Page = require('./infrastructure/db/models/page.model');
 const User = require('./infrastructure/db/models/user.model');
 const Page = require('./infrastructure/db/models/page.model');
 const bycript = require('./utils/bcrypt');
