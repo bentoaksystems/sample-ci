@@ -8,21 +8,22 @@ load = async () => {
     RoleInstances.push(new IRole(x.name));
   });
   return IRole;
-}
+};
 
 
 loadUserRoles = async (user_id) => {
 
   const roles = await Role.model().find({
     where: {user_id}
-  })
+  });
   const IRole = require('../aggregates/role');
   roles.forEach(x => {
     RoleInstances.push(new IRole(x.name));
   });
   return IRole;
-}
+};
+
 
 module.exports = {
   load
-}
+};

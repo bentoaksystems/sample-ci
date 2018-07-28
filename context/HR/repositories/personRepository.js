@@ -14,6 +14,14 @@ const IPerson = require('../write-side/aggregates/person');
  * **/
 
 findOrCreatePerson = async (person_info) => {
+    let isCompleteData = true;
+    ['firstname', 'surname', 'title', 'national_code'].forEach(el => {
+        if (!person_info[el])
+            isCompleteData = false;
+    });
+    if (!isCompleteData)
+        throw new Error('person data is incomplete');
+
     const query = {
         firstname: person_info.firstname,
         surname: person_info.surname,

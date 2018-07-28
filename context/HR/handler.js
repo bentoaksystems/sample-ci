@@ -7,10 +7,14 @@ const queries = {
 
 const commands = { 
     'addPerson': async (payload, user) => {
-        const repo = require('./repositories/personRepository');
-        let person = await repo.findOrCreatePerson(payload);
-        await person.addressAssigned(payload.address);
+        const person_repo = require('./repositories/personRepository');
+        let person = await person_repo.findOrCreatePerson(payload);
+        await person.addressAssigned(payload.address); // TODO: no address model!
         return person.getId();
+    },
+    'assignRolesToPerson': async (payload, user) => {
+        const staff_repo = require('./repositories/staffRepository');
+        await staff_repo.newRolesAssignedToPerson(payload.roles, payload.person_id);
     }
 };
 
