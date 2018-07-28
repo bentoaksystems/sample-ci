@@ -8,7 +8,7 @@ let localStrategy = (req, username, password, done) => {
       username: username,
       password: password,
     },
-    name: 'loginUser',
+    name: 'checkUserAuth',
   })
     .then(foundPerson => {
       delete foundPerson.password;
@@ -32,7 +32,7 @@ let deserialize = (req, id, done) => {
       name: req.body.name,
       context: req.body.context,
     },
-    name: 'userCheck',
+    name: 'checkUserAccess',
   })
     .then(foundPerson => {
       if (id && !foundPerson) {

@@ -10,6 +10,9 @@ const init = (seq) => {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
+    },
+    access: {
+      type: Sequelize.STRING,
     }
   }, {
       tableName: 'page_role',

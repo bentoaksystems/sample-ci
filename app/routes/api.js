@@ -14,7 +14,7 @@ function apiResponse() {
         res.status(200).json(data);
       })
       .catch(err => {
-        console.log(`Error in ${context} context in ${isCommand ? 'CommandHandler' : 'QueryHandler'}: `, err);
+        console.log(`-> `, err);
         res.status(err.status || 500).send(err.message || err);
       });
   });
