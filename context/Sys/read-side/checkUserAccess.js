@@ -24,6 +24,9 @@ module.exports = async (payload) => {
     if (!payload.name || !payload.context)
       throw errors.incompleteData;
 
+    if (user.username === 'admin')
+      return Promise.resolve(user);
+
     const foundAction = ignoreActions.map(el => el.toLowerCase()).includes(payload.name.toLowerCase()) ? true :
       user.actions.find(el => el.context.toLowerCase() === payload.context.toLowerCase() &&
         el.name.toLowerCase() === payload.name.toLowerCase());
