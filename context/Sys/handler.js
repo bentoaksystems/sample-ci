@@ -9,7 +9,11 @@ const queries = {
 }
 
 const commands = {
-  'newPageAssigned': require('./repositories/userRepository')
+  'newPageAssigned': async (payload, user) => {
+    const repo = require('./repositories/userRepository');
+    user = await repo.getIUserById(payload.userId)
+    return user.newPageAssigned(payload.pageId)
+  }
 }
 
 queryhandler = async (query, user) => {
@@ -25,25 +29,11 @@ commandHandler = async (command, user) => {
   if (!commands[command.name])
     throw errors.commandNotFound;
 
-
-  const repo = commands[command.name];
-
   if (!command.payload)
     throw errors.payloadIsNotDefined;
 
-  const payload = command.payload
-
   return db.sequelize().transaction(function (t1) {
-
-    switch (command) {
-
-      case 'newPageAssigned':
-        return repo.getIUserById(payload.userId)
-          .then(user => {
-            return user.newPageAssigned(payload.pageId)
-          })
-        break;
-    }
+    return commands[command.name](command.payload, user);
   });
 
 
