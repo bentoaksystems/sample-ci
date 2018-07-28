@@ -23,11 +23,16 @@ findOrCreatePerson = async (person_info) => {
 
     let person;
     if (!person_info.person_id) {
-        person = await Person.create(query);
+        person = await Person.model().create(query);
     } else {
         query['id'] = person_info.person_id;
-        person = await Person.update(query);
+        person = await Person.model().update(query);
     }
 
-    return new IUser(person.id);
+    return new IPerson(person.id);
+};
+
+
+module.exports = {
+    findOrCreatePerson,
 };

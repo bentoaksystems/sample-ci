@@ -15,3 +15,5 @@ class Person {
         return Promise.resolve(this.id);
     }
 }
+
+module.exports = Person;

@@ -9,7 +9,7 @@ const commands = {
     'addPerson': async (payload, user) => {
         const repo = require('./repositories/personRepository');
         let person = await repo.findOrCreatePerson(payload);
-        await person.addressAssigned(payload);
+        await person.addressAssigned(payload.address);
         return person.getId();
     }
 };
@@ -21,7 +21,7 @@ queryHandler = async (query, user) => {
     return queries[query.name](query.payload, user);
 }
 
-commandHandler = async (commands, user) => {
+commandHandler = async (command, user) => {
     if (!commands[command.name])
         throw errors.commandNotFound;
 
