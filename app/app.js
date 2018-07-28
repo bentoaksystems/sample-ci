@@ -13,6 +13,7 @@ const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 
 const app = express();
+const env = require('../env');
 
 // view engine setup
 app.set('views', path.join(__dirname, '../views'));
@@ -28,7 +29,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 let isReady = false;
 
-db.isReady();
+db.isReady(env.isTest);
 
 session.setup(app)
   .then(() => {
