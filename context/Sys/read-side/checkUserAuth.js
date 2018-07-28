@@ -14,17 +14,17 @@ module.exports = async (payload) => {
     return bycript.comparePassword(user.password, payload.password)
       .then(res => {
 
-        if(!res)
-        return Promise.reject(errors.invalidPassword)
+        if (!res)
+          return Promise.reject(errors.invalidPassword)
 
         user = user.get({plain: true});
-     
+
         let accessed_routes;
         if (user.username === 'admin')
           accessed_routes = ['_all_']
         else
           accessed_routes = user.staff.role.page_roles.map(el => el.page.url)
-    
+
 
         return Promise.resolve({
           id: user.id,

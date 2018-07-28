@@ -3,7 +3,6 @@ const dbHelper = require('../../../utils/db-helper');
 const helpers = require('../../../utils/helpers');
 const db = require('../../../infrastructure/db');
 const env = require('../../../env');
-const errors = require('../../../utils/errors.list');
 
 describe("Check user authentication", () => {
 
@@ -32,8 +31,51 @@ describe("Check user authentication", () => {
       resolveWithFullResponse: true
     }).then(res => {
       expect(res.statusCode).toBe(200);
+      expect(res.body.username).toBe('admin');
+      expect(res.body.firstname).toBe('Admin');
+      expect(res.body.surname).toBe('Admin');
+      expect(res.body.accessed_routes).not.toBeNull();
+      expect(res.body.accessed_routes.length).toBe(1);
+      expect(res.body.accessed_routes[0]).toBe('_all_');
       done();
     }).catch(helpers.errorHandler.bind(this));
+  })
+
+  it("test user must login with correct user name and password", function (done) {
+
+    this.done = done;
+
+    let role_id;
+    dbHelper.addUser()
+      .then(res => {
+        role_id = res.role.id;
+        return dbHelper.addPage()
+      })
+      .then(res => {
+        return dbHelper.assignPageToRole(role_id, res.id)
+      })
+      .then(res => {
+        return rp({
+          method: 'POST',
+          uri: `${env.appAddress}/api/login`,
+          body: {
+            username: 'test_user',
+            password: '123456'
+          },
+          json: true,
+          resolveWithFullResponse: true
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.username).toBe('test_user');
+        expect(res.body.firstname).toBe('test firstname');
+        expect(res.body.surname).toBe('test surname');
+        expect(res.body.accessed_routes).not.toBeNull();
+        expect(res.body.accessed_routes.length).toBe(1);
+        expect(res.body.accessed_routes[0]).toBe('/test');
+        done();
+      }).catch(helpers.errorHandler.bind(this));
   })
 
   it("expect error on wrong password", function (done) {
