@@ -1,10 +1,11 @@
 const bcrypt = require('bcrypt-nodejs');
 const app = require('express')();
 let env = app.get('env');
-if (env === 'test')
-  env = 'development';
+const isTest = env === 'test';
 const isProd = env === 'production';
 const isDev = env === 'development';
+
+console.log(`-> app is runnig in ${env} mode`);
 
 /**
  * read environment variable form env.process
@@ -28,7 +29,7 @@ const isDev = env === 'development';
  # REDIS_PASSWORD=123465
  ** END **
  */
-if (isDev)
+if (isDev || isTest)
   require('dotenv').config(); // loads env variables inside .env file into process.env
 
 /**
@@ -44,7 +45,7 @@ const port = getEnvValue(process.env.PORT);
 const database = getEnvValue(process.env.DATABASE);
 const database_test = getEnvValue(process.env.DATABASE) + '_test';
 const db_host = getEnvValue(process.env.DB_HOST);
-const db_username = getEnvValue(process.env.DB_USERNAME) ;
+const db_username = getEnvValue(process.env.DB_USERNAME);
 const db_password = getEnvValue(process.env.DB_PASSWORD);
 
 
@@ -86,8 +87,9 @@ function getEnvValue(procEnv) {
 
 module.exports = {
   bcrypt,
-  isProd: isProd,
-  isDev: isDev,
+  isProd,
+  isDev,
+  isTest,
   appAddress,
   appName,
   app,
