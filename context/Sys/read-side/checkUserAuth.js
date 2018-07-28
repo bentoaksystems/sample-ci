@@ -13,6 +13,10 @@ module.exports = async (payload) => {
 
     return bycript.comparePassword(user.password, payload.password)
       .then(res => {
+
+        if(!res)
+        return Promise.reject(errors.invalidPassword)
+
         user = user.get({plain: true});
         return Promise.resolve({
           id: user.id,

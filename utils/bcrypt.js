@@ -18,7 +18,7 @@ genSalt = (rawPassword) => new Promise((resolve, reject) => {
 comparePassword = (hashPassword, rowPassword) => new Promise((resolve, reject) => {
   env.bcrypt.compare(rowPassword, hashPassword, function (err, isMatch) {
     if (err) reject(err);
-    resolve();
+    resolve(isMatch);
   });
 });
 
