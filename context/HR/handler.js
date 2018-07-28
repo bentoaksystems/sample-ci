@@ -9,7 +9,7 @@ const commands = {
     'addPerson': async (payload, user) => {
         const person_repo = require('./repositories/personRepository');
         let person = await person_repo.findOrCreatePerson(payload);
-        await person.addressAssigned(payload.address); // TODO: no address model!
+        await person.addressAssigned(payload.address);
         return person.getId();
     },
     'assignRolesToPerson': async (payload, user) => {

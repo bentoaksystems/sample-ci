@@ -40,7 +40,18 @@ findOrCreatePerson = async (person_info) => {
     return new IPerson(person.id);
 };
 
+addressAssignedToPerson = async (address, person_id) => {
+    if (!person_id)
+        throw new Error('person id is not set');
+
+    ['province', 'city', 'street', 'district', 'postal_code'].forEach(el => {
+        if (!address[el])
+        return;
+    })
+};
+
 
 module.exports = {
     findOrCreatePerson,
+    addressAssignedToPerson,
 };

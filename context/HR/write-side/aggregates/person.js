@@ -8,7 +8,7 @@ class Person {
     }
 
     async addressAssigned(address) {
-        return Promise.resolve();
+        this.address = await PersonRepository.addressAssignedToPerson(address, this.id);
     }
 
     getId() {

@@ -16,8 +16,18 @@ newRolesAssignedToPerson = async (roles, person_id) => {
         where: {person_id}
     });
 
+    let newData = [];
+    roles.forEach(role => {
+        newData.push({
+            role_id: role.id,
+            person_id: person_id,
+        });
+    });
     // then, set all the new roles for the person
-    return Staff.model()
+    return Staff.model().bulkCreate(newData)
+        .then(() => {
+            return Promise.resolve();
+        });
 }
 
 

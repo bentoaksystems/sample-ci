@@ -8,6 +8,7 @@ const Role = require('./models/role.model');
 const Action = require('./models/action.model');
 const RoleAction = require('./models/role_action');
 const Person = require('./models/person.model');
+const Address = require('./models/address.model');
 const PageRole = require('./models/page_role.model');
 const Staff = require('./models/staff.model');
 const User = require('./models/user.model');
@@ -27,6 +28,7 @@ isReady = (isTest = false) => {
     .then(() => {
       console.log('-> ', 'Connection to db has been established successfully :)');
       [
+        Address,
         Page,
         Role,
         Action,
@@ -50,6 +52,8 @@ isReady = (isTest = false) => {
       Action.model().hasMany(RoleAction.model());
       RoleAction.model().belongsTo(Action.model());
       RoleAction.model().belongsTo(Role.model());
+      Address.model().belongsTo(Person.model());
+      Person.model().hasMany(Address.model());
       Person.model().hasMany(Staff.model());
       PageRole.model().belongsTo(Page.model());
       PageRole.model().belongsTo(Role.model());
