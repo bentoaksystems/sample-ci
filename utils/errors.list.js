@@ -10,6 +10,9 @@ noUser.status = 404;
 let noAction = new Error('Action not found');
 noAction.status = 404;
 
+let noRole = new Error('Role not found');
+noRole.status = 404;
+
 let incompleteData = new Error('The passed data is incompleted');
 incompleteData.status = 404;
 
@@ -25,6 +28,7 @@ module.exports = {
   queryNotFound,
   commandNotFound,
   noUser,
+  noRole,
   noAction,
   incompleteData,
   noAccess,

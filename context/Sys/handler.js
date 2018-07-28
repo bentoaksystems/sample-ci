@@ -5,7 +5,8 @@ const queries = {
   'checkUserAuth': require('./read-side/checkUserAuth'),
   'checkUserAccess': require('./read-side/checkUserAccess'),
   'checkUserValidation': require('./read-side/checkUserIsValid'),
-  'getAllActions': require('./read-side/getAllActions')
+  'getAllActions': require('./read-side/getAllActions'),
+  'getAllRoles': require('./read-side/getAllRoles'),
 }
 
 const commands = {

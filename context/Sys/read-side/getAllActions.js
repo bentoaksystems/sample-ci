@@ -4,10 +4,10 @@ const errors = require('../../../utils/errors.list');
 module.exports = async (payload, _user) => {
 
   try {
-    let action = await ActionRepository.getAll();
-    if (!action)
+    let actions = await ActionRepository.getAll();
+    if (!actions)
       throw errors.noAction;
-    return Promise.resolve(action);
+    return Promise.resolve(actions);
 
   } catch (err) {
     throw err;

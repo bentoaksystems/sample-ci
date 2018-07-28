@@ -14,7 +14,9 @@ load = async () => {
 loadUserRoles = async (user_id) => {
 
   const roles = await Role.model().find({
-    where: {user_id}
+    where: {
+      user_id
+    }
   })
   const IRole = require('../aggregates/role');
   roles.forEach(x => {
@@ -23,6 +25,12 @@ loadUserRoles = async (user_id) => {
   return IRole;
 }
 
+getAll = async () => {
+  return Role.model().findAll({
+    raw: true
+  });
+}
 module.exports = {
-  load
+  load,
+  getAll
 }
