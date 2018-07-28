@@ -16,6 +16,8 @@ noAccess.status = 403;
 let payloadIsNotDefined = new Error('payload is not defined');
 payloadIsNotDefined.status = 403;
 
+
+
 module.exports = {
   queryNotFound,
   commandNotFound,

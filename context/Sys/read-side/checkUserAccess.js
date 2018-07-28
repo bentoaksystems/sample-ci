@@ -6,10 +6,11 @@ const ignoreActions = [
   'userIsValid',
 ];
 
-module.exports = async (payload, _user) => {
+module.exports = async (payload) => {
 
   try {
-    const user = await UserRepository.getById(_user.id, true);
+
+    let user = await UserRepository.getById(payload.id, true);
 
     if (!user)
       throw errors.noUser;
