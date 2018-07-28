@@ -25,6 +25,7 @@ let serialize = (person, done) => {
 };
 
 let deserialize = (req, id, done) => {
+
   SysContextHandler({
     is_command: false,
     payload: {
@@ -47,6 +48,8 @@ let deserialize = (req, id, done) => {
     })
     .catch(err => {
       if (id) {
+        console.error('-> ', err);
+
         if (err.status === errors.noUser.status && err.message === errors.noUser.message) {
           req.logout();
           done(errors.noUser);
