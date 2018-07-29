@@ -8,14 +8,19 @@ const IRole = require('../write-side/aggregates/role')
  * QUERY RELATED REPOSITORIES:
  */
 
-getRolesActions = async () => {
-  return Role.model().findAll({
+getById = async (id) => {
+  return Role.model().find({
+    where: {
+      id
+    },
     include: [{
       model: RoleAction.model(),
-    }],
-    raw: true
+      attributes: ['action_id']
+    }]
   });
 }
+
+
 
 
 /** COMMAND RELATED REPOSITORIES:
@@ -24,8 +29,26 @@ getRolesActions = async () => {
  * 
  * **/
 
+deleteAction = async (ids) => {
+  return RoleAction.model().destroy({
+    where: {
+      id: ids
+    }
+  });
+}
+
+addAction = async (ids) => {
+  // return RoleAction.model().bulkCreate({
+  //   where: {
+  //     id: ids
+  //   }
+  // });
+}
 
 
 module.exports = {
-  getRolesActions
+  getById,
+  deleteAction,
+  addAction
+
 }
