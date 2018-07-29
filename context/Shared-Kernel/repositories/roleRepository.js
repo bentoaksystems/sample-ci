@@ -30,6 +30,7 @@ getAll = async () => {
     raw: true
   });
 }
+
 module.exports = {
   load,
   getAll
