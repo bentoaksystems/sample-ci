@@ -69,8 +69,10 @@ isReady = (isTest = false) => {
     });
 
 }
+
+
 module.exports = {
   isReady,
-  sequelize: () => sequelize,
+  sequelize: () => sequelize
 };
 
