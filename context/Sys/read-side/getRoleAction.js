@@ -5,6 +5,9 @@ module.exports = async (payload, _user) => {
 
   try {
     let roleActions = await RoleRepository.getById(payload.id);
+    if (!roleActions) {
+      throw new Error('role actions is not defined');
+    }
     roleActions = roleActions.get({
       plain: true
     });

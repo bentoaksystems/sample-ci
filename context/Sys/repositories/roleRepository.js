@@ -15,8 +15,11 @@ getById = async (id) => {
     },
     include: [{
       model: RoleAction.model(),
-      attributes: ['action_id']
-    }]
+      attributes: ['action_id'],
+      include: [{
+        model: Action.model()
+      }],
+    }],
   });
 }
 
@@ -29,26 +32,7 @@ getById = async (id) => {
  * 
  * **/
 
-deleteAction = async (ids) => {
-  return RoleAction.model().destroy({
-    where: {
-      id: ids
-    }
-  });
-}
-
-addAction = async (ids) => {
-  // return RoleAction.model().bulkCreate({
-  //   where: {
-  //     id: ids
-  //   }
-  // });
-}
-
 
 module.exports = {
-  getById,
-  deleteAction,
-  addAction
-
+  getById
 }
