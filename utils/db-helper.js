@@ -8,6 +8,8 @@ const Staff = require('../infrastructure/db/models/staff.model');
 const User = require('../infrastructure/db/models/user.model');
 const Page = require('../infrastructure/db/models/page.model');
 const RolePage = require('../infrastructure/db/models/page_role.model');
+const rp = require('request-promise');
+
 
 const create = async (isTest = false) => {
 
@@ -36,7 +38,7 @@ const create = async (isTest = false) => {
  */
 const addAdmin = async (username = 'admin', password = '123456') => {
 
-  let adminPerson, adminRole, adminStaff, adminUser;
+  let person, role, staff, user;
   return Person.model().findOrCreate({
     where: {firstname: 'Admin', surname: 'Admin'},
     defaults: {
@@ -47,26 +49,26 @@ const addAdmin = async (username = 'admin', password = '123456') => {
       return Promise.resolve(person);
     })
     .then(res => {
-      adminPerson = res;
+      person = res;
       return Role.model().findOrCreate({where: {name: 'Admin'}})
         .spread((role, created) => {
           return Promise.resolve(role);
         })
     })
     .then(res => {
-      adminRole = res;
-      return Staff.model().findOrCreate({where: {role_id: adminRole.id, person_id: adminPerson.id}})
+      role = res;
+      return Staff.model().findOrCreate({where: {role_id: role.id, person_id: person.id}})
         .spread((staff, created) => {
           return Promise.resolve(staff);
         });
     })
     .then(res => {
-      adminStaff = res;
+      staff = res;
       return bycript.genSalt(password);
     })
     .then(hash => {
       return User.model().findOrCreate({
-        where: {staff_id: adminStaff.id},
+        where: {staff_id: staff.id},
         defaults: {
           username,
           password: hash
@@ -76,7 +78,10 @@ const addAdmin = async (username = 'admin', password = '123456') => {
           return Promise.resolve(user);
         });
     })
-    .then(res => Promise.resolve({adminPerson, adminRole, adminStaff, adminUser}))
+    .then(res => {
+      user = res;
+      return Promise.resolve({person, role, staff, user})
+    })
 }
 
 const addUser = async (username = 'test_user', password = '123456') => {
@@ -110,10 +115,9 @@ addAndLoginUser = async (isAdmin = false, username, password = '123456') => {
   try {
     let addedUser = isAdmin ? await addAdmin() : await addUser();
     const rpJar = rp.jar();
-    const userId = addedUser.user.id;
-    return rp({
+    const res = await rp({
       method: 'POST',
-      uri: helpers.apiTestURL('agent/login'),
+      uri: `${env.appAddress}/api/login`,
       body: {
         username: addedUser.user.username,
         password: password
@@ -121,9 +125,10 @@ addAndLoginUser = async (isAdmin = false, username, password = '123456') => {
       json: true,
       withCredentials: true,
       jar: rpJar,
+      resolveWithFullResponse: true
     })
     if (res.statusCode === 200) {
-      return Promise.resolve({userId, rpJar});
+      return Promise.resolve({userId: addedUser.user.id, rpJar});
     } else {
       console.log('-> ', res.statusCode, res.body);
       throw new Error('could not login with this user name and password');
