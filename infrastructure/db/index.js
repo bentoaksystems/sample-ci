@@ -70,25 +70,9 @@ isReady = (isTest = false) => {
 
 }
 
-transaction = async operation =>  {
-  let t = namespace.get('HIS-NS');
-  let hasTrans = !!t;
-  t = t || await sequelize.transaction();
-  try {
-    let result = await operation.apply(null, arguments);
-    if (!hasTrans) await t.commit();
-    return result;
-  }
-  catch (e) {
-    console.error('-> ', e);
-    if (!hasTrans) await t.rollback();
-    throw e;
-  }
-};
 
 module.exports = {
   isReady,
-  sequelize: () => sequelize,
-  transaction
+  sequelize: () => sequelize
 };
 

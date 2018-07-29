@@ -31,8 +31,10 @@ const create = async (isTest = false) => {
 
 }
 
-
-const addAdmin = () => {
+/**
+ * do not use await here. it is used inside transaction in configure.js
+ */
+const addAdmin = async (username = 'admin', password = '123456') => {
 
   let adminPerson, adminRole, adminStaff, adminUser;
   return Person.model().findOrCreate({
@@ -60,13 +62,13 @@ const addAdmin = () => {
     })
     .then(res => {
       adminStaff = res;
-      return bycript.genSalt('admin@123');
+      return bycript.genSalt(password);
     })
     .then(hash => {
       return User.model().findOrCreate({
         where: {staff_id: adminStaff.id},
         defaults: {
-          username: 'admin',
+          username,
           password: hash
         }
       })
@@ -76,40 +78,62 @@ const addAdmin = () => {
     })
     .then(res => Promise.resolve({adminPerson, adminRole, adminStaff, adminUser}))
 }
-const addUser = (username = 'test_user', password = '123456') => {
 
-  let person, role, staff, user;
+const addUser = async (username = 'test_user', password = '123456') => {
 
-  return Person.model().create({
+  const person = await Person.model().create({
     firstname: 'test firstname',
     surname: 'test surname',
     national_code: '1234567899'
+  });
+
+  const role = await Role.model().create({
+    name: 'test role',
+  });
+  const staff = await Staff.model().create({
+    role_id: role.id,
+    person_id: person.id
+  });
+  const hash = await bycript.genSalt(password);
+  const user = User.model().create({
+    staff_id: staff.id,
+    username,
+    password: hash
   })
-    .then(res => {
-      person = res;
-      return Role.model().create({
-        name: 'test role',
-      })
+  return Promise.resolve({person, role, staff, user});
+
+}
+
+
+addAndLoginUser = async (isAdmin = false, username, password = '123456') => {
+
+  try {
+    let addedUser = isAdmin ? await addAdmin() : await addUser();
+    const rpJar = rp.jar();
+    const userId = addedUser.user.id;
+    return rp({
+      method: 'POST',
+      uri: helpers.apiTestURL('agent/login'),
+      body: {
+        username: addedUser.user.username,
+        password: password
+      },
+      json: true,
+      withCredentials: true,
+      jar: rpJar,
     })
-    .then(res => {
-      role = res;
-      return Staff.model().create({
-        role_id: role.id,
-        person_id: person.id
-      });
-    })
-    .then(res => {
-      staff = res;
-      return bycript.genSalt(password);
-    })
-    .then(hash => {
-      return User.model().create({
-        staff_id: staff.id,
-        username,
-        password: hash
-      })
-    })
-    .then(res => Promise.resolve({person, role, staff, user}))
+    if (res.statusCode === 200) {
+      return Promise.resolve({userId, rpJar});
+    } else {
+      console.log('-> ', res.statusCode, res.body);
+      throw new Error('could not login with this user name and password');
+    }
+  }
+  catch (err) {
+    console.error('-> could not login:\n ', err);
+    throw err;
+  }
+
 }
 
 addPage = (name = 'test page', url = '/test') => {
@@ -132,5 +156,6 @@ module.exports = {
   addAdmin,
   addUser,
   addPage,
-  assignPageToRole
+  assignPageToRole,
+  addAndLoginUser
 }

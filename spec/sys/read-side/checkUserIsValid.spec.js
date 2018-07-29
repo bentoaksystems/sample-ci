@@ -4,11 +4,12 @@ const helpers = require('../../../utils/helpers');
 const db = require('../../../infrastructure/db');
 const env = require('../../../env');
 
-describe("Check user authentication", () => {
+describe("Check user validation", () => {
+
+  let userId, rpJar;
 
   beforeEach(async done => {
     await db.isReady(true);
-    await dbHelper.addAdmin();
     done();
   });
 
@@ -16,6 +17,11 @@ describe("Check user authentication", () => {
 
     try {
       this.done = done
+
+      const result = await dbHelper.addAndLoginUser(true);
+      userId = result.userId;
+      rpJar = result.rpJar;
+
       const res = await rp({
         method: 'POST',
         uri: `${env.appAddress}/api/login`,
