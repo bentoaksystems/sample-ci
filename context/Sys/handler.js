@@ -8,7 +8,6 @@ const queries = {
   'getActions': require('./read-side/getActions'),
   'getRoles': require('./read-side/getRoles'),
   'getRoleAction': require('./read-side/getRoleAction'),
-  'deleteRoleAction': require('./read-side/deleteRoleAction'),
 }
 
 const commands = {
