@@ -5,7 +5,7 @@ const db = require('../../infrastructure/db')
 const queries = {
   'checkUserAuth': require('./read-side/checkUserAuth'),
   'checkUserAccess': require('./read-side/checkUserAccess'),
-  'checkUserValidation': require('./read-side/checkUserIsValid')
+  'checkUserValidation': require('./read-side/checkUserValidation')
 }
 
 const commands = {
