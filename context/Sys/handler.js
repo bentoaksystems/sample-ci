@@ -1,5 +1,4 @@
 const errors = require('../../utils/errors.list');
-const db = require('../../infrastructure/db')
 
 const queries = {
   'checkUserAuth': require('./read-side/checkUserAuth'),
@@ -11,11 +10,7 @@ const queries = {
 }
 
 const commands = {
-  'newPageAssigned': async (payload, user) => {
-    const repo = require('./repositories/userRepository');
-    user = await repo.getIUserById(payload.userId)
-    return user.newPageAssigned(payload.pageId)
-  }
+  'grantPageAccess': require('./write-side/commands/grantPageAccess')
 }
 
 queryhandler = async (query, user) => {
@@ -34,9 +29,7 @@ commandHandler = async (command, user) => {
   if (!command.payload)
     throw errors.payloadIsNotDefined;
 
-  return db.sequelize().transaction(function (t1) {
-    return commands[command.name](command.payload, user);
-  });
+  return new commands[command.name]().execut(command.payload, user);
 
 
 }

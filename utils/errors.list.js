@@ -1,7 +1,7 @@
-let queryNotFound = new Error("query not defined on this context");
+let queryNotFound = new Error('query not defined on this context');
 queryNotFound.status = 403;
 
-let commandNotFound = new Error("command not defined on this context");
+let commandNotFound = new Error('command not defined on this context');
 commandNotFound.status = 403;
 
 let noUser = new Error('User not found');
@@ -22,9 +22,11 @@ noAccess.status = 403;
 let payloadIsNotDefined = new Error('payload is not defined');
 payloadIsNotDefined.status = 403;
 
+let aggregateVersionChanged = new Error('aggregate version is changed');
+aggregateVersionChanged.status = 403;
 
-
-
+let commandIncompleteData = new Error('root and repository list are required for command execution');
+commandIncompleteData.status = 403;
 
 module.exports = {
   queryNotFound,
@@ -34,5 +36,7 @@ module.exports = {
   noAction,
   incompleteData,
   noAccess,
-  payloadIsNotDefined
-}
+  payloadIsNotDefined,
+  aggregateVersionChanged,
+  commandIncompleteData
+};
