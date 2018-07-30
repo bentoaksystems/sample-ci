@@ -9,6 +9,12 @@ const errors = require('../../utils/errors.list');
 
 function apiResponse() {
   return (function (req, res) {
+
+    if (!req.user) {
+      res.status(errors.noUser.status).send(errors.noUser.message);
+      return;
+    }
+
     Context[req.body.context].handler(req.body, req.user)
       .then(data => {
         res.status(200).json(data);

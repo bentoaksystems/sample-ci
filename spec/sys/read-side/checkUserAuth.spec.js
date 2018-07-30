@@ -3,58 +3,92 @@ const dbHelper = require('../../../utils/db-helper');
 const helpers = require('../../../utils/helpers');
 const db = require('../../../infrastructure/db');
 const env = require('../../../env');
-const errors = require('../../../utils/errors.list');
 
 describe("Check user authentication", () => {
 
-  beforeEach(done => {
-
-    db.isReady(true)
-      .then(res => {
-        return dbHelper.addAdmin()
-      })
-      .then(res => {
-        done();
-      })
+  beforeEach(async done => {
+    await db.isReady(true);
+    await dbHelper.addAdmin();
+    done();
   });
 
-  it("admin must login with correct user name and password", function (done) {
+  it("admin must login with correct user name and password", async function (done) {
 
-    this.done = done;
-    rp({
-      method: 'POST',
-      uri: `${env.appAddress}/api/login`,
-      body: {
-        username: 'admin',
-        password: 'admin@123'
-      },
-      json: true,
-      resolveWithFullResponse: true
-    }).then(res => {
+    try {
+      this.done = done
+      const res = await rp({
+        method: 'POST',
+        uri: `${env.appAddress}/api/login`,
+        body: {
+          username: 'admin',
+          password: '123456'
+        },
+        json: true,
+        resolveWithFullResponse: true
+      })
       expect(res.statusCode).toBe(200);
+      expect(res.body.username).toBe('admin');
+      expect(res.body.firstname).toBe('Admin');
+      expect(res.body.surname).toBe('Admin');
+      expect(res.body.accessed_routes).not.toBeNull();
+      expect(res.body.accessed_routes.length).toBe(1);
+      expect(res.body.accessed_routes[0]).toBe('_all_');
       done();
-    }).catch(helpers.errorHandler.bind(this));
+    } catch (err) {
+      helpers.errorHandler.bind(this)(err);
+    }
   })
 
-  it("expect error on wrong password", function (done) {
+  it("test user must login with correct user name and password", async function (done) {
+    try {
+      this.done = done;
+      const user = await dbHelper.addUser();
+      const page = await dbHelper.addPage();
+      await dbHelper.assignPageToRole(user.role.id, page.id);
+      const res = await rp({
+        method: 'POST',
+        uri: `${env.appAddress}/api/login`,
+        body: {
+          username: 'test_user',
+          password: '123456'
+        },
+        json: true,
+        resolveWithFullResponse: true
+      })
+      expect(res.statusCode).toBe(200);
+      expect(res.body.username).toBe('test_user');
+      expect(res.body.firstname).toBe('test firstname');
+      expect(res.body.surname).toBe('test surname');
+      expect(res.body.accessed_routes).not.toBeNull();
+      expect(res.body.accessed_routes.length).toBe(1);
+      expect(res.body.accessed_routes[0]).toBe('/test');
+      done();
+    }
+    catch (err) {
+      helpers.errorHandler.bind(this)(err);
+    }
+  })
 
-    this.done = done;
-    rp({
-      method: 'POST',
-      uri: `${env.appAddress}/api/login`,
-      body: {
-        username: 'admin',
-        password: 'admin@1234' // wrong password
-      },
-      json: true,
-      resolveWithFullResponse: true
-    }).then(res => {
+  it("expect error on wrong password", async function (done) {
+
+    try {
+      this.done = done;
+      await rp({
+        method: 'POST',
+        uri: `${env.appAddress}/api/login`,
+        body: {
+          username: 'admin',
+          password: 'admin@1234' // wrong password
+        },
+        json: true,
+        resolveWithFullResponse: true
+      });
       this.fail('User can login with wrong password');
       done();
-    }).catch(err => {
+    } catch (err) {
       expect(err.statusCode).toBe(401);
       done();
-    });
+    }
   })
 
 });
