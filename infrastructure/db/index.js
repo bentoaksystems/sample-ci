@@ -59,8 +59,8 @@ isReady = (isTest = false) => {
       PageRole.model().belongsTo(Role.model());
       Staff.model().belongsTo(Person.model());
       Staff.model().belongsTo(Role.model());
-      Staff.model().hasMany(User.model());
-      User.model().belongsTo(Staff.model());
+      Staff.model().belongsTo(User.model());
+      User.model().hasMany(Staff.model());
 
 
       return isTest ? sequelize.sync({force: true}) : sequelize.sync();
