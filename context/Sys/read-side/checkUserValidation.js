@@ -4,7 +4,7 @@ const errors = require('../../../utils/errors.list');
 module.exports = async (payload, _user) => {
 
   try {
-    let user = await UserRepository.getById(_user.id, true);
+    let user = await new UserRepository().getById(_user.id, true);
     if (!user)
       throw errors.noUser;
 

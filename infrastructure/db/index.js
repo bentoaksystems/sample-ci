@@ -1,6 +1,6 @@
 
 const Sequelize = require('sequelize');
-const cls = require('continuation-local-storage');
+// const cls = require('continuation-local-storage');
 const env = require('../../env');
 
 const Page = require('./models/page.model');
@@ -12,8 +12,11 @@ const PageRole = require('./models/page_role.model');
 const Staff = require('./models/staff.model');
 const User = require('./models/user.model');
 
-namespace = cls.createNamespace('HIS-NS');
-Sequelize.useCLS(namespace);
+// namespace = cls.createNamespace('HIS-NS');
+// Sequelize.useCLS(namespace);
+
+Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
+
 
 let sequelize;
 isReady = (isTest = false) => {
@@ -59,8 +62,8 @@ isReady = (isTest = false) => {
       User.model().belongsTo(Staff.model());
 
 
-      return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-      // return sequelize.sync({force: true});
+      // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      return sequelize.sync({force: true});
 
     })
     .catch(err => {

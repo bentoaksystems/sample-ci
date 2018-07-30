@@ -10,7 +10,7 @@ module.exports = async (payload) => {
 
   try {
 
-    let user = await UserRepository.getById(payload.id, true);
+    let user = await new UserRepository().getById(payload.id, true);
 
     if (!user)
       throw errors.noUser;
