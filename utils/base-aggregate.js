@@ -24,7 +24,7 @@ module.exports = class BaseAggregate {
 
     const expectedVersion = oldVersion + 1;
     if (expectedVersion !== this.version)
-      throw new Error(errors.aggregateVersionChnaged)
+      throw new Error(errors.aggregateVersionChanged)
 
     this.commit(list)
     if (this.refList && this.refList.length)
