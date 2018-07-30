@@ -2,8 +2,7 @@ const errors = require('../../utils/errors.list');
 const db = require('../../infrastructure/db');
 
 const queries = {
-    'showStaff': require('./read-side/showStaff'),
-    'searchPerson': require('./read-side/searchPerson'),
+    'searchPersonnel': require('./read-side/searchPerson'),
     'showOnePerson': require('./read-side/showOnePerson'),
 };
 

@@ -1,6 +1,7 @@
 
 const Person = require('../../../infrastructure/db/models/person.model');
 const Staff = require('../../../infrastructure/db/models/staff.model');
+const Role = require('../../../infrastructure/db/models/role.model');
 const User = require('../../../infrastructure/db/models/user.model');
 const IPerson = require('../write-side/aggregates/person');
 const Address = require('../../../infrastructure/db/models/address.model');
@@ -9,16 +10,28 @@ const Address = require('../../../infrastructure/db/models/address.model');
  * QUERY RELATED REPOSOTIROES:
  */
 
-getPersonnelList = async () => {
-
-};
-
 showOnePersonDetails = async (person_id) => {
 
 };
 
 searchPerson = async (search) => {
-
+    // now works for getting ALL STAFF
+    // should implement search options
+    return Staff.model().find({
+        include: [{
+            model: Staff.model(),
+            required: true,
+            include: [
+                {
+                    model: Person.model(),
+                    required: true,
+                }, {
+                    model: Role.model(),
+                    required: true,
+                }
+            ]
+        }]
+    });
 };
 
 
@@ -105,7 +118,6 @@ userRemoved = async (user_id) => {
 
 
 module.exports = {
-    getPersonnelList,
     showOnePersonDetails,
     searchPerson,
     getById,
