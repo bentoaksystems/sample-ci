@@ -45,14 +45,57 @@ describe("Grant page access to role", () => {
       })
       expect(res.statusCode).toBe(200);
 
-      const pageRole = await PageRole.model().find({
-        where: {page_id: page.id}
-      });
-      console.log('-> ', pageRole.get({plain: true}));
+      const pageRole = (await PageRole.model().find({
+        where: {
+          role_id: role.id,
+        }
+      })).get({plain: true});
+      expect(pageRole.access).toBeNull();
+      expect(pageRole.page_id).toBe(page.id);
+      expect(pageRole.role_id).toBe(role.id);
       done();
     } catch (err) {
       helpers.errorHandler.bind(this)(err);
     }
   })
+
+  it("admin must be able to grant a page access to a role by written access", async function (done) {
+
+    try {
+      this.done = done
+      const role = await Role.model().create({name: 'test role'});
+
+      const res = await rp({
+        method: 'POST',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Sys',
+          is_command: true,
+          name: 'grantPageAccess',
+          payload: {
+            roleId: role.id,
+            access: '/hr/*'
+          }
+        },
+        jar: rpJar,
+        json: true,
+        resolveWithFullResponse: true
+      })
+      expect(res.statusCode).toBe(200);
+
+      const pageRole = (await PageRole.model().find({
+        where: {
+          role_id: role.id
+        }
+      })).get({plain: true});
+      expect(pageRole.page_id).toBeNull();
+      expect(pageRole.access).toBe('/hr/*');
+      done();
+    } catch (err) {
+      helpers.errorHandler.bind(this)(err);
+    }
+  })
+
+  
 
 });

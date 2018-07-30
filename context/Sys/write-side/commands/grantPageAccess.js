@@ -9,6 +9,10 @@ class GrantPageAccess extends BaseCommand {
 
   async execut(payload, user) {
     try {
+
+      if (!payload.roleId || (!payload.pageId && !payload.access))
+        throw new Error('incomplete payload for grant access to page');
+
       const repo = new RoleRepository();
       const role = await repo.getIRoleById(payload.roleId);
 
