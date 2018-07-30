@@ -16,7 +16,7 @@ module.exports = async (payload, user) => {
     }
   }).catch(err => {
     if (preRole)
-      repo.rollback(payload.roleId, repo.getRoles(), preRole);
+      repo.rollback(payload.roleId, RoleRepository.Roles, preRole);
     throw err;
   });
 }

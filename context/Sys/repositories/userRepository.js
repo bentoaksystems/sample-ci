@@ -11,10 +11,7 @@ const errors = require('../../../utils/errors.list');
 
 
 
-const Users = [];
-
-
-module.exports = class UserRepository extends BaseRepository {
+class UserRepository extends BaseRepository {
 
   constructor(){
     super();
@@ -110,3 +107,6 @@ module.exports = class UserRepository extends BaseRepository {
   
 }
 
+UserRepository.Users = [];
+
+module.exports = UserRepository;
