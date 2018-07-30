@@ -4,8 +4,8 @@ module.exports = class BaseAggregate {
 
   constructor(refList) {
     this.version = 0;
+    this.observable = new Rx.Subject();
     if (refList && refList.length) {
-      this.observable = new Rx.Subject();
       refList.forEach(ref => {
         ref.observable.subscribe(() => {
           this.version++;
@@ -18,21 +18,27 @@ module.exports = class BaseAggregate {
     return this.version
   }
 
-  
-  checkVersion(oldVersion) {
+
+  checkVersion(oldVersion, list) {
     this.version++;
-    this.observable.onNext();
+
     const expectedVersion = oldVersion + 1;
     if (expectedVersion !== this.version)
       throw new Error(errors.aggregateVersionChnaged)
+
+    this.commit(list)
+    if (this.refList && this.refList.length)
+      this.observable.onNext();
+
   }
 
-  rollback(id, list, pre) {
-    const index = list.findIndex(x => x.id === id);
+  commit(list) {
+    const index = list.findIndex(x => x.id === this.id);
     if (index > -1) {
       list.splice(index, 1);
-      list.push(pre);
+      list.push(this);
     }
+
   }
 
 

@@ -38,18 +38,19 @@ main = async () => {
 
 }
 
-db.isReady(true)
-  .then(res => {
+// db.isReady(true)
+//   .then(res => {
 
-   
-    return main()
-      .then(res => {
-        process.exit();
-      })
-      .catch(err => {
-        console.log('-> ', err);
-        process.exit();
 
-      })
+//     return main()
+//       .then(res => {
+//         process.exit();
+//       })
+//       .catch(err => {
+//         console.log('-> ', err);
+//         process.exit();
 
-  })
+//       })
+
+//   })
+

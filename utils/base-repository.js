@@ -1,6 +1,6 @@
 module.exports = class BaseAggregate {
 
-  constructor(refList) {
+  constructor() {
   }
 
   rollback(id, list, pre) {
@@ -10,12 +10,5 @@ module.exports = class BaseAggregate {
       list.push(pre);
     }
   }
-
-
-
-
-
-
-
 
 }

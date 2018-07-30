@@ -1,24 +1,26 @@
-const RoleRepository = require('../../repositories/roleRepository')
-const db = require('../../../../infrastructure/db');
+const BaseCommand = require('../../../../utils/base-command');
+const RoleRepository = require('../../repositories/roleRepository');
 
-module.exports = async (payload, user) => {
-  let preRole;
-  const repo = new RoleRepository();
-  return db.sequelize().transaction(async () => {
+class GrantPageAccess extends BaseCommand {
+
+  constructor() {
+    super();
+  }
+
+  async execut(payload, user) {
     try {
+      const repo = new RoleRepository();
       const role = await repo.getIRoleById(payload.roleId);
-      const oldVersion = role.getVersion();
-      preRole = {...role};
-      await role.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
-      role.checkVersion(oldVersion)
 
-      console.log('-> ', RoleRepository.Roles);
+      await super.execut(role, RoleRepository.Roles, async (editingRole) => {
+        return editingRole.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
+      });
+
     } catch (err) {
       throw err;
     }
-  }).catch(err => {
-    if (preRole)
-      repo.rollback(payload.roleId, RoleRepository.Roles, preRole);
-    throw err;
-  });
+  }
 }
+
+module.exports = GrantPageAccess;
+

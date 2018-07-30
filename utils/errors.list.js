@@ -20,6 +20,9 @@ payloadIsNotDefined.status = 403;
 let aggregateVersionChnaged = new Error('aggregate version is changed');
 aggregateVersionChnaged.status = 403;
 
+let commandIncompleteData = new Error('root and repository list are required for command execution');
+commandIncompleteData.status = 403;
+
 
 
 
@@ -31,5 +34,6 @@ module.exports = {
   incompleteData,
   noAccess,
   payloadIsNotDefined,
-  aggregateVersionChnaged
+  aggregateVersionChnaged,
+  commandIncompleteData
 }

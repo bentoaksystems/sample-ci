@@ -5,6 +5,7 @@ const db = require('../../../infrastructure/db');
 const env = require('../../../env');
 const Role = require('../../../infrastructure/db/models/role.model');
 const Page = require('../../../infrastructure/db/models/page.model');
+const PageRole = require('../../../infrastructure/db/models/page_role.model');
 
 
 
@@ -43,6 +44,11 @@ describe("Grant page access to role", () => {
         resolveWithFullResponse: true
       })
       expect(res.statusCode).toBe(200);
+
+      const pageRole = await PageRole.model().find({
+        where: {page_id: page.id}
+      });
+      console.log('-> ', pageRole.get({plain: true}));
       done();
     } catch (err) {
       helpers.errorHandler.bind(this)(err);

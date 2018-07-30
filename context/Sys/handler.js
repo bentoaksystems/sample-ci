@@ -27,7 +27,7 @@ commandHandler = async (command, user) => {
   if (!command.payload)
     throw errors.payloadIsNotDefined;
 
-  return commands[command.name](command.payload, user);
+  return new commands[command.name]().execut(command.payload, user);
 
 
 }
