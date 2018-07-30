@@ -18,15 +18,10 @@ module.exports = class BaseAggregate {
     return this.version
   }
 
-  updateVersion() {
-  }
-
-  pubChanges() {
-    this.observable.onNext();
-  }
-
+  
   checkVersion(oldVersion) {
     this.version++;
+    this.observable.onNext();
     const expectedVersion = oldVersion + 1;
     if (expectedVersion !== this.version)
       throw new Error(errors.aggregateVersionChnaged)

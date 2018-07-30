@@ -8,13 +8,13 @@ const errors = require('../../../utils/errors.list');
 const IRole = require('../write-side/aggregates/role')
 
 
-class RoleRepository extends BaseRepository{
+class RoleRepository extends BaseRepository {
 
-  constructor(){
+  constructor() {
     super();
   }
 
-  
+
   async  getIRoleById(id) {
     if (!id)
       throw new Error('role id is not defined');
@@ -28,6 +28,7 @@ class RoleRepository extends BaseRepository{
       where: {id}
     });
     if (role) {
+      RoleRepository.Roles.push(role);
       return new IRole(role.id);
     } else {
       throw new Error('no role found');

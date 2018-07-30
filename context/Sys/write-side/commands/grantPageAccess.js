@@ -11,6 +11,8 @@ module.exports = async (payload, user) => {
       preRole = {...role};
       await role.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
       role.checkVersion(oldVersion)
+
+      console.log('-> ', RoleRepository.Roles);
     } catch (err) {
       throw err;
     }
