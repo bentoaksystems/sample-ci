@@ -1,5 +1,4 @@
-const BaseRepository = require('../../../utils/base-repository');
-
+const BaseRepository = require('../../../utils/base-repository.js')
 const Role = require('../../../infrastructure/db/models/role.model');
 const RoleAction = require('../../../infrastructure/db/models/role_action');
 const Action = require('../../../infrastructure/db/models/action.model');
@@ -13,10 +12,9 @@ const IRole = require('../write-side/aggregates/role')
 const Roles = [];
 
 
-module.exports = class RoleRepository extends BaseRepository {
+module.exports = class RoleRepository extends BaseRepository{
 
-
-  constructor() {
+  constructor(){
     super();
   }
 

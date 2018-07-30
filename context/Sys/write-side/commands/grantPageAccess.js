@@ -7,8 +7,10 @@ module.exports = async (payload, user) => {
   return db.sequelize().transaction(async () => {
     try {
       const role = await repo.getIRoleById(payload.roleId);
+      const oldVersion = role.getVersion();
       preRole = {...role};
-      return role.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
+      await role.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
+      role.checkVersion(oldVersion)
     } catch (err) {
       throw err;
     }

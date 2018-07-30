@@ -1,5 +1,4 @@
-const BaseRepository = require('../../../utils/base-repository');
-
+const BaseRepository = require('../../../utils/base-repository.js')
 const User = require('../../../infrastructure/db/models/user.model');
 const Person = require('../../../infrastructure/db/models/person.model');
 const Staff = require('../../../infrastructure/db/models/staff.model');
@@ -17,8 +16,7 @@ const Users = [];
 
 module.exports = class UserRepository extends BaseRepository {
 
-
-  constructor() {
+  constructor(){
     super();
   }
 

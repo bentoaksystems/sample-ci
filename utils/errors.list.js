@@ -17,6 +17,9 @@ noAccess.status = 403;
 let payloadIsNotDefined = new Error('payload is not defined');
 payloadIsNotDefined.status = 403;
 
+let aggregateVersionChnaged = new Error('aggregate version is changed');
+aggregateVersionChnaged.status = 403;
+
 
 
 
@@ -27,5 +30,6 @@ module.exports = {
   noUser,
   incompleteData,
   noAccess,
-  payloadIsNotDefined
+  payloadIsNotDefined,
+  aggregateVersionChnaged
 }
