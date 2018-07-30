@@ -14,53 +14,47 @@ const Address = require('../../../infrastructure/db/models/address.model');
  * 
  * **/
 
-findOrCreatePerson = (person_info) => {
-    return new Promise((resolve, reject) => {
-        ['firstname', 'surname', 'title', 'national_id'].forEach(el => {
-            if (!person_info[el])
-                throw new Error('person data is incomplete');
-        });
+getById = async (person_info) => {
+    const person = await Person.model().findById(person_info.id);
 
-        const query = {
-            firstname: person_info.firstname,
-            surname: person_info.surname,
-            title: person_info.title,
-            national_code: person_info.national_id,
-        };
+    return new IPerson(person_info, person ? person.id : null);
+}
 
-        if (!person_info.person_id) {
-            return Person.model().create(query);
-        } else {
-            query['id'] = person_info.person_id;
-            return Person.model().update(query);
-        }
-    })
-        .then(res => {
-            return new IPerson(res.id);
-        });
+personCreated = async (person_info, pid) => {
+    if (!pid) {
+        let person = await Person.model().create(person_info);
+        pid = person.id;
+    } else {
+        query['id'] = pid;
+        await Person.model().update(person_info);
+    }
+    console.log('at the end of personCreated: ', pid);
+    return Promise.resolve(pid);
 }
 
 addressAssignedToPerson = async (address, person_id) => {
-    if (!person_id)
-        throw new Error('person id is not set');
 
-    ['province', 'city', 'street', 'district', 'postal_code'].forEach(el => {
-        if (!address[el])
-            throw new Error('address data is incomplete');
-    });
+    // Object.assign(address, {person_id});// -> BUGGINSH! YESTERDAY NOT WORKING, NOW WORKING! WHAT ?! 
+    // this should be findOrCreate
+    console.log('on the way to assign addresses: ', address, person_id);
+    let newAddress = await Address.model()
+        .findOrCreate({
+            where: address,
+            defaults: {person_id}
+        })
+        .spread((newAddress, created) => {
+            if (created)
+                return Promise.resolve(newAddress);
 
-    // Object.assign(address, {person_id}); -> BUGGINSH!
-    return Address.model().create({
-        where: address,
-    })
-        .spread((created_address, created) => {
-            console.log('created address: ', address, created_address);
-            return Promise.resolve(created_address);
+            return newAddress.update(address);
         });
+    console.log('created address: ', newAddress);
+    return Promise.resolve(newAddress);
 }
 
 
 module.exports = {
-    findOrCreatePerson,
+    getById,
+    personCreated,
     addressAssignedToPerson
 }

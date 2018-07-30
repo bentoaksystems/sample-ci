@@ -5,11 +5,11 @@ const queries = {
     'showStaff': '',
     'searchPerson': '',
     'showOnePerson': '',
-    
+
 };
 
 const commands = {
-    'addPerson': (payload, user) => {
+    'addPerson': async (payload, user) => {
         /**
          * NOTE: the process should be like this
          * get something from db OR create something AS a domain object, i.e. IPerson
@@ -20,20 +20,41 @@ const commands = {
          * Other functionalities will be handled in the IPerson methods
          * the whole wrapper functionality will be placed in here
          */
+        /* Questions:
+            only one db call for each repo func? NOT
+            asyc/await in transactions
+            shall move commands to files? YES
+            promise OR async/await? LATTER
+        */
+        if (!payload)
+            throw error.payloadIsNotDefined;
+        ['firstname', 'surname', 'title', 'national_id'].forEach(el => {
+            if (!payload[el])
+                throw error.incompleteData;
+        });
+        ['province', 'city', 'street', 'district', 'postal_code'].forEach(el => {
+            if (!payload.address[el])
+                throw error.incompleteData;
+        });
+
         const person_repo = require('./repositories/personRepository');
-        let person;
-        person_repo.findOrCreatePerson(payload)
-            .then(res => {
-                person = res;
-                return person.addressAssigned(payload.address);
-            })
-            .then(res => {
-                return person.getId();
-            });
+        console.log('@@@@@@@@: ', person_repo);
+        
+        let person = await person_repo.getById(payload);
+        // let person;
+        await person.addressAssigned(payload.address);
+        return person.getId();
     },
     'assignRolesToPerson': async (payload, user) => {
-        const staff_repo = require('./repositories/staffRepository');
-        await staff_repo.newRolesAssignedToPerson(payload.roles, payload.person_id);
+        if (!payload)
+            throw error.payloadIsNotDefined;
+        if (!payload.person_id)
+            throw error.incompleteData;
+        if (!Array.isArray(payload.roles) || !payload.roles.length)
+            throw new Error('roles are not valid');
+
+        let staff = new require('./write-side/aggregates/staff')(payload.person_id);
+        staff.newRolesAssigned(payload.roles);
     },
     'assignUserToPerson': async (payload, user) => {
 
