@@ -7,7 +7,7 @@ module.exports = async (payload) => {
 
   try {
 
-    let user = await UserRepository.getByUserName(payload.username, true);
+    let user = await new UserRepository().getByUserName(payload.username, true);
     if (!user)
       throw errors.noUser;
 
