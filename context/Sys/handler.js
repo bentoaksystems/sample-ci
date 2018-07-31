@@ -1,4 +1,3 @@
-
 const errors = require('../../utils/errors.list');
 const db = require('../../infrastructure/db')
 
@@ -16,8 +15,7 @@ const commands = {
   }
 }
 
-queryhandler = async (query, user) => {
-
+queryhandler1 = async (query, user) => {
   if (!queries[query.name])
     throw errors.queryNotFound;
 
@@ -25,7 +23,7 @@ queryhandler = async (query, user) => {
 
 }
 
-commandHandler = async (command, user) => {
+commandHandler1 = async (command, user) => {
   if (!commands[command.name])
     throw errors.commandNotFound;
 
@@ -35,17 +33,15 @@ commandHandler = async (command, user) => {
   return db.sequelize().transaction(function (t1) {
     return commands[command.name](command.payload, user);
   });
-
-
 }
 
 handler = async (body, user) => {
 
   try {
     if (body.is_command)
-      return commandHandler(body, user);
+      return commandHandler1(body, user);
     else
-      return queryhandler(body, user);
+      return queryhandler1(body, user);
   } catch (err) {
     throw err;
   }

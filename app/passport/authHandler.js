@@ -25,7 +25,6 @@ let serialize = (person, done) => {
 };
 
 let deserialize = (req, id, done) => {
-
   SysContextHandler({
     is_command: false,
     payload: {

@@ -1,4 +1,3 @@
-const UserRepository = require('../../repositories/userRepository');
 const PageRepository = require('../../repositories/pageRepository');
 
 class User {
@@ -10,6 +9,7 @@ class User {
   }
 
   async newPageAssigned(pageId) {
+    const UserRepository = require('../../repositories/userRepository');
     const page = await PageRepository.getIPageById(pageId);
     this.pages.push(page);
     return UserRepository.newPageAssigned(this.id, page.id);

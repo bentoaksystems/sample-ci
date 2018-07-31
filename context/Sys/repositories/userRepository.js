@@ -101,7 +101,7 @@ getIUserById = async (id) => {
   if (!id)
     throw new Error('user id is not defined');
 
-  const user = await User.findOne({
+  const user = await User.model().findOne({
     where: {id}
   });
 
@@ -112,7 +112,7 @@ getIUserById = async (id) => {
 
 newPageAssigned = (user_id, page_id) => {
 
-  return PageRole.findOrCreate({where: {user_id, page_id}})
+  return PageRole.model().findOrCreate({where: {user_id, page_id}})
     .spread((page_role, created) => {
       return Promise.resolve();
     });
