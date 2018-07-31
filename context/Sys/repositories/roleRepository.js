@@ -1,4 +1,3 @@
-const BaseRepository = require('../../../utils/base-repository.js')
 const Role = require('../../../infrastructure/db/models/role.model');
 const RoleAction = require('../../../infrastructure/db/models/role_action');
 const Action = require('../../../infrastructure/db/models/action.model');
@@ -8,12 +7,7 @@ const errors = require('../../../utils/errors.list');
 const IRole = require('../write-side/aggregates/role')
 
 
-class RoleRepository extends BaseRepository {
-
-  constructor() {
-    super();
-  }
-
+class RoleRepository {
 
   async  getIRoleById(id) {
     if (!id)
