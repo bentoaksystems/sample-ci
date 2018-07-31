@@ -64,10 +64,7 @@ const redisPass = getEnvValue(process.env.REDIS_PASSWORD);
 /**
  * Upload URLs
  */
-const uploadEMRDocument = 'public/documents/emr';
-const uploadUserDocument = 'public/documents/user';
-const uploadEquipmentDocument = 'public/documents/equipment';
-const uploadStockPurchaseDocument = 'public/documents/purchase';
+const uploadDocumentPath = 'public/documents/dms';
 
 
 /**
@@ -105,6 +102,7 @@ module.exports = {
   redisHost,
   redisPort,
   redisPass,
+  uploadDocumentPath,
 };
 
 

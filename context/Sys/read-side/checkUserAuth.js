@@ -21,19 +21,19 @@ module.exports = async (payload) => {
 
         let accessed_routes;
         if (user.username === 'admin')
-          accessed_routes = ['_all_']
+          accessed_routes = ['_all_'];
         else
-          accessed_routes = user.staff.role.page_roles.map(el => el.page.url)
+          accessed_routes = user.person.staffs.reduce((a, b) => a.concat(b.role.page_roles.map(el => el.page.url)), []);
 
 
         return Promise.resolve({
           id: user.id,
           username: user.username,
-          firstname: user.staff.person.firstname,
-          surname: user.staff.person.surname,
-          title: user.staff.person.title,
+          firstname: user.person.firstname,
+          surname: user.person.surname,
+          title: user.person.title,
           accessed_routes,
-          roles: user.staff.role,
+          roles: user.person.staffs.map(el => el.role),
         });
 
       });
