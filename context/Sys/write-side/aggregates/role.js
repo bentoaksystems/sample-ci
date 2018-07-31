@@ -1,16 +1,13 @@
-const BaseAggregate = require('../../../../utils/base-aggregate');
 
-
-module.exports = class Role extends BaseAggregate {
+module.exports = class Role {
 
   constructor(id, pages, pageExtraAccess, actions, actionExtraAccess) {
-    super();
 
     this.id = id;
-    this.pages = pages;
-    this.pageExtraAccess = pageExtraAccess;
-    this.actions = actions;
-    this.actionExtraAccess = actionExtraAccess;
+    this.pages = pages || [];
+    this.pageExtraAccess = pageExtraAccess || [];
+    this.actions = actions || [];
+    this.actionExtraAccess = actionExtraAccess || [];
 
   }
 

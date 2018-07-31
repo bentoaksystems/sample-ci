@@ -8,9 +8,7 @@ module.exports = class BaseCommand {
 
   async execut(cb) {
 
-    if (!root || !list)
-      throw errors.commandIncompleteData;
-
+    
     return db.sequelize().transaction(async () => {
       try {
 
