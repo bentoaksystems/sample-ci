@@ -1,7 +1,7 @@
 const BaseCommand = require('../../../../utils/base-command');
 const PersonRepository = require('../../repositories/personRepository');
 
-class GrantPageAccess extends BaseCommand {
+class addPatient extends BaseCommand {
 
   constructor() {
     super();
@@ -9,8 +9,8 @@ class GrantPageAccess extends BaseCommand {
 
   async execut(payload, user) {
     try {
-
-      if (!payload.data)
+      console.log(payload);
+      if (!payload.national_id || !payload.firstname || !payload.surname || !payload.mobile || !payload.phone || !payload.title)
         throw new Error('incomplete payload for adding a new patient');
       const repo = new PersonRepository();
       const person = await repo.makeEmptyPatient();
@@ -25,6 +25,6 @@ class GrantPageAccess extends BaseCommand {
   }
 }
 
-module.exports = GrantPageAccess;
+module.exports = addPatient;
 
 

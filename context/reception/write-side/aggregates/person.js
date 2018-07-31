@@ -4,16 +4,37 @@ module.exports = class Person {
     this.id = id;
   }
 
+  async updatePatientData(payload) {
+    const PersonRepository = require('../../repositories/personRepository');
+    const personRipositroy = new PersonRepository();
+    const person = {
+      id: payload.id,
+    };
+    if (payload.firstname)
+      person['firstname'] = payload.firstname;
+    if (payload.firstname)
+      person['surname'] = payload.surname;
+    if (payload.firstname)
+      person['national_code'] = payload.national_id;
+    if (payload.firstname)
+      person['phone_number'] = payload.phone;
+    if (payload.firstname)
+      person['mobile_number'] = payload.mobile;
+    if (payload.firstname)
+      person['title'] = payload.title;
+    return personRipositroy.updatePatient(person);
+  }
+
   async createNewPatient(payload) {
     const PersonRepository = require('../../repositories/personRepository');
     const personRipositroy = new PersonRepository();
     const person = {
-      title: payload.title,
       firstname: payload.firstname,
       surname: payload.surname,
-      national_code: payload.national_code,
-      phone_number: payload.phone_number,
-      mobile_number: payload.mobile_number,
+      title: payload.title,
+      national_code: payload.national_id,
+      phone_number: payload.phone,
+      mobile_number: payload.mobile,
     };
     return personRipositroy.creatPatient(person);
 

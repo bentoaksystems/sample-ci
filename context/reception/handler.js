@@ -8,6 +8,8 @@ module.exports = class ReceptionHandler extends BaseHandler {
 
     const commands = {
       'addPatient': require('./write-side/commands/addPatient'),
+      'updatePatient': require('./write-side/commands/updatePatient'),
+
       'deletePatient': require('./write-side/commands/removePatient'),
     };
 

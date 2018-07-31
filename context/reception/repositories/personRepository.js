@@ -19,12 +19,25 @@ class PersonRepository {
     return Person.model().findAll(query);
   }
 
+  getPatientById(person_id) {
+    const user = Person.model().find({
+      where: {id: person_id}
+    })
+    console.log(user);
+    console.log("27");
+    return new IPerson(user.id);
+  }
+
   makeEmptyPatient() {
     return new IPerson();
   }
 
   creatPatient(person) {
-    return Person.model().create(person)  ;
+    return Person.model().create(person);
+  }
+
+  updatePatient(person) {
+    return Person.model().update({where: {id: person.id}}, person);
   }
 }
 
