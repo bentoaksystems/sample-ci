@@ -1,4 +1,3 @@
-const BaseRepository = require('../../../utils/base-repository.js')
 const User = require('../../../infrastructure/db/models/user.model');
 const Person = require('../../../infrastructure/db/models/person.model');
 const Staff = require('../../../infrastructure/db/models/staff.model');
@@ -10,11 +9,7 @@ const Page = require('../../../infrastructure/db/models/page.model');
 const errors = require('../../../utils/errors.list');
 const db = require ('../../../infrastructure/db');
 
-class UserRepository extends BaseRepository {
-
-  constructor(){
-    super();
-  }
+class UserRepository {
 
   /*
  * QUERY RELATED REPOSITORIES:
@@ -101,7 +96,5 @@ class UserRepository extends BaseRepository {
 
   
 }
-
-UserRepository.Users = [];
 
 module.exports = UserRepository;
