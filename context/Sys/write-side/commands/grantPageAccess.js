@@ -16,8 +16,8 @@ class GrantPageAccess extends BaseCommand {
       const repo = new RoleRepository();
       const role = await repo.getIRoleById(payload.roleId);
 
-      await super.execut(role, RoleRepository.Roles, async (editingRole) => {
-        return editingRole.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
+      return super.execut(async () => {
+        return role.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
       });
 
     } catch (err) {
