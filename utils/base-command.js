@@ -8,12 +8,12 @@ module.exports = class BaseCommand {
 
   async execut(cb) {
 
-    
+
     return db.sequelize().transaction(async () => {
       try {
 
-        await cb();
-        return Promise.resolve();
+        return cb();
+
       } catch (err) {
         throw err;
       }
