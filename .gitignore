@@ -52,3 +52,6 @@ dump.rdb
 
 # execution
 *.sh
+
+# test
+tes.js

@@ -1,6 +1,6 @@
 
 const Sequelize = require('sequelize');
-const cls = require('continuation-local-storage');
+// const cls = require('continuation-local-storage');
 const env = require('../../env');
 
 const Page = require('./models/page.model');
@@ -17,8 +17,11 @@ const EMRDoc = require('./models/emrdoc.model');
 const TypeDictionary = require('./models/type_dictionary.model');
 const Insurer = require('./models/insurer.model');
 
-namespace = cls.createNamespace('HIS-NS');
-Sequelize.useCLS(namespace);
+// namespace = cls.createNamespace('HIS-NS');
+// Sequelize.useCLS(namespace);
+
+Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
+
 
 let sequelize;
 isReady = (isTest = false) => {
@@ -86,8 +89,8 @@ isReady = (isTest = false) => {
       EMRDoc.model().belongsTo(EMR.model());
       EMR.model().hasMany(EMRDoc.model());
 
-      return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-      // return sequelize.sync({force: true});
+      // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      return sequelize.sync({force: true});
 
     })
     .catch(err => {

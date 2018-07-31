@@ -17,7 +17,17 @@ const init = (seq) => {
   }, {
       tableName: 'page_role',
       timestamps: false,
-      underscored: true
+      underscored: true,
+      indexes: [
+        {
+          unique: true,
+          fields: ['page_id', 'role_id']
+        },
+        {
+          unique: true,
+          fields: ['page_id', 'access']
+        }
+      ]
     });
 }
 
