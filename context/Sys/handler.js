@@ -6,9 +6,9 @@ module.exports = class SysHandler extends BaseHandler {
       checkUserAuth: require('./read-side/checkUserAuth'),
       checkUserAccess: require('./read-side/checkUserAccess'),
       checkUserValidation: require('./read-side/checkUserValidation'),
-      getActions: require('./read-side/getActions'),
-      getRoles: require('./read-side/getRoles'),
-      getRoleAction: require('./read-side/getRoleAction')
+      showSystemActions: require('./read-side/showSystemActions'),
+      showSystemRoles: require('./read-side/showSystemRoles'),
+      showRoleAccecibleActions: require('./read-side/showRoleAccecibleActions ')
     };
 
     const commands = {

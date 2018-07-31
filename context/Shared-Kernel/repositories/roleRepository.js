@@ -1,37 +1,33 @@
 const Role = require('../../../infrastructure/db/models/role.model');
+class RoleRepository {
+  load = async () => {
+    const roles = await Role.model().findAll();
+    const RoleInstances = [];
+    const IRole = require('../aggregates/role');
+    roles.forEach(x => {
+      RoleInstances.push(new IRole(x.name));
+    });
+    return IRole;
+  };
 
-load = async () => {
-  const roles = await Role.model().findAll();
-  const RoleInstances = [];
-  const IRole = require('../aggregates/role');
-  roles.forEach(x => {
-    RoleInstances.push(new IRole(x.name));
-  });
-  return IRole;
+  loadUserRoles = async user_id => {
+    const roles = await Role.model().find({
+      where: {
+        user_id
+      }
+    });
+    const IRole = require('../aggregates/role');
+    roles.forEach(x => {
+      RoleInstances.push(new IRole(x.name));
+    });
+    return IRole;
+  };
+
+  getAll = async () => {
+    return Role.model().findAll({
+      raw: true
+    });
+  };
 }
 
-
-loadUserRoles = async (user_id) => {
-
-  const roles = await Role.model().find({
-    where: {
-      user_id
-    }
-  })
-  const IRole = require('../aggregates/role');
-  roles.forEach(x => {
-    RoleInstances.push(new IRole(x.name));
-  });
-  return IRole;
-}
-
-getAll = async () => {
-  return Role.model().findAll({
-    raw: true
-  });
-}
-
-module.exports = {
-  load,
-  getAll
-}
+module.exports = RoleRepository;

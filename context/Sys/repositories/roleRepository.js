@@ -32,20 +32,18 @@ class RoleRepository {
     }
   }
 
-  async  denyPageAccess(id) {
-
+  async denyPageAccess(id) {
     const pageRole = await PageRole.model().findOne({
-      where: {id}
+      where: { id }
     });
     return pageRole.destroy();
   }
-
 
   loadPage(id) {
     return Page.model().findOne({ where: { id } });
   }
 
-  async loadActionById(id) {
+  roleAccecibleActionsShown(id) {
     return Role.model().find({
       where: {
         id
