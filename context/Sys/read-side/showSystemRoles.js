@@ -2,9 +2,8 @@ const RoleRepository = require('../../Shared-Kernel/repositories/roleRepository'
 const errors = require('../../../utils/errors.list');
 
 module.exports = async (payload, _user) => {
-
   try {
-    const roles = await RoleRepository.getAll();
+    const roles = await new RoleRepository().getAll();
     if (!roles) {
       throw errors.noRole;
     }
@@ -12,6 +11,4 @@ module.exports = async (payload, _user) => {
   } catch (err) {
     throw err;
   }
-
-
-}
+};
