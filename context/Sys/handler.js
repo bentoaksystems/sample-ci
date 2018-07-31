@@ -8,7 +8,8 @@ const queries = {
 }
 
 const commands = {
-  'grantPageAccess': require('./write-side/commands/grantPageAccess')
+  'grantPageAccess': require('./write-side/commands/grantPageAccess'),
+  'denyPageAccess': require('./write-side/commands/denyPageAccess')
 }
 
 queryhandler = async (query, user) => {

@@ -35,6 +35,15 @@ class RoleRepository {
     }
   }
 
+  async  denyPageAccess(id) {
+
+    const pageRole = await PageRole.model().findOne({
+      where: {id}
+    });
+    return pageRole.destroy();
+  }
+
+
   loadPage(id) {
     return Page.model().findOne({where: {id}});
   }
