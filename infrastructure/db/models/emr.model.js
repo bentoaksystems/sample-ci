@@ -1,20 +1,23 @@
 const Sequelize = require('sequelize');
-const Role = require('./role.model');
-const Action = require('./action.model');
 
-let RoleAction;
+let EMR;
 const init = (seq) => {
-  RoleAction = seq.define('role_action', {
+  EMR = seq.define('emr', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
-    access: {
-      type: Sequelize.STRING,
-    }
+    entry_date: {
+      type: Sequelize.DATE,
+      defaultValue: new Date(),
+    },
+    exit_date: {
+      type: Sequelize.DATE,
+      defaultValue: new Date(),
+    },
   }, {
-    tableName: 'role_action',
+    tableName: 'emr',
     timestamps: false,
     underscored: true,
   });
@@ -22,5 +25,5 @@ const init = (seq) => {
 
 module.exports = {
   init,
-  model: () => RoleAction,
+  model: () => EMR,
 };

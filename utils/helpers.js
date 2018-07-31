@@ -54,10 +54,13 @@ getActionList = () =>{
   let actionList = [];
 
     Object.keys(Context).forEach(el => {
-      if (!Context[el].queries)
-        return;
+      const contextObj = new Context[el]();
 
-      actionList = actionList.concat(Object.keys(Context[el].queries).map(a => {
+      actionList = actionList.concat(Object.keys(contextObj.getQueries()).map(a => {
+        return {context: el, name: a};
+      }));
+
+      actionList = actionList.concat(Object.keys(contextObj.getCommands()).map(a => {
         return {context: el, name: a};
       }));
     });

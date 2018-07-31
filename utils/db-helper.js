@@ -9,7 +9,7 @@ const User = require('../infrastructure/db/models/user.model');
 const Page = require('../infrastructure/db/models/page.model');
 const RolePage = require('../infrastructure/db/models/page_role.model');
 const rp = require('request-promise');
-
+const db = require('../infrastructure/db');
 
 const create = async (isTest = false) => {
 
@@ -68,7 +68,7 @@ const addAdmin = async (username = 'admin', password = '123456') => {
     })
     .then(hash => {
       return User.model().findOrCreate({
-        where: {staff_id: staff.id},
+        where: {person_id: person.id},
         defaults: {
           username,
           password: hash
@@ -101,7 +101,7 @@ const addUser = async (username = 'test_user', password = '123456') => {
   });
   const hash = await bycript.genSalt(password);
   const user = User.model().create({
-    staff_id: staff.id,
+    person_id: person.id,
     username,
     password: hash
   })

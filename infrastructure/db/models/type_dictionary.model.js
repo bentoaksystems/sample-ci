@@ -1,20 +1,23 @@
 const Sequelize = require('sequelize');
-const Role = require('./role.model');
-const Action = require('./action.model');
 
-let RoleAction;
+let TypeDictionary;
 const init = (seq) => {
-  RoleAction = seq.define('role_action', {
+  TypeDictionary = seq.define('type_dictionary', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
-    access: {
+    name: {
       type: Sequelize.STRING,
+      unique: 'notDuplicatedTypeIndex',
+    },
+    type: {
+      type: Sequelize.STRING,
+      unique: 'notDuplicatedTypeIndex'
     }
   }, {
-    tableName: 'role_action',
+    tableName: 'type_dictionary',
     timestamps: false,
     underscored: true,
   });
@@ -22,5 +25,5 @@ const init = (seq) => {
 
 module.exports = {
   init,
-  model: () => RoleAction,
+  model: () => TypeDictionary,
 };
