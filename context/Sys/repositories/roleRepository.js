@@ -35,6 +35,25 @@ class RoleRepository {
   loadPage(id) {
     return Page.model().findOne({ where: { id } });
   }
+
+  async loadActionById(id) {
+    return Role.model().find({
+      where: {
+        id
+      },
+      include: [
+        {
+          model: RoleAction.model(),
+          attributes: ['action_id'],
+          include: [
+            {
+              model: Action.model()
+            }
+          ]
+        }
+      ]
+    });
+  }
 }
 
 module.exports = RoleRepository;

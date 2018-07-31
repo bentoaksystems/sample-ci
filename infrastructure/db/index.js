@@ -1,4 +1,3 @@
-
 const Sequelize = require('sequelize');
 // const cls = require('continuation-local-storage');
 const env = require('../../env');
@@ -17,7 +16,6 @@ const User = require('./models/user.model');
 
 Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
 
-
 let sequelize;
 isReady = (isTest = false) => {
   const uri = isTest ? env.db_uri_test : env.db_uri;
@@ -26,19 +24,11 @@ isReady = (isTest = false) => {
     logging: false
   });
 
-  return sequelize.authenticate()
+  return sequelize
+    .authenticate()
     .then(() => {
       console.log('-> ', 'Connection to db has been established successfully :)');
-      [
-        Page,
-        Role,
-        Action,
-        RoleAction,
-        Person,
-        PageRole,
-        Staff,
-        User,
-      ].forEach(model => {
+      [Page, Role, Action, RoleAction, Person, PageRole, Staff, User].forEach(model => {
         model.init(sequelize);
       });
 
@@ -61,21 +51,16 @@ isReady = (isTest = false) => {
       Staff.model().hasMany(User.model());
       User.model().belongsTo(Staff.model());
 
-
       // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-      return sequelize.sync({force: true});
-
+      // return sequelize.sync({force: true});
     })
     .catch(err => {
       console.error('-> ', 'Unable to connect to the database:', err);
       return Promise.reject(err);
     });
-
-}
-
+};
 
 module.exports = {
   isReady,
   sequelize: () => sequelize
 };
-
