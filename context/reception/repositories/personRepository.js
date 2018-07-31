@@ -1,7 +1,5 @@
 const Person = require('../../../infrastructure/db/models/person.model');
 const EMR = require('../../../infrastructure/db/models/emr.model');
-const errors = require('../../../utils/errors.list');
-const db = require('../../../infrastructure/db');
 
 class PersonRepository {
 
