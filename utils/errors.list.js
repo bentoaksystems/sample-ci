@@ -22,6 +22,9 @@ noAccess.status = 403;
 let payloadIsNotDefined = new Error('payload is not defined');
 payloadIsNotDefined.status = 403;
 
+let entityNotFound = new Error('Reqeusted entity is not found');
+entityNotFound.status = 404;
+
 module.exports = {
   queryNotFound,
   commandNotFound,
@@ -30,5 +33,6 @@ module.exports = {
   noAction,
   incompleteData,
   noAccess,
-  payloadIsNotDefined
+  payloadIsNotDefined,
+  entityNotFound
 };

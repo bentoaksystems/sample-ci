@@ -10,6 +10,11 @@ const Person = require('./models/person.model');
 const PageRole = require('./models/page_role.model');
 const Staff = require('./models/staff.model');
 const User = require('./models/user.model');
+const EMR = require('./models/emr.model');
+const Document = require('./models/document.model');
+const EMRDoc = require('./models/emrdoc.model');
+const TypeDictionary = require('./models/type_dictionary.model');
+const Insurer = require('./models/insurer.model');
 
 // namespace = cls.createNamespace('HIS-NS');
 // Sequelize.useCLS(namespace);
@@ -28,7 +33,21 @@ isReady = (isTest = false) => {
     .authenticate()
     .then(() => {
       console.log('-> ', 'Connection to db has been established successfully :)');
-      [Page, Role, Action, RoleAction, Person, PageRole, Staff, User].forEach(model => {
+      [
+        Page,
+        Role,
+        Action,
+        RoleAction,
+        Person,
+        PageRole,
+        Staff,
+        User,
+        EMR,
+        Document,
+        EMRDoc,
+        TypeDictionary,
+        Insurer
+      ].forEach(model => {
         model.init(sequelize);
       });
 
@@ -48,10 +67,28 @@ isReady = (isTest = false) => {
       PageRole.model().belongsTo(Role.model());
       Staff.model().belongsTo(Person.model());
       Staff.model().belongsTo(Role.model());
-      Staff.model().hasMany(User.model());
-      User.model().belongsTo(Staff.model());
+      User.model().belongsTo(Person.model());
+      Person.model().hasOne(User.model());
+      EMR.model().belongsTo(Person.model());
+      EMR.model().belongsTo(TypeDictionary.model(), { as: 'patient_type_id' });
+      EMR.model().belongsTo(TypeDictionary.model(), { as: 'regime_type_id' });
+      EMR.model().belongsTo(TypeDictionary.model(), { as: 'exit_type_id' });
+      TypeDictionary.model().hasMany(EMR.model(), { as: 'patient_type_id' });
+      TypeDictionary.model().hasMany(EMR.model(), { as: 'regime_type_id' });
+      TypeDictionary.model().hasMany(EMR.model(), { as: 'exit_type_id' });
+      EMR.model().belongsTo(Insurer.model());
+      Insurer.model().hasMany(EMR.model());
+      Document.model().belongsTo(User.model());
+      Document.model().belongsTo(TypeDictionary.model());
+      TypeDictionary.model().hasMany(Document.model());
+      EMRDoc.model().belongsTo(Document.model());
+      Document.model().hasMany(EMRDoc.model());
+      EMRDoc.model().belongsTo(TypeDictionary.model());
+      TypeDictionary.model().hasMany(EMRDoc.model());
+      EMRDoc.model().belongsTo(EMR.model());
+      EMR.model().hasMany(EMRDoc.model());
 
-      // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      return isTest ? sequelize.sync({ force: true }) : sequelize.sync();
       // return sequelize.sync({force: true});
     })
     .catch(err => {

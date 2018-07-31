@@ -9,7 +9,7 @@ const PageRole = require('../../../infrastructure/db/models/page_role.model');
 
 
 
-describe("Grant page access to role", () => {
+describe("Deny page access of role", () => {
 
   let rpJar, userId;
   beforeEach(async done => {
@@ -20,12 +20,13 @@ describe("Grant page access to role", () => {
     done();
   });
 
-  it("admin must be able to grant a page access to a role by page id", async function (done) {
+  it("admin must be able to deny a page access of a role", async function (done) {
 
     try {
       this.done = done
       const role = await Role.model().create({name: 'test role'});
       const page = await Page.model().create({name: 'test page', url: 'test url'})
+      pageRole = await PageRole.model().create({page_id: page.id, role_id: role.id});
 
       const res = await rp({
         method: 'POST',
@@ -33,10 +34,10 @@ describe("Grant page access to role", () => {
         body: {
           context: 'Sys',
           is_command: true,
-          name: 'grantPageAccess',
+          name: 'denyPageAccess',
           payload: {
-            roleId: role.id,
-            pageId: page.id
+            id: pageRole.id,
+            roleId: role.id
           }
         },
         jar: rpJar,
@@ -45,25 +46,25 @@ describe("Grant page access to role", () => {
       })
       expect(res.statusCode).toBe(200);
 
-      const pageRole = (await PageRole.model().find({
+      pageRole = await PageRole.model().find({
         where: {
-          role_id: role.id,
+          id: pageRole.id
         }
-      })).get({plain: true});
-      expect(pageRole.access).toBeNull();
-      expect(pageRole.page_id).toBe(page.id);
-      expect(pageRole.role_id).toBe(role.id);
+      });
+      expect(pageRole).toBeNull();
       done();
     } catch (err) {
       helpers.errorHandler.bind(this)(err);
     }
   })
 
-  it("admin must be able to grant a page access to a role by written access", async function (done) {
+  it("expect error on deny page access without roleId", async function (done) {
 
     try {
       this.done = done
       const role = await Role.model().create({name: 'test role'});
+      const page = await Page.model().create({name: 'test page', url: 'test url'})
+      pageRole = await PageRole.model().create({page_id: page.id, role_id: role.id});
 
       const res = await rp({
         method: 'POST',
@@ -71,52 +72,17 @@ describe("Grant page access to role", () => {
         body: {
           context: 'Sys',
           is_command: true,
-          name: 'grantPageAccess',
+          name: 'denyPageAccess',
           payload: {
-            roleId: role.id,
-            access: '/hr/*'
+            // roleId: ...
+            id: pageRole.id
           }
         },
         jar: rpJar,
         json: true,
         resolveWithFullResponse: true
       })
-      expect(res.statusCode).toBe(200);
-
-      const pageRole = (await PageRole.model().find({
-        where: {
-          role_id: role.id
-        }
-      })).get({plain: true});
-      expect(pageRole.page_id).toBeNull();
-      expect(pageRole.access).toBe('/hr/*');
-      done();
-    } catch (err) {
-      helpers.errorHandler.bind(this)(err);
-    }
-  })
-
-  it("expect error on grant page access without role id", async function (done) {
-
-    try {
-      this.done = done
-      const res = await rp({
-        method: 'POST',
-        uri: `${env.appAddress}/api`,
-        body: {
-          context: 'Sys',
-          is_command: true,
-          name: 'grantPageAccess',
-          payload: {
-            // roleId: role.id,
-            access: '/hr/*'
-          }
-        },
-        jar: rpJar,
-        json: true,
-        resolveWithFullResponse: true
-      })
-      this.fail('admin can grant page access to role without specifing role id');
+      this.fail('admin can deny page access without specifing id');
       done();
     } catch (err) {
       expect(err.statusCode).toBe(500);
@@ -124,11 +90,10 @@ describe("Grant page access to role", () => {
     }
   })
 
-  it("expect error on grant page access when both page id and access are not specified", async function (done) {
+  it("expect error on deny page access without id", async function (done) {
 
     try {
       this.done = done
-      const role = await Role.model().create({name: 'test role'});
 
       const res = await rp({
         method: 'POST',
@@ -136,23 +101,21 @@ describe("Grant page access to role", () => {
         body: {
           context: 'Sys',
           is_command: true,
-          name: 'grantPageAccess',
+          name: 'denyPageAccess',
           payload: {
-            roleId: role.id,
-            // access: '/hr/*'
-            // pageId: ...
+            // id: ...
           }
         },
         jar: rpJar,
         json: true,
         resolveWithFullResponse: true
       })
-      this.fail('admin can grant page access to role without specifing role id');
+      this.fail('admin can deny page access without specifing id');
       done();
     } catch (err) {
-      console.log('-> ', err);
       expect(err.statusCode).toBe(500);
       done();
     }
   })
+
 });
