@@ -1,14 +1,10 @@
-const BaseAggregate = require('../../../../utils/base-aggregate');
-
-module.exports = class Role extends BaseAggregate {
-  constructor(id) {
-    super();
-
+module.exports = class Role {
+  constructor(id, pages, pageExtraAccess, actions, actionExtraAccess) {
     this.id = id;
-    this.pages = [];
-    this.pageExtraAccess = [];
-    this.actions = [];
-    this.actionExtraAccess = [];
+    this.pages = pages || [];
+    this.pageExtraAccess = pageExtraAccess || [];
+    this.actions = actions || [];
+    this.actionExtraAccess = actionExtraAccess || [];
   }
 
   async pageAccessGranted(pageId, access = null) {
@@ -22,7 +18,7 @@ module.exports = class Role extends BaseAggregate {
 
         this.pages.push(page);
         return roleRepository.grantPageAccess(this.id, page.id);
-      }
+      } else return Promise.resolve();
     } else {
       if (!this.pageExtraAccess.find(x => x === access)) this.pageExtraAccess.push(access);
       return roleRepository.grantPageAccess(this.id, null, access);

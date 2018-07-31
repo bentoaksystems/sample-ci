@@ -6,21 +6,14 @@ module.exports = class BaseCommand {
   constructor() {
   }
 
-  async execut(root, list, cb) {
+  async execut(cb) {
 
-    if (!root || !list)
-      throw errors.commandIncompleteData;
 
     return db.sequelize().transaction(async () => {
       try {
 
-        const oldVersion = root.getVersion();
+        return cb();
 
-        let editingRoot = Object.assign(Object.create(Object.getPrototypeOf(root)), root)
-        await cb(editingRoot);
-
-        editingRoot.checkVersion(oldVersion, list);
-        return Promise.resolve();
       } catch (err) {
         throw err;
       }
