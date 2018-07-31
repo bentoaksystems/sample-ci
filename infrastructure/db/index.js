@@ -69,6 +69,8 @@ isReady = (isTest = false) => {
       Staff.model().belongsTo(Role.model());
       User.model().belongsTo(Person.model());
       Person.model().hasOne(User.model());
+      Person.model().hasOne(EMR.model());
+
       EMR.model().belongsTo(Person.model());
       EMR.model().belongsTo(TypeDictionary.model(), {as: 'patient_type_id'});
       EMR.model().belongsTo(TypeDictionary.model(), {as: 'regime_type_id'});
