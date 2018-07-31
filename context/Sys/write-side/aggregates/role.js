@@ -3,14 +3,14 @@ const BaseAggregate = require('../../../../utils/base-aggregate');
 
 module.exports = class Role extends BaseAggregate {
 
-  constructor(id) {
+  constructor(id, pages, pageExtraAccess, actions, actionExtraAccess) {
     super();
 
     this.id = id;
-    this.pages = [];
-    this.pageExtraAccess = [];
-    this.actions = [];
-    this.actionExtraAccess = [];
+    this.pages = pages;
+    this.pageExtraAccess = pageExtraAccess;
+    this.actions = actions;
+    this.actionExtraAccess = actionExtraAccess;
 
   }
 
@@ -24,10 +24,11 @@ module.exports = class Role extends BaseAggregate {
         page = await roleRepository.loadPage(pageId);
         if (!page)
           throw new Error('page not found');
-          
+
         this.pages.push(page);
         return roleRepository.grantPageAccess(this.id, page.id);
-      }
+      } else
+        return Promise.resolve();
 
     } else {
       if (!this.pageExtraAccess.find(x => x === access))

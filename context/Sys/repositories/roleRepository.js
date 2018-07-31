@@ -13,16 +13,10 @@ class RoleRepository {
     if (!id)
       throw new Error('role id is not defined');
 
-    let irole = RoleRepository.Roles.find(x => x.id === id)
-
-    if (irole) {
-      return irole
-    }
     const role = await Role.model().findOne({
       where: {id}
     });
     if (role) {
-      RoleRepository.Roles.push(role);
       return new IRole(role.id);
     } else {
       throw new Error('no role found');
@@ -46,7 +40,5 @@ class RoleRepository {
   }
 
 }
-
-RoleRepository.Roles = [];
 
 module.exports = RoleRepository;

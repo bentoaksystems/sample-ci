@@ -102,6 +102,4 @@ class UserRepository {
   
 }
 
-UserRepository.Users = [];
-
 module.exports = UserRepository;
