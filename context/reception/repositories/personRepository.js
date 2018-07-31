@@ -1,5 +1,6 @@
 const Person = require('../../../infrastructure/db/models/person.model');
 const EMR = require('../../../infrastructure/db/models/emr.model');
+const IPerson = require('../write-side/aggregates/person')
 
 class PersonRepository {
 
@@ -18,6 +19,13 @@ class PersonRepository {
     return Person.model().findAll(query);
   }
 
+  makeEmptyPerson() {
+    return new IPerson();
+  }
+
+  createPerson(person) {
+    return Person.model().create(person)  ;
+  }
 }
 
 module.exports = PersonRepository;

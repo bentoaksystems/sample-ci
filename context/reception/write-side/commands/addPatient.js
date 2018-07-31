@@ -13,10 +13,10 @@ class GrantPageAccess extends BaseCommand {
       if (!payload.data)
         throw new Error('incomplete payload for adding a new patient');
       const repo = new PersonRepository();
-      const person = await repo.getIRoleById(payload.roleId);
+      const person = await repo.makeEmptyPerson();
 
       return super.execut(async () => {
-        return role.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
+        return person.createNewPerson(payload);
       });
 
     } catch (err) {

@@ -22,7 +22,7 @@ const init = (seq) => {
       type: Sequelize.STRING(10),
       unique: true
     }
-  },{
+  }, {
     tableName: 'person',
     timestamps: false,
     underscored: true,

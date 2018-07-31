@@ -90,8 +90,8 @@ isReady = (isTest = false) => {
       EMRDoc.model().belongsTo(EMR.model());
       EMR.model().hasMany(EMRDoc.model());
 
-      // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-      return sequelize.sync({force: true});
+      return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      // return sequelize.sync({force: true});
 
     })
     .catch(err => {
