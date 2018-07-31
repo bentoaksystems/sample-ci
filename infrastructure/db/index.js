@@ -1,4 +1,3 @@
-
 const Sequelize = require('sequelize');
 // const cls = require('continuation-local-storage');
 const env = require('../../env');
@@ -68,8 +67,8 @@ isReady = (isTest = false) => {
       PageRole.model().belongsTo(Role.model());
       Staff.model().belongsTo(Person.model());
       Staff.model().belongsTo(Role.model());
-      Staff.model().hasMany(User.model());
-      User.model().belongsTo(Staff.model());
+      User.model().belongsTo(Person.model());
+      Person.model().hasOne(User.model());
       EMR.model().belongsTo(Person.model());
       EMR.model().belongsTo(TypeDictionary.model(), {as: 'patient_type_id'});
       EMR.model().belongsTo(TypeDictionary.model(), {as: 'regime_type_id'});
@@ -89,8 +88,8 @@ isReady = (isTest = false) => {
       EMRDoc.model().belongsTo(EMR.model());
       EMR.model().hasMany(EMRDoc.model());
 
-      // return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-      return sequelize.sync({force: true});
+      return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      // return sequelize.sync({force: true});
 
     })
     .catch(err => {

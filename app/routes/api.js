@@ -16,7 +16,7 @@ function apiResponse() {
       return;
     }
 
-    Context[req.body.context].handler(req.body, req.user)
+    new Context[req.body.context]().handler(req.body, req.user)
       .then(data => {
         res.status(200).json(data);
       })
