@@ -4,7 +4,7 @@ module.exports = class Person {
     this.id = id;
   }
 
-  async createNewPerson(payload) {
+  async createNewPatient(payload) {
     const PersonRepository = require('../../repositories/personRepository');
     const personRipositroy = new PersonRepository();
     const person = {
@@ -13,9 +13,9 @@ module.exports = class Person {
       surname: payload.surname,
       national_code: payload.national_code,
       phone_number: payload.phone_number,
-      mobile_nummber: payload.mobile_nummber,
+      mobile_number: payload.mobile_number,
     };
-    return personRipositroy.createPerson(person);
+    return personRipositroy.creatPatient(person);
 
 
   }

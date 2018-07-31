@@ -22,11 +22,11 @@ const init = (seq) => {
       type: Sequelize.STRING(10),
       unique: true
     },
-    mobile_nummber: {
+    mobile_number: {
       type: Sequelize.STRING(12),
     },
     phone_number: {
-      type: Sequelize.STRING(11),
+      type: Sequelize.STRING,
     },
   }, {
     tableName: 'person',

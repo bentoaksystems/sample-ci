@@ -13,10 +13,10 @@ class GrantPageAccess extends BaseCommand {
       if (!payload.data)
         throw new Error('incomplete payload for adding a new patient');
       const repo = new PersonRepository();
-      const person = await repo.makeEmptyPerson();
+      const person = await repo.makeEmptyPatient();
 
       return super.execut(async () => {
-        return person.createNewPerson(payload);
+        return person.createNewPatient(payload);
       });
 
     } catch (err) {

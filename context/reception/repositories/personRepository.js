@@ -19,11 +19,11 @@ class PersonRepository {
     return Person.model().findAll(query);
   }
 
-  makeEmptyPerson() {
+  makeEmptyPatient() {
     return new IPerson();
   }
 
-  createPerson(person) {
+  creatPatient(person) {
     return Person.model().create(person)  ;
   }
 }
