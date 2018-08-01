@@ -22,8 +22,8 @@ class Form {
   }
 
   async formCreatedOrUpdated() {
-    this.id = await FormRepository.formCreated(this.form_info, this.id);
-    return FormRepository.assignFormFieldsToForm(this.formFieldList, this.id);
+    this.id = await new FormRepository().formCreated(this.form_info, this.id);
+    return new FormRepository().assignFormFieldsToForm(this.formFieldList, this.id);
   }
 
   getId() {

@@ -5,7 +5,7 @@ module.exports = async () => {
   try {
     let formList;
 
-    formList = await FormRepository.getAllForms();
+    formList = await new FormRepository().getAllForms();
     return Promise.resolve({
       formList,
     });

@@ -35,6 +35,10 @@ const init = (seq) => {
     },
     answerWhereClause: {
       type: Sequelize.ARRAY(Sequelize.STRING),
+    },
+    fieldPriority: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     }
   }, {
     tableName: 'form_field',
