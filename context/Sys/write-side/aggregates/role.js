@@ -33,6 +33,12 @@ module.exports = class Role {
       return roleRepository.grantPageAccess(this.id, null, access);
     }
   }
+  async pageAccessDenied(id) {
 
+    const RoleRepository = require('../../repositories/roleRepository');
+    const roleRepository = new RoleRepository();
+
+    return roleRepository.denyPageAccess(id);
+  }
 
 }
