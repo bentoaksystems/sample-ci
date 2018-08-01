@@ -1,3 +1,4 @@
+
 class Document {
 
   constructor(doc) {
@@ -5,13 +6,14 @@ class Document {
     this.file_path = doc ? doc.file_path : null;
   }
 
-  async uploadDocument(file, context, docTypeId, userId) {
+  async documentIsUploaded(file, context, docTypeId, userId) {
+    
     const DocumentRepository = require('../../repositories/documentRepository');
-
+    const documentRepObj = new DocumentRepository();
     const tempFilePath = file.path.replace(/\\/g, '/');
     const path = tempFilePath.substr(tempFilePath.indexOf('public') + 'public'.length);
 
-    return DocumentRepository.uploadDocument(this.id, path, context, docTypeId, userId);
+    return documentRepObj.uploadDocument(this.id, path, context, docTypeId, userId);
   }
 }
 

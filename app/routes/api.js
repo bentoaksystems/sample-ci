@@ -39,7 +39,7 @@ router.use('/uploading', function (req, res, next) {
         break;
       case 'stockpurchase': contextUploadPath += 'stockpurchase';
         break;
-      default: contextUploadPath += 'not_catergorised';
+      default: contextUploadPath += 'not_categorised';
     }
 
     contextUploadPath += path.sep;
@@ -50,27 +50,33 @@ router.use('/uploading', function (req, res, next) {
   const documentStorage = multer.diskStorage({
     destination,
     filename: (req, file, cb) => {
-      cb(null, file.originalname + '-' + (new Date()));
+      cb(null, (new Date().getTime()) + '-' + file.originalname);
     }
   });
 
   const documentUpload = multer({storage: documentStorage});
   let fileDetails;
+
+  const uploadingPayload = {
+    context: req.body.context,
+    doc_type_id: req.body.payload.doc_type_id,
+  };
+
+  const body = Object.assign({}, req.body);
+
   documentUpload.single('file')(req, res, err => {
     if (err) {
+      console.error('Error in uploading file: ', err);
       res.status(500)
         .send(err);
     } else {
-      Context.DMS.handler({
+      (new Context.DMS()).handler({
         is_command: true,
         name: 'uploadDocument',
-        payload: {
-          file_details: req.file,
-          context: req.body.context,
-          doc_type_id: req.body.payload.doc_type_id,
-        },
+        payload: Object.assign(uploadingPayload, {file_details: req.file}),
       }, req.user)
         .then(res => {
+          req.body = body;
           req.body.payload.document_id = res.id;
           next();
         })
