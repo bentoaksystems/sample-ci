@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt-nodejs');
 const app = require('express')();
-let env = app.get('env');
+let env = app.get('env').trim();
 const isTest = env === 'test';
 const isProd = env === 'production';
 const isDev = env === 'development';

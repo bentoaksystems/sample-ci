@@ -28,6 +28,13 @@ let deserialize = (req, id, done) => {
   if (req.url.includes('api/logout')) {
     done(null, null);
   } else {
+    if(req.url.includes('api/uploading')) {
+      req.body.name = req.headers.name;
+      req.body.is_command = req.headers.is_command;
+      req.body.context = req.headers.context;
+      req.body.payload = JSON.parse(req.headers.payload);
+    }
+
     new SysContext().handler({
       is_command: false,
       payload: {
@@ -52,7 +59,11 @@ let deserialize = (req, id, done) => {
         if (id) {
           console.error('-> ', err);
 
-          if (err.status === errors.noUser.status && err.message === errors.noUser.message) {
+          if (req.url.includes('api/login')) {
+            req.logout();
+            done(null, null);
+          }
+          else if (err.status === errors.noUser.status && err.message === errors.noUser.message) {
             req.logout();
             done(errors.noUser);
           } else
