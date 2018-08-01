@@ -33,7 +33,7 @@ describe('show systems roles', () => {
       });
       expect(res.statusCode).toBe(200);
       const roles = await Role.model().findAll({ raw: true });
-      expect(roles.length).toBe(res.body.length);
+      expect(res.body.length).toBe(roles.length);
       expect(roles[0].id).toBe(res.body[0].id);
       done();
     } catch (err) {

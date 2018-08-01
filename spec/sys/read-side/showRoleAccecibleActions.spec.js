@@ -4,6 +4,8 @@ const env = require('../../../env');
 const dbHelper = require('../../../utils/db-helper');
 const helpers = require('../../../utils/helpers');
 const Action = require('../../../infrastructure/db/models/action.model');
+const Role = require('../../../infrastructure/db/models/role.model');
+const RoleAction = require('../../../infrastructure/db/models/role_action');
 
 describe('show systems actions', () => {
   const actionsArr = [
@@ -15,17 +17,27 @@ describe('show systems actions', () => {
     { name: 'c', context: 'LowercaseLetter' }
   ];
 
-  let rpJar, userId;
+  let rpJar, userId, _role;
   beforeEach(async done => {
     await db.isReady(true);
-    await Action.model().bulkCreate(actionsArr);
     const result = await dbHelper.addAndLoginUser(true);
+    // create role
+    _role = await Role.model().create({ name: 'Hr' });
+    // create actions
+    const _actions = await Action.model().bulkCreate(actionsArr);
+    // create array need role_action
+    const role_actions = [
+      { role_id: _role.id, action_id: _actions[0].id },
+      { role_id: _role.id, action_id: _actions[1].id }
+    ];
+    // create role_action
+    await RoleAction.model().bulkCreate(role_actions);
     userId = result.userId;
     rpJar = result.rpJar;
     done();
   });
 
-  it('expect return all actions in systems', async function(done) {
+  it('expect return all actions for this role', async function(done) {
     try {
       this.done = done;
       const res = await rp({
@@ -34,16 +46,18 @@ describe('show systems actions', () => {
         body: {
           context: 'Sys',
           is_command: false,
-          name: 'showSystemActions',
-          payload: {}
+          name: 'showRoleAccecibleActions',
+          payload: {
+            id: _role.id
+          }
         },
         jar: rpJar,
         json: true,
         resolveWithFullResponse: true
       });
       expect(res.statusCode).toBe(200);
-      const actions = await Action.model().findAll({ raw: true });
-      expect(res.body.length).toBe(actions.length);
+      expect(res.body.id).toBe(_role.id);
+      expect(res.body.role_actions.length).toBe(2);
       done();
     } catch (err) {
       helpers.errorHandler.bind(this)(err);
