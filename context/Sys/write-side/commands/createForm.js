@@ -11,7 +11,6 @@ class CreateForm extends BaseCommand {
   }
 
   async execut(payload, user) {
-    console.log(payload);
     try {
       if (!payload)
         throw  errors.payloadIsNotDefined;
