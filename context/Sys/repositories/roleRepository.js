@@ -61,6 +61,22 @@ class RoleRepository {
       ]
     });
   }
+
+  loadAction(id) {
+    return Action.model().findOne({ where: { id } });
+  }
+
+  grantAction(role_id, action_id, access) {
+    if (access && !action_id) {
+      return RoleAction.model().create({ role_id, access });
+    } else {
+      return RoleAction.model()
+        .findOrCreate({ where: { role_id, action_id } })
+        .spread((action_role, created) => {
+          return Promise.resolve();
+        });
+    }
+  }
 }
 
 module.exports = RoleRepository;

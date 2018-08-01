@@ -30,4 +30,29 @@ module.exports = class Role {
 
     return roleRepository.denyPageAccess(id);
   }
+
+  async actionAssignedToRole(actionIds, access = null) {
+    const RoleRepository = require('../../repositories/roleRepository');
+    const roleRepository = new RoleRepository();
+    if (!access && actionIds && actionIds.length) {
+      let actions = actionIds.filter(el => !this.actions.map(i => i.id).includes(el));
+      if (!actions.length) return Promise.resolve();
+
+      const promiseList = [];
+
+      actions.forEach(async id => {
+        let act = await roleRepository.loadAction(id);
+        if (!act) throw new Error('Action not found');
+        else {
+          this.actions.push(act);
+          promiseList.push(roleRepository.grantAction(this.id, act.id, null));
+        }
+
+        return Promise.all(promiseList);
+      });
+    } else {
+      if (this.actionExtraAccess.find(el => el.access.toLowerCase() === access.toLowerCase())) return Promise.resolve();
+      return roleRepository.grantAction(this.id, null, access);
+    }
+  }
 };
