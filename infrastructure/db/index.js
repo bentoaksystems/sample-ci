@@ -32,7 +32,8 @@ isReady = (isTest = false) => {
 
   return sequelize.authenticate()
     .then(() => {
-      console.log('-> ', 'Connection to db has been established successfully :)');
+      if (!isTest)
+        console.log('-> ', 'Connection to db has been established successfully :)');
       [
         Page,
         Role,
@@ -70,23 +71,22 @@ isReady = (isTest = false) => {
       User.model().belongsTo(Person.model());
       Person.model().hasOne(User.model());
       Person.model().hasOne(EMR.model());
-
       EMR.model().belongsTo(Person.model());
-      EMR.model().belongsTo(TypeDictionary.model(), {as: 'patient_type_id'});
-      EMR.model().belongsTo(TypeDictionary.model(), {as: 'regime_type_id'});
-      EMR.model().belongsTo(TypeDictionary.model(), {as: 'exit_type_id'});
-      TypeDictionary.model().hasMany(EMR.model(), {as: 'patient_type_id'});
-      TypeDictionary.model().hasMany(EMR.model(), {as: 'regime_type_id'});
-      TypeDictionary.model().hasMany(EMR.model(), {as: 'exit_type_id'});
+      EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'patient_type_id', sourceKey: 'id'});
+      EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'regime_type_id', sourceKey: 'id'});
+      EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'exit_type_id', sourceKey: 'id'});
+      TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'patient_type_id', sourceKey: 'id'});
+      TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'regime_type_id', sourceKey: 'id'});
+      TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'exit_type_id', sourceKey: 'id'});
       EMR.model().belongsTo(Insurer.model());
       Insurer.model().hasMany(EMR.model());
       Document.model().belongsTo(User.model());
-      Document.model().belongsTo(TypeDictionary.model());
-      TypeDictionary.model().hasMany(Document.model());
+      Document.model().belongsTo(TypeDictionary.model(), {foreignKey: 'document_type_id', sourceKey: 'id'});
+      TypeDictionary.model().hasMany(Document.model(), {foreignKey: 'document_type_id', sourceKey: 'id'});
       EMRDoc.model().belongsTo(Document.model());
       Document.model().hasMany(EMRDoc.model());
-      EMRDoc.model().belongsTo(TypeDictionary.model());
-      TypeDictionary.model().hasMany(EMRDoc.model());
+      EMRDoc.model().belongsTo(TypeDictionary.model(), {foreignKey: 'emr_doc_type_id', sourceKey: 'id'});
+      TypeDictionary.model().hasMany(EMRDoc.model(), {foreignKey: 'emr_doc_type_id', sourceKey: 'id'});
       EMRDoc.model().belongsTo(EMR.model());
       EMR.model().hasMany(EMRDoc.model());
 

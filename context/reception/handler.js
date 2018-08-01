@@ -3,13 +3,12 @@ const BaseHandler = require('../../utils/base-handler');
 module.exports = class ReceptionHandler extends BaseHandler {
   constructor() {
     const queries = {
-      // 'showPatient': require('./read-side/'),
+      'showPatientList': require('./read-side/showPatientList'),
     };
 
     const commands = {
-      'addPatient': require('./write-side/commands/addPatient'),
+      'admitPatient': require('./write-side/commands/admitPatient'),
       'updatePatient': require('./write-side/commands/updatePatient'),
-
       'deletePatient': require('./write-side/commands/removePatient'),
     };
 

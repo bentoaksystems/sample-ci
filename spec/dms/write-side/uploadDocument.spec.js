@@ -1,5 +1,6 @@
 const rp = require('request-promise');
 const fs = require('fs');
+const path = require('path');
 const dbHelper = require('../../../utils/db-helper');
 const helpers = require('../../../utils/helpers');
 const db = require('../../../infrastructure/db');
@@ -17,40 +18,43 @@ describe('Uploading a document', () => {
     done();
   });
 
-  it('should upload a document into dms talbe', async () => {
+  it('should upload a document into dms table', async function (done) {
     try {
       const type = await TypeDictionary.model().create({name: 'test', type: 'test'});
 
       this.done = done;
-      const res = await rp({
+
+      let res = await rp({
         method: 'post',
         uri: `${env.appAddress}/api/uploading`,
         headers: {
           context: 'DMS',
           is_command: true,
           name: 'uploadDocument',
-          payload: {
+          payload: JSON.stringify({
             doc_type_id: type.id,
-          },
+          }),
         },
         formData: {
-          value: fs.readFileSync('./HIS.png'),
-          options: {
-            filename: 'HIS.png',
+          file: {
+            value: fs.readFileSync(__dirname + path.sep + 'HIS.png'),
+            options: {
+              filename: 'HIS.png',
+            }
           }
         },
         jar: rpJar,
-        json: true,
+        // json: true,
         resolveWithFullResponse: true,
       });
 
       expect(res.statusCode).toBe(200);
+      
+      res = JSON.parse(res.body);
+      const document = (await Document.model().findOne({where: {id: res.id}})).get({plain: true});
 
-      const document = Document.model().findOne({where: {id: res.body.id}}).get({plain: true});
-
-      expect(document.path).toBeDefined();
-      expect(document.doc_type_id).toBe(type.id);
-      expect(document.file_path).toContain('public/dms/not_categorised');
+      expect(document.document_type_id).toBe(type.id);
+      expect(document.file_path).toContain('dms/not_categorised');
       done();
 
     } catch (err) {

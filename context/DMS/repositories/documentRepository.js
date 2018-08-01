@@ -31,7 +31,7 @@ module.exports = class DocumentRepository {
         user_id: userId,
         file_path: filePath,
         context: context,
-        type_dictionary_id: docTypeId,
+        document_type_id: docTypeId,
       }
     );
   }
