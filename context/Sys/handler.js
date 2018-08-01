@@ -14,7 +14,7 @@ module.exports = class SysHandler extends BaseHandler {
     const commands = {
       grantPageAccess: require('./write-side/commands/grantPageAccess'),
       denyPageAccess: require('./write-side/commands/denyPageAccess'),
-      actionAssignedToRole: require('./write-side/commands/actionAssignedToRole')
+      grantActionAcess: require('./write-side/commands/grantActionAcess')
     };
 
     super(queries, commands);
