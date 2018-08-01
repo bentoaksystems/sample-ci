@@ -19,13 +19,15 @@ class PersonRepository {
     return Person.model().findAll(query);
   }
 
-  getPatientById(person_id) {
-    const user = Person.model().find({
+  async getPatientById(person_id) {
+    const user = await Person.model().find({
       where: {id: person_id}
     })
-    console.log(user);
-    console.log("27");
-    return new IPerson(user.id);
+    if (user) {
+      return new IPerson(user.id);
+    } else {
+      throw new Error('no person found');
+    }
   }
 
   makeEmptyPatient() {

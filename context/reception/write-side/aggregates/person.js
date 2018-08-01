@@ -5,6 +5,7 @@ module.exports = class Person {
   }
 
   async updatePatientData(payload) {
+    console.log(8,payload);
     const PersonRepository = require('../../repositories/personRepository');
     const personRipositroy = new PersonRepository();
     const person = {
