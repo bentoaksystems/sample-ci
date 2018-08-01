@@ -4,14 +4,14 @@ const helpers = require('../../../utils/helpers');
 const db = require('../../../infrastructure/db');
 const env = require('../../../env');
 
-describe('Get list of all patient', () => {
+xdescribe('Get list of all patient', () => {
   beforeEach(async done => {
     await db.isReady(true);
     await dbHelper.addAdmin();
     done();
   });
 
-  it('should get list of all patient', async done => {
+  it('should get list of all patient', async function(done) {
     try {
       this.done = done;
       const res = await rp({
