@@ -1,7 +1,7 @@
 const BaseCommand = require('../../../../utils/base-command');
 const RoleRepository = require('../../repositories/roleRepository');
 
-class ActionAssignedToRole extends BaseCommand {
+class GrantActionAcess extends BaseCommand {
   constructor() {
     super();
   }
@@ -22,4 +22,4 @@ class ActionAssignedToRole extends BaseCommand {
   }
 }
 
-module.exports = ActionAssignedToRole;
+module.exports = GrantActionAcess;
