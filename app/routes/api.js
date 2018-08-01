@@ -75,10 +75,14 @@ router.use('/uploading', function (req, res, next) {
         name: 'uploadDocument',
         payload: Object.assign(uploadingPayload, {file_details: req.file}),
       }, req.user)
-        .then(res => {
+        .then(result => {
           req.body = body;
-          req.body.payload.document_id = res.id;
-          next();
+          req.body.payload.document_id = result.id;
+
+          if (req.body.context.toLowerCase() === 'dms')
+            res.status(200).json(result);
+          else
+            next();
         })
         .catch(er => {
           res.status(500)
