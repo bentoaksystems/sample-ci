@@ -5,12 +5,14 @@ module.exports = class SysHandler extends BaseHandler{
     const queries = {
       'checkUserAuth': require('./read-side/checkUserAuth'),
       'checkUserAccess': require('./read-side/checkUserAccess'),
-      'checkUserValidation': require('./read-side/checkUserValidation')
+      'checkUserValidation': require('./read-side/checkUserValidation'),
+      'showSystemTypeDics': require('./read-side/showSystemTypeDics')
     };
   
     const commands = {
       'grantPageAccess': require('./write-side/commands/grantPageAccess'),
-      'denyPageAccess': require('./write-side/commands/denyPageAccess')
+      'denyPageAccess': require('./write-side/commands/denyPageAccess'),
+      'defineTypeDic': require('./write-side/commands/defineTypeDic')
     };
 
     super(queries, commands);
