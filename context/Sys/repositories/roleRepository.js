@@ -20,6 +20,24 @@ class RoleRepository {
     }
   }
 
+  async getIAction(id) {
+    if (!id) throw new Error('role id is not defined');
+
+    const role = await Role.model().findOne({
+      where: { id },
+      include: [{ model: RoleAction.model(), required: true }]
+    });
+    if (role) {
+      let actions = [];
+      if (role.role_actions.length) {
+        actions = role.role_actions.map(el => el);
+      }
+      return new IRole(role.id, [], [], actions);
+    } else {
+      throw new Error('no role found');
+    }
+  }
+
   grantPageAccess(role_id, page_id, access = null) {
     if (access && !page_id) {
       return PageRole.model().create({ role_id, access });
@@ -75,6 +93,14 @@ class RoleRepository {
         .spread((action_role, created) => {
           return Promise.resolve();
         });
+    }
+  }
+
+  denyAction(role_id, action_id, access) {
+    if (access && !action_id) {
+      return RoleAction.model().destroy({ where: { role_id, access } });
+    } else {
+      return RoleAction.model().destroy({ where: { role_id, action_id } });
     }
   }
 }
