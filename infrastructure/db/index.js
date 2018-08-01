@@ -15,6 +15,8 @@ const Document = require('./models/document.model');
 const EMRDoc = require('./models/emrdoc.model');
 const TypeDictionary = require('./models/type_dictionary.model');
 const Insurer = require('./models/insurer.model');
+const Form = require('./models/form.model');
+const FormField = require('./models/form_field.model');
 
 // namespace = cls.createNamespace('HIS-NS');
 // Sequelize.useCLS(namespace);
@@ -23,6 +25,24 @@ Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
 
 
 let sequelize;
+let tableList = [
+  Page,
+  Role,
+  Action,
+  RoleAction,
+  Person,
+  PageRole,
+  Staff,
+  User,
+  FormField,
+  Form,
+  EMR,
+  Document,
+  EMRDoc,
+  TypeDictionary,
+  Insurer,
+];
+
 isReady = (isTest = false) => {
   const uri = isTest ? env.db_uri_test : env.db_uri;
   sequelize = new Sequelize(uri, {
@@ -33,21 +53,7 @@ isReady = (isTest = false) => {
   return sequelize.authenticate()
     .then(() => {
       console.log('-> ', 'Connection to db has been established successfully :)');
-      [
-        Page,
-        Role,
-        Action,
-        RoleAction,
-        Person,
-        PageRole,
-        Staff,
-        User,
-        EMR,
-        Document,
-        EMRDoc,
-        TypeDictionary,
-        Insurer,
-      ].forEach(model => {
+      tableList.forEach(model => {
         model.init(sequelize);
       });
 
@@ -87,6 +93,11 @@ isReady = (isTest = false) => {
       TypeDictionary.model().hasMany(EMRDoc.model());
       EMRDoc.model().belongsTo(EMR.model());
       EMR.model().hasMany(EMRDoc.model());
+      User.model().hasMany(Form.model());
+      Form.model().belongsTo(User.model());
+      FormField.model().belongsTo(Form.model());
+      Form.model().hasMany(FormField.model());
+
 
       return isTest ? sequelize.sync({force: true}) : sequelize.sync();
       // return sequelize.sync({force: true});
@@ -102,6 +113,7 @@ isReady = (isTest = false) => {
 
 module.exports = {
   isReady,
-  sequelize: () => sequelize
+  sequelize: () => sequelize,
+  tableList,
 };
 
