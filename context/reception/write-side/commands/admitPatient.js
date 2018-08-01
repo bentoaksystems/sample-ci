@@ -9,7 +9,7 @@ module.exports = class admitPatient extends BaseCommand {
 
   async execut(payload, user) {
     try {
-      ['firstname', 'surname', 'title', 'national_code', 'mobile_number', 'phone_number', 'patient_type_id'].forEach(el => {
+      ['firstname', 'surname', 'title', 'national_code', 'mobile_number', 'phone_number', 'patient_type_id', 'address'].forEach(el => {
         if (!payload[el])
           throw new Error('incomplete payload for adding a new patient');
       });

@@ -40,6 +40,11 @@ describe('Admit patient in reception', () => {
             mobile_number: '9092301202',
             phone_number: '9092301202',
             patient_type_id: dialysisType.id,
+            address: {
+              province: 'Tehran',
+              city: 'Tehran',
+              district: 3,
+            }
           }
         },
         jar: rpJar,

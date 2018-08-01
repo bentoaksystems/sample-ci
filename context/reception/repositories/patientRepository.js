@@ -1,5 +1,6 @@
 const Person = require('../../../infrastructure/db/models/person.model');
 const EMR = require('../../../infrastructure/db/models/emr.model');
+const Address = require('../../../infrastructure/db/models/address.model');
 const IPatient = require('../write-side/aggregates/patient');
 
 module.exports = class PatientRepository {
@@ -34,16 +35,14 @@ module.exports = class PatientRepository {
     return new IPatient(user ? id : null);
   }
 
-  async addPatient(patient) {
+  async addPatient(patient, address) {
     let patientData = {};
-    return Person.model().create(patient)
-      .then(res => {
-        patientData = res;
-        return EMR.model().create({person_id: res.id});
-      })
-      .then(res => {
-        return Promise.resolve(Object.assign(patientData, {emr: res}));
-      });
+    patientData.address = (await Address.model().create(address)).get({plain: true});
+    patient.address_id = patientData.address.id;
+    const pd = (await Person.model().create(patient)).get({plain: true});
+    patientData = Object.assign(patientData, pd);
+    patientData.emr = (await EMR.model().create({person_id: patientData.id})).get({plain: true});
+    return Promise.resolve(patientData);
   }
 
   async updatePatient(id, patient) {

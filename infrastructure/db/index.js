@@ -15,6 +15,7 @@ const Document = require('./models/document.model');
 const EMRDoc = require('./models/emrdoc.model');
 const TypeDictionary = require('./models/type_dictionary.model');
 const Insurer = require('./models/insurer.model');
+const Address = require('./models/address.model');
 
 // namespace = cls.createNamespace('HIS-NS');
 // Sequelize.useCLS(namespace);
@@ -35,6 +36,7 @@ isReady = (isTest = false) => {
       if (!isTest)
         console.log('-> ', 'Connection to db has been established successfully :)');
       [
+        Address,
         Page,
         Role,
         Action,
@@ -89,6 +91,8 @@ isReady = (isTest = false) => {
       TypeDictionary.model().hasMany(EMRDoc.model(), {foreignKey: 'emr_doc_type_id', sourceKey: 'id'});
       EMRDoc.model().belongsTo(EMR.model());
       EMR.model().hasMany(EMRDoc.model());
+      Address.model().belongsTo(Person.model(), {foreignKey: 'address_id', sourceKey: 'id'});
+      Person.model().hasOne(Address.model(), {foreignKey: 'address_id', sourceKey: 'id'});
 
       return isTest ? sequelize.sync({force: true}) : sequelize.sync();
       // return sequelize.sync({force: true});
