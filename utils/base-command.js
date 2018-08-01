@@ -7,20 +7,8 @@ module.exports = class BaseCommand {
   }
 
   async execut(cb) {
-
-
     return db.sequelize().transaction(async () => {
-      try {
-
-        return cb();
-
-      } catch (err) {
-        throw err;
-      }
-    }).catch(err => {
-      throw err;
+      return cb();
     });
   }
-
-
 }
