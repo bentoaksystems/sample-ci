@@ -21,10 +21,21 @@ class Form {
     this.formFieldList = formFieldList;
   }
 
-  async formCreatedOrUpdated() {
+  async formCreated() {
     this.id = await new FormRepository().formCreated(this.form_info, this.id);
     return new FormRepository().assignFormFieldsToForm(this.formFieldList, this.id);
   }
+
+  async formUpdated() {
+    this.id = await new FormRepository().formCreated(this.form_info, this.id);
+    return new FormRepository().assignFormFieldsToForm(this.formFieldList, this.id);
+  }
+
+  async FormDeleted(form_id) {
+    await new FormRepository().removeFormField(form_id);
+    return new FormRepository().deleteForm(form_id);
+  }
+
 
   getId() {
     return Promise.resolve(this.id);

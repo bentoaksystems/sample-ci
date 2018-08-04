@@ -45,11 +45,11 @@ class CreateForm extends BaseCommand {
       });
 
 
-      let form = await new FormRepository().getFormById();
+      let form = await new FormRepository().findOrCreate();
       return super.execut(async () => {
           form.assignFormBasicInfo(payload, user);
           form.assignFormFields(payload.formFieldList);
-          await form.formCreatedOrUpdated();
+          await form.formCreated();
           return form.getId();
         }
       );

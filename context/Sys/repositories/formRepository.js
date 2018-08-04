@@ -9,8 +9,17 @@ class FormRepository {
    * QUERY RELATED REPOSOTIROES:
    */
 
- async getAllForms() {
+  async getAllForms() {
     return Form.model().findAll();
+  }
+
+  async getOneForm(form_id) {
+   const form =  await Form.model().findOne({where: {id: form_id}});
+   const form_fields = await FormField.model().findAll({where:{form_id : form.id}});
+   return Promise.resolve({
+       form: form,
+       form_fields: form_fields
+   })
   }
 
   /** COMMAND RELATED REPOSITORIES:
@@ -19,19 +28,39 @@ class FormRepository {
    *
    * **/
 
-  async  getFormById(id){
-    const form = await Form.model().findById(id);
+  async findOrCreate(id) {
+    if (id) {
+      const form = await Form.model().findById(id);
 
-    return new IForm(form ? form.id : null);
+      if (!form)
+        throw new Error('form with this id is not found');
+
+      return new IForm(form.id);
+    } else {
+      return new IForm();
+    }
   }
 
-  async formCreated(form_info, id){
+  async getFormById(id) {
+    if (!id)
+      throw new Error('id is not passed to get form');
+
+    const form = await Form.model().findById(id);
+    console.log(form);
+
+    if (!form)
+      throw new Error('form with this id is not found');
+
+    return new IForm(form.id, form.user_id, form.name, form.context);
+  }
+
+  async formCreated(form_info, id) {
     if (!id) {
       let form = await Form.model().create(form_info);
       id = form.id;
     } else {
       form_info['id'] = id;
-      await Form.model().update(form_info);
+      await Form.model().update(form_info, {where: {id}});
     }
     console.log('Form created: ', id);
     return Promise.resolve(id);
@@ -59,6 +88,12 @@ class FormRepository {
     console.log('Form fields entered');
   }
 
-}
+  async removeFormField(id) {
+    return FormField.model().destroy({where:{form_id : id}});
+  }
 
+  async deleteForm(id) {
+    return Form.model().destroy({where: {id: id}});
+  }
+}
 module.exports = FormRepository;
