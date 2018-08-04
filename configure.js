@@ -6,6 +6,7 @@ const dbHelper = require('./utils/db-helper');
 const helpers = require('./utils/helpers');
 
 dbHelper.create()
+  .then(() => dbHelper.create(true))
   .then(res => {
     return db.isReady();
   })
