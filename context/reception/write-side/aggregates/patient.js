@@ -1,11 +1,6 @@
 module.exports = class Patient {
 
   constructor(id, emr, emr_docs, address) {
-    console.log('id: ', id);
-    console.log('emr: ', emr);
-    console.log('emr_docs: ', emr_docs);
-    console.log('address: ', address);
-
     this.id = id;
     this.emr = emr;
     this.emrDocs = emr_docs || [];
