@@ -10,16 +10,20 @@ const init = (seq) => {
     },
     name: {
       type: Sequelize.STRING,
-      unique: 'notDuplicatedTypeIndex',
     },
     type: {
       type: Sequelize.STRING,
-      unique: 'notDuplicatedTypeIndex'
     }
   }, {
     tableName: 'type_dictionary',
     timestamps: false,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['name', 'type']
+      }
+    ]
   });
 }
 
