@@ -9,9 +9,10 @@ module.exports = class ReceptionHandler extends BaseHandler {
 
     const commands = {
       'admitPatient': require('./write-side/commands/admitPatient'),
-      'updatePatient': require('./write-side/commands/updatePatient'),
-      'deletePatient': require('./write-side/commands/removePatient'),
-      'uploadPatientDocument': require('./writes-side/commands/uploadPatientDocument'),
+      'updatePatientInfo': require('./write-side/commands/updatePatientInfo'),
+      'removePatient': require('./write-side/commands/removePatient'),
+      'uploadPatientDocument': require('./write-side/commands/uploadPatientDocument'),
+      'exitPatient': require('./write-side/commands/exitPatient'),
     };
 
     super(queries, commands);

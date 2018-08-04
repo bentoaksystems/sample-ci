@@ -1,14 +1,14 @@
 const BaseCommand = require('../../../../utils/base-command');
 const PatientRepository = require('../../repositories/patientRepository');
 
-module.exports = class upddateDocument extends BaseCommand {
+module.exports = class uploadPatientDocument extends BaseCommand {
   constructor() {
     super();
   }
 
   async execut(payload, user) {
     try {
-      if (!payload.emr_id || !payload.document_id || !payload.patient_id)
+      if (!payload.document_id || !payload.patient_id || !payload.emr_doc_type_id)
         throw new Error("incomplete payload for uploading patient's documents");
 
       const repo = new PatientRepository();

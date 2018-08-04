@@ -1,28 +1,55 @@
 module.exports = class Patient {
 
-  constructor(id, emr, emr_docs) {
+  constructor(id, emr, emr_docs, address) {
+    console.log('id: ', id);
+    console.log('emr: ', emr);
+    console.log('emr_docs: ', emr_docs);
+    console.log('address: ', address);
+
     this.id = id;
     this.emr = emr;
-    this.emrDocs = emr_docs;
+    this.emrDocs = emr_docs || [];
+    this.address = address;
   }
 
-  async patientDataUpdated(payload) {
+  async patientInfoUpdated(payload) {
     if (!payload.id)
       throw new Error('There is no patient id');
 
     const PatientRepository = require('../../repositories/patientRepository');
     const patientRepository = new PatientRepository();
-    const patient = {};
 
-    ['firstname', 'surname', 'national_code', 'phone_number', 'title', 'mobile_number'].forEach(el => {
+    if (payload.address && this.address.id) {
+      await patientRepository.updatePatientAddress(this.address.id, payload.address);
+    }
+
+    const patient = {};
+    [
+      'firstname',
+      'surname',
+      'national_code',
+      'phone_number',
+      'title',
+      'mobile_number',
+    ].forEach(el => {
       if (payload[el])
         patient[el] = payload[el];
     });
 
-    if (!Object.keys(patient).length)
-      return Promise.resolve();
+    await patientRepository.updatePatientInformation(this.id, patient);
 
-    return patientRepository.updatePatient(payload.id, patient);
+    const emr = {};
+    [
+      'patient_type_id',
+      'regime_type_id',
+      'exit_type_id',
+      'insurer_id'
+    ].forEach(el => {
+      if (payload[el])
+        emr[el] = payload[el];
+    });
+
+    return patientRepository.updatePatientEMR(this.id, emr);
   }
 
   async patientAdmitted(payload) {
@@ -40,10 +67,38 @@ module.exports = class Patient {
   }
 
   async patientDocumentUploaded(payload) {
-    if (!payload.emr_id || !payload.document_id)
+    if (!payload.emr_doc_type_id || !payload.document_id)
       throw new Error("incomplete data for assigning document to emr (patient)");
-    
+
     const PatientRepository = require('../../repositories/patientRepository');
-    retrn (new PatientRepository()).addDocumentToPatientEMR(this.id, payload.document_id, payload.emr_type_id);
+
+    return (new PatientRepository()).addDocumentToPatientEMR(this.emr.id, payload.document_id, payload.emr_doc_type_id)
+      .then(res => {
+        return Promise.resolve(res ? Object.assign({file_path: payload.file_path}, res) : null);
+      });
+  }
+
+  async patientRemoved() {
+    const IDocument = require('../../../DMS/write-side/aggregate/document');
+    const document = new IDocument();
+    await document.documentsRemoved(this.emrDocs.map(el => el.document_id));
+
+    const PatientRepository = require('../../repositories/patientRepository');
+    const patientRepository = new PatientRepository();
+
+    return patientRepository.removePatient(this.id);
+  }
+
+  async patientExitted(id, exit_type_id) {
+    if (!id || !exit_type_id)
+      throw new Error("incomplete data to exit patient");
+    
+    const exitData = {
+      exit_type_id: exit_type_id,
+      exit_date: new Date(),
+    };
+
+    const PatientRepository = require('../../repositories/patientRepository');
+    return new PatientRepository().updatePatientEMR(id, exitData);
   }
 }

@@ -1,5 +1,6 @@
 const Document = require('../../../infrastructure/db/models/document.model');
 const IDocument = require('../write-side/aggregate/document');
+const Op = require('../../../infrastructure/db').Op;
 
 module.exports = class DocumentRepository {
   constructor() {
@@ -34,5 +35,15 @@ module.exports = class DocumentRepository {
         document_type_id: docTypeId,
       }
     );
+  }
+
+  async removeDocuments(ids) {
+    return Document.model().destroy({
+      where: {
+        id: {
+          [Op.in]: ids
+        }
+      }
+    });
   }
 }

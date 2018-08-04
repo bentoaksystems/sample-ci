@@ -21,7 +21,8 @@ function apiResponse() {
         res.status(200).json(data);
       })
       .catch(err => {
-        console.log(`-> Context: ${req.body.context} - HandlerName: ${req.body.name} -> Err: ${err}`);
+        console.log(`-> Context: ${req.body.context} - HandlerName: ${req.body.name}`);
+        console.log(`--> Err: `, err);
         res.status(err.status || 500).send(err.message || err);
       });
   });
@@ -29,22 +30,7 @@ function apiResponse() {
 
 // General APIs (except authentication)
 router.use('/uploading', function (req, res, next) {
-  let contextUploadPath = path.sep;
-  const _context = req.body.context;
-  if (_context) {
-    switch (_context.toLowerCase()) {
-      case 'emr': contextUploadPath += 'emr';
-        break;
-      case 'equipment': contextUploadPath += 'equipment';
-        break;
-      case 'stockpurchase': contextUploadPath += 'stockpurchase';
-        break;
-      default: contextUploadPath += 'not_categorised';
-    }
-
-    contextUploadPath += path.sep;
-  }
-
+  let contextUploadPath = path.sep + (req.body.payload.doc_context || 'not_categorised') + path.sep;
   const destination = env.uploadDocumentPath + contextUploadPath;
 
   const documentStorage = multer.diskStorage({

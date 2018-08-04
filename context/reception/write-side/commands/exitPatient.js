@@ -1,7 +1,7 @@
 const BaseCommand = require('../../../../utils/base-command');
 const PatientRepository = require('../../repositories/patientRepository');
 
-module.exports = class admitPatient extends BaseCommand {
+module.exports = class exitPatient extends BaseCommand {
 
   constructor() {
     super();
@@ -9,16 +9,14 @@ module.exports = class admitPatient extends BaseCommand {
 
   async execut(payload, user) {
     try {
-      ['firstname', 'surname', 'title', 'national_code', 'mobile_number', 'phone_number', 'patient_type_id', 'address'].forEach(el => {
-        if (!payload[el])
-          throw new Error('incomplete payload for adding a new patient');
-      });
+      if (!payload.id || !payload.exit_type_id)
+        throw new Error("incomplete data for exiting patient");
 
       const repo = new PatientRepository();
       const patient = await repo.findOrCreatePatient();
 
       return super.execut(async () => {
-        return patient.patientAdmitted(payload);
+        return patient.patientExitted(payload.id, payload.exit_type_id);
       });
 
     } catch (err) {

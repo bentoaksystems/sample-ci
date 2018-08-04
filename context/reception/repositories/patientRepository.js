@@ -3,6 +3,7 @@ const EMR = require('../../../infrastructure/db/models/emr.model');
 const EMRDocument = require('../../../infrastructure/db/models/emrdoc.model');
 const Address = require('../../../infrastructure/db/models/address.model');
 const IPatient = require('../write-side/aggregates/patient');
+const Op = require('../../../infrastructure/db').Op;
 
 module.exports = class PatientRepository {
 
@@ -36,7 +37,7 @@ module.exports = class PatientRepository {
    * **/
 
   async findOrCreatePatient(id) {
-    const user = await Person.model().findOne({
+    let user = (await Person.model().findOne({
       where: {id},
       include: [
         {
@@ -47,10 +48,16 @@ module.exports = class PatientRepository {
               model: EMRDocument.model(),
             }
           ]
+        },
+        {
+          model: Address.model(),
         }
       ]
-    });
-    return user ? new IPatient(id, user.emr, user.emr_docs) : new IPatient();
+    }));
+
+    user = user ? user.get({plain: true}) : null;
+
+    return user ? new IPatient(id, user.emr, user.emr.emrdocs, user.address) : new IPatient();
   }
 
   async addPatient(patient, address) {
@@ -63,20 +70,53 @@ module.exports = class PatientRepository {
     return Promise.resolve(patientData);
   }
 
-  async updatePatient(id, patient) {
-    return Person.model().update({where: {id}}, patient);
+  async updatePatientAddress(id, address) {
+    if (!id)
+      throw new Error("patient's address id cannot be undefined");
+
+    if (!Object.keys(address).length)
+      return Promise.resolve();
+
+    return Address.model().update(address, {where: {id}});
   }
 
-  async addDocumentToPatientEMR(id, document_id, emr_type_id) {
-    if (!id || !document_id)
+  async updatePatientInformation(id, patient) {
+    if (!id)
+      throw new Error("patient's id cannot be undefined");
+
+    if (!Object.keys(patient).length)
+      return Promise.resolve();
+
+    return Person.model().update(patient, {where: {id}});
+  }
+
+  async updatePatientEMR(id, emr) {
+    if (!id)
+      throw new Error("patient's id cannot be undefined");
+
+    if (!Object.keys(emr).length)
+      return Promise.resolve();
+
+    return EMR.model().update(emr, {where: {person_id: id}});
+  }
+
+  async addDocumentToPatientEMR(emr_id, document_id, emr_doc_type_id) {
+    if (!emr_id || !document_id)
       throw new Error('document id or emr id is not set');
 
     return EMRDocument.model().findOrCreate({
       where: {
-        document_id: document_id,
-        emr_id: id
+        document_id,
+        emr_id
       },
-      defaults: {emr_type_id: emr_type_id}
-    });
+      defaults: {emr_doc_type_id: emr_doc_type_id}
+    })
+      .spread((results, metadata) => {
+        return Promise.resolve(results.get({plain: true}));
+      });
+  }
+
+  async removePatient(id) {
+    return Person.model().destroy({where: {id}});
   }
 };

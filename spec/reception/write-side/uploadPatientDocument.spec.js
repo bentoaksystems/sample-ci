@@ -1,5 +1,4 @@
 const rp = require('request-promise');
-const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const dbHelper = require('../../../utils/db-helper');
@@ -23,7 +22,7 @@ describe("Upload patient's documents", () => {
     done();
   });
 
-  it("should upload patient's documents", async function(done) {
+  it("should upload patient's documents", async function (done) {
     try {
       this.done = done;
 
@@ -39,8 +38,9 @@ describe("Upload patient's documents", () => {
         headers: {
           context: 'Reception',
           is_command: true,
-          name: 'uploadDocument',
+          name: 'uploadPatientDocument',
           payload: JSON.stringify({
+            doc_context: 'emr',
             patient_id: person.id,
             emr_doc_type_id: eType.id,
             doc_type_id: dType.id,
@@ -61,17 +61,56 @@ describe("Upload patient's documents", () => {
       expect(res.statusCode).toBe(200);
 
       res = JSON.parse(res.body);
-      const emrDocument = (await EMRDoc.model().findOne({where: {id: res.emr_doc_id}})).get({plain: true});
-      
-      expect(document.document_type_id).toBe(type.id);
+
+      const emrDocument = (await EMRDoc.model().findOne({where: {id: res.id}})).get({plain: true});
+      const document = (await Document.model().findOne({where: {id: emrDocument.document_id}})).get({plain: true});
+
+      expect(document.document_type_id).toBe(dType.id);
       expect(document.file_path).toContain('dms/emr');
       expect(res.file_path).toContain('dms/emr');
-      expect(emrDocument).toBe();
       expect(emrDocument.emr_id).toBe(emr.id);
 
       done();
-    } catch(err) {
+    } catch (err) {
       helper.errorHandler.bind(this)(err);
+    }
+  });
+
+  it("should get error when data passed to upload patient's document is uncompleted", async function (done) {
+    try {
+      const eType = await TypeDictionary.model().create({name: 'آزمایش HBC', type: 'patient_documents'});
+      const pType = await TypeDictionary.model().create({name: 'دیالیزی', type: 'patient'});
+      const person = await Person.model().create({firstname: 'بیمار', surname: 'بیمار'});
+      const emr = await EMR.model().create({person_id: person.id, patient_type_id: pType.id});
+
+      let res = await rp({
+        method: 'post',
+        uri: `${env.appAddress}/api/uploading`,
+        headers: {
+          context: 'Reception',
+          is_command: true,
+          name: 'uploadPatientDocument',
+          payload: JSON.stringify({
+            patient_id: person.id,
+          })
+        },
+        formData: {
+          file: {
+            value: fs.readFileSync(__dirname + path.sep + 'HIS.png'),
+            options: {
+              filename: 'HIS.png',
+            }
+          }
+        },
+        jar: rpJar,
+        resolveWithFullResponse: true,
+      });
+
+      this.fail('Upload emr document for specific patient with incomplete passed data');
+      done();      
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
     }
   });
 });

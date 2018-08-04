@@ -22,6 +22,8 @@ const Address = require('./models/address.model');
 
 Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
 
+const Op = Sequelize.Op;
+
 
 let sequelize;
 isReady = (isTest = false) => {
@@ -68,11 +70,11 @@ isReady = (isTest = false) => {
       Person.model().hasMany(Staff.model());
       PageRole.model().belongsTo(Page.model());
       PageRole.model().belongsTo(Role.model());
-      Staff.model().belongsTo(Person.model());
+      Staff.model().belongsTo(Person.model(), { onDelete: 'cascade' });
       Staff.model().belongsTo(Role.model());
       User.model().belongsTo(Person.model());
-      Person.model().hasOne(User.model());
-      Person.model().hasOne(EMR.model());
+      Person.model().hasOne(User.model(), { onDelete: 'cascade' });
+      Person.model().hasOne(EMR.model(), { onDelete: 'cascade' });
       EMR.model().belongsTo(Person.model());
       EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'patient_type_id', sourceKey: 'id'});
       EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'regime_type_id', sourceKey: 'id'});
@@ -85,14 +87,14 @@ isReady = (isTest = false) => {
       Document.model().belongsTo(User.model());
       Document.model().belongsTo(TypeDictionary.model(), {foreignKey: 'document_type_id', sourceKey: 'id'});
       TypeDictionary.model().hasMany(Document.model(), {foreignKey: 'document_type_id', sourceKey: 'id'});
-      EMRDoc.model().belongsTo(Document.model());
+      EMRDoc.model().belongsTo(Document.model(), { onDelete: 'cascade' });
       Document.model().hasMany(EMRDoc.model());
       EMRDoc.model().belongsTo(TypeDictionary.model(), {foreignKey: 'emr_doc_type_id', sourceKey: 'id'});
       TypeDictionary.model().hasMany(EMRDoc.model(), {foreignKey: 'emr_doc_type_id', sourceKey: 'id'});
-      EMRDoc.model().belongsTo(EMR.model());
+      EMRDoc.model().belongsTo(EMR.model(), { onDelete: 'cascade' });
       EMR.model().hasMany(EMRDoc.model());
       Address.model().belongsTo(Person.model(), {foreignKey: 'address_id', sourceKey: 'id'});
-      Person.model().hasOne(Address.model(), {foreignKey: 'address_id', sourceKey: 'id'});
+      Person.model().hasOne(Address.model(), {foreignKey: 'address_id', sourceKey: 'id', onDelete: 'cascade'});
 
       return isTest ? sequelize.sync({force: true}) : sequelize.sync();
       // return sequelize.sync({force: true});
@@ -108,6 +110,7 @@ isReady = (isTest = false) => {
 
 module.exports = {
   isReady,
-  sequelize: () => sequelize
+  sequelize: () => sequelize,
+  Op,
 };
 
