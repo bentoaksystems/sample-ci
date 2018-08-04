@@ -12,7 +12,7 @@ module.exports = class UploadDocument extends BaseCommand {
 
       const DocumentRepository = require('../../repositories/documentRepository');
       const docObj = new DocumentRepository();
-      let doc = await docObj.findDocumentById();
+      let doc = await docObj.findOrCreateDocument();
 
       return super.execut(async () => {
         return doc.documentIsUploaded(payload.file_details, payload.context, payload.doc_type_id, user.id);

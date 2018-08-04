@@ -1,7 +1,9 @@
 module.exports = class Patient {
 
-  constructor(id) {
+  constructor(id, emr, emr_docs) {
     this.id = id;
+    this.emr = emr;
+    this.emrDocs = emr_docs;
   }
 
   async patientDataUpdated(payload) {
@@ -35,5 +37,13 @@ module.exports = class Patient {
       mobile_number: payload.mobile_number,
     };
     return patientRepository.addPatient(patient, payload.address);
+  }
+
+  async patientDocumentUploaded(payload) {
+    if (!payload.emr_id || !payload.document_id)
+      throw new Error("incomplete data for assigning document to emr (patient)");
+    
+    const PatientRepository = require('../../repositories/patientRepository');
+    retrn (new PatientRepository()).addDocumentToPatientEMR(this.id, payload.document_id, payload.emr_type_id);
   }
 }

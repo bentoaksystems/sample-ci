@@ -44,7 +44,6 @@ describe('Uploading a document', () => {
           }
         },
         jar: rpJar,
-        // json: true,
         resolveWithFullResponse: true,
       });
 
@@ -55,6 +54,7 @@ describe('Uploading a document', () => {
 
       expect(document.document_type_id).toBe(type.id);
       expect(document.file_path).toContain('dms/not_categorised');
+      expect(res.file_path).toContain('dms/not_categorised');
       done();
 
     } catch (err) {

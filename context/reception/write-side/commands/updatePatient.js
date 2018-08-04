@@ -12,7 +12,7 @@ module.exports = class updatePatient extends BaseCommand {
       if (!payload.id || !payload.national_id || !payload.firstname || !payload.surname || !payload.mobile || !payload.phone || !payload.title)
         throw new Error('incomplete payload for adding a update patient');
       const repo = new PatientRepository();
-      const person = await repo.findPatientById(payload.id);
+      const person = await repo.findOrCreatePatient(payload.id);
 
       return super.execut(async () => {
         return person.updatePatientData(payload);

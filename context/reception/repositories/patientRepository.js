@@ -1,9 +1,14 @@
 const Person = require('../../../infrastructure/db/models/person.model');
 const EMR = require('../../../infrastructure/db/models/emr.model');
+const EMRDocument = require('../../../infrastructure/db/models/emrdoc.model');
 const Address = require('../../../infrastructure/db/models/address.model');
 const IPatient = require('../write-side/aggregates/patient');
 
 module.exports = class PatientRepository {
+
+  constructor() {
+
+  }
 
   /*
    * QUERY RELATED REPOSITORIES:
@@ -30,9 +35,22 @@ module.exports = class PatientRepository {
    * 
    * **/
 
-  async findPatientById(id) {
-    const user = await Person.model().findOne({where: {id}});
-    return new IPatient(user ? id : null);
+  async findOrCreatePatient(id) {
+    const user = await Person.model().findOne({
+      where: {id},
+      include: [
+        {
+          model: EMR.model(),
+          required: true,
+          include: [
+            {
+              model: EMRDocument.model(),
+            }
+          ]
+        }
+      ]
+    });
+    return user ? new IPatient(id, user.emr, user.emr_docs) : new IPatient();
   }
 
   async addPatient(patient, address) {
@@ -47,5 +65,18 @@ module.exports = class PatientRepository {
 
   async updatePatient(id, patient) {
     return Person.model().update({where: {id}}, patient);
+  }
+
+  async addDocumentToPatientEMR(id, document_id, emr_type_id) {
+    if (!id || !document_id)
+      throw new Error('document id or emr id is not set');
+
+    return EMRDocument.model().findOrCreate({
+      where: {
+        document_id: document_id,
+        emr_id: id
+      },
+      defaults: {emr_type_id: emr_type_id}
+    });
   }
 };

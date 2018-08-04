@@ -16,7 +16,7 @@ module.exports = class DocumentRepository {
    * 
    * **/
 
-  async findDocumentById(id) {
+  async findOrCreateDocument(id) {
     const doc = Document.model().findOne({where: {id}});
 
     if (id && !doc)

@@ -78,10 +78,13 @@ router.use('/uploading', function (req, res, next) {
         .then(result => {
           req.body = body;
           req.body.payload.document_id = result.id;
+          req.body.payload.file_path = result.file_path;
 
-          if (req.body.context.toLowerCase() === 'dms')
+          if (req.body.context.toLowerCase() === 'dms') {
+            result.document_id = result.id;
+            delete result.id;
             res.status(200).json(result);
-          else
+          } else
             next();
         })
         .catch(er => {

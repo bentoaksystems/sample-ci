@@ -11,6 +11,7 @@ module.exports = class ReceptionHandler extends BaseHandler {
       'admitPatient': require('./write-side/commands/admitPatient'),
       'updatePatient': require('./write-side/commands/updatePatient'),
       'deletePatient': require('./write-side/commands/removePatient'),
+      'uploadPatientDocument': require('./writes-side/commands/uploadPatientDocument'),
     };
 
     super(queries, commands);
