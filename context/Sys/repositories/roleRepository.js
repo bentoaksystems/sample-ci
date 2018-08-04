@@ -25,7 +25,7 @@ class RoleRepository {
 
     const role = await Role.model().findOne({
       where: { id },
-      include: [{ model: RoleAction.model(), required: true }]
+      include: [{ model: RoleAction.model() }]
     });
     if (role) {
       let actions = [];
