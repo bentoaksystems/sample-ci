@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "test": "set NODE_ENV=test & node ./bin/www & jasmine-node --verbose spec --forceexit --captureExceptions"
+    "server_test": "set NODE_ENV=test & node ./bin/www",
+    "test": "jasmine-node --verbose spec --forceexit --captureExceptions"
   },
   "dependencies": {
+    "async-lock": "^1.1.3",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",

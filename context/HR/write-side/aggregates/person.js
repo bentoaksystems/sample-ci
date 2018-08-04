@@ -2,13 +2,12 @@
 class Person {
 
     constructor(id = null) {
-        // if id === null -> we're creating | o.w. -> updating
+        // id === null -> create | o.w. -> update
         this.id = id;
         this.person_info = {};
         this.address = {};
         this.roles = [];
         this.user = {};
-        // StaffRepo needed? NOT!
     }
 
     assignPersonInfo(person_info) {
@@ -29,38 +28,43 @@ class Person {
     }
 
     async personAddedOrUpdated() {
-        const PersonRepository = require('../../repositories/personRepository');
+        const PR = require('../../repositories/personRepository');
+        const PersonRepository = new PR();
         this.id = await PersonRepository.personCreated(this.person_info, this.id);
         return PersonRepository.addressAssignedToPerson(this.address, this.id);
     }
 
     async newRolesAssigned() {
-        const PersonRepository = require('../../repositories/personRepository');
+        const PR = require('../../repositories/personRepository');
+        const PersonRepository = new PR();
         await PersonRepository.personRolesRemoved(this.id);
         return PersonRepository.personRolesAssigned(this.roles, this.id);
     }
 
     async userAssigned(user) {
-        const PersonRepository = require('../../repositories/personRepository');
+        const PR = require('../../repositories/personRepository');
+        const PersonRepository = new PR();
+
         this.user = {
-            id: user.id || null,
             username: user.username,
             password: user.password,
         };
 
-        this.user.id = await PersonRepository.userCreated(this.user);
-        return PersonRepository.userAssignedToStaff(this.user.id, this.id);
+        if (user.id !== null)
+            this.user['id'] = user.id;
+
+        this.user.id = await PersonRepository.userAssignedToStaff(this.user, this.id);
+        return Promise.resolve();
     }
 
     async personRemoved() {
-        const PersonRepository = require('../../repositories/personRepository');
-        await PersonRepository.personRemoved(this.id);
-        await PersonRepository.personRolesRemoved(person_id);
-        return PersonRepository.userRemoved(this.user.id);
+        const PR = require('../../repositories/personRepository');
+        const PersonRepository = new PR();
+        return PersonRepository.personRemoved(this.id);
     }
 
     getId() {
-        return Promise.resolve(this.id);
+        return Promise.resolve({person_id: this.id});
     }
 }
 

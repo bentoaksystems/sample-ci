@@ -1,4 +1,3 @@
-const BaseRepository = require('../../../utils/base-repository.js')
 const User = require('../../../infrastructure/db/models/user.model');
 const Person = require('../../../infrastructure/db/models/person.model');
 const Staff = require('../../../infrastructure/db/models/staff.model');
@@ -8,14 +7,9 @@ const Action = require('../../../infrastructure/db/models/action.model');
 const PageRole = require('../../../infrastructure/db/models/page_role.model');
 const Page = require('../../../infrastructure/db/models/page.model');
 const errors = require('../../../utils/errors.list');
+const db = require ('../../../infrastructure/db');
 
-
-
-class UserRepository extends BaseRepository {
-
-  constructor(){
-    super();
-  }
+class UserRepository {
 
   /*
  * QUERY RELATED REPOSITORIES:
@@ -24,42 +18,37 @@ class UserRepository extends BaseRepository {
   getCompleteQuery() {
     return  [
       {
-        model: Staff.model(),
-        // as: 'staff',
+        model: Person.model(),
         required: true,
         include: [
           {
-            model: Person.model(),
-            // as: 'person',
-            required: true,
-          },
-          {
-            model: Role.model(),
-            // as: 'roles',
+            model: Staff.model(),
             required: true,
             include: [
               {
-                model: RoleAction.model(),
-                // as: 'roleAction',
+                model: Role.model(),
+                // required: true,
                 include: [
                   {
-                    model: Action.model(),
-                    // as: 'action',
-                  }
-                ]
-              },
-              {
-                model: PageRole.model(),
-                // as: 'pageRole',
-                include: [
+                    model: RoleAction.model(),
+                    include: [
+                      {
+                        model: Action.model(),
+                      }
+                    ]
+                  },
                   {
-                    model: Page.model(),
-                    // as: 'page',
-                  }
+                    model: PageRole.model(),
+                    include: [
+                      {
+                        model: Page.model(),
+                      }
+                    ]
+                  },
                 ]
-              },
+              }
             ]
-          }
+          },
         ]
       }
     ]
@@ -67,14 +56,15 @@ class UserRepository extends BaseRepository {
   }
 
   async getByUserName(username, complete = false) {
-
-
     if (!username)
       throw new Error('username is not defined');
 
-
     const query = {
-      where: {username}
+      where: {
+        $and: [
+          db.sequelize().where(db.sequelize().fn('LOWER', db.sequelize().col('username')), {$iLike: username})
+        ]
+      }
     };
 
     if (complete)
@@ -106,7 +96,5 @@ class UserRepository extends BaseRepository {
 
   
 }
-
-UserRepository.Users = [];
 
 module.exports = UserRepository;

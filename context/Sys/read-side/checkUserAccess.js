@@ -16,20 +16,16 @@ module.exports = async (payload) => {
 
     user = user.get({plain: true});
 
-    user.roles = user.staff.role;
-    user.actions = user.staff.role.role_actions.map(el => {
+    user.roles = user.person.staffs.map(el => el.role);
+    user.actions = user.person.staffs.reduce((a, b) => a.concat(b.role.role_actions.map(el => {
       return {action: el.action, access: el.access}
-    });
-    user.person = user.staff.person;
+    })), []);
 
     if (!payload.name || !payload.context)
       throw errors.incompleteData;
 
     if (user.username === 'admin')
       return Promise.resolve(user);
-
-    console.log(user.actions);
-    
 
     const foundAction = ignoreActions.map(el => el.toLowerCase()).includes(payload.name.toLowerCase()) ? true :
       user.actions.find(el => el.action.context.toLowerCase() === payload.context.toLowerCase() &&

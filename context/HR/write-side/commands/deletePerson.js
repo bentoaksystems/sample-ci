@@ -1,14 +1,27 @@
-const errors = require('../../../../utils/errors.list');
-const db = require('../../../../infrastructure/db');
-
+const error = require('../../../../utils/errors.list');
+const BaseCommand = require('../../../../utils/base-command');
 const PersonRepository = require('../../repositories/personRepository');
 
-module.exports = async (payload, user) => {
-    if (!payload)
-        throw error.payloadIsNotDefined;
-    if (!payload.person_id)
-        throw error.incompleteData;
+class DeletePerson extends BaseCommand {
+    constructor() {
+        super();
+    }
 
-    let person = await PersonRepository.getById(payload.person_id);
-    return person.personRemoved();
-};
+    async execute(payload, user) {
+        try {
+            if (!payload)
+                throw error.payloadIsNotDefined;
+            if (!payload.person_id)
+                throw error.incompleteData;
+
+            const personRepo = new PersonRepository();
+            let person = await personRepo.getById(payload.person_id);
+            return person.personRemoved();
+
+        } catch (err) {
+            throw err;
+        }
+    }
+}
+
+module.exports = DeletePerson;

@@ -1,7 +1,7 @@
 const BaseCommand = require('../../../../utils/base-command');
 const RoleRepository = require('../../repositories/roleRepository');
 
-class GrantPageAccess extends BaseCommand {
+class DenyPageAccess extends BaseCommand {
 
   constructor() {
     super();
@@ -10,14 +10,14 @@ class GrantPageAccess extends BaseCommand {
   async execute(payload, user) {
     try {
 
-      if (!payload.roleId || (!payload.pageId && !payload.access))
-        throw new Error('incomplete payload for grant access to page');
+      if (!payload.role_id && !payload.id)
+        throw new Error('page role access id required');
 
       const repo = new RoleRepository();
       const role = await repo.getIRoleById(payload.roleId);
 
       return super.execute(async () => {
-        return role.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
+        return role.pageAccessDenied(payload.id)
       });
 
     } catch (err) {
@@ -26,5 +26,5 @@ class GrantPageAccess extends BaseCommand {
   }
 }
 
-module.exports = GrantPageAccess;
+module.exports = DenyPageAccess;
 

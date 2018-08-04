@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const Staff = require('./staff.model');
 
 let User;
 const init = (seq) => {

@@ -1,17 +1,30 @@
-const errors = require('../../../../utils/errors.list');
-const db = require('../../../../infrastructure/db');
-
+const error = require('../../../../utils/errors.list');
+const BaseCommand = require('../../../../utils/base-command');
 const PersonRepository = require('../../repositories/personRepository');
 
-module.exports = async (payload, user) => {
-    if (!payload)
-        throw error.payloadIsNotDefined;
-    if (!payload.person_id)
-        throw error.incompleteData;
-    if (!Array.isArray(payload.roles) || !payload.roles.length)
-        throw new Error('roles are not valid');
+class AssignRolesToPerson extends BaseCommand {
+    constructor() {
+        super();
+    }
 
-    let person = await PersonRepository.getById(payload.person_id);
-    person.assignRoles(payload.roles);
-    return person.newRolesAssigned();
-};
+    async execute(payload, user) {
+        try {
+            if (!payload)
+                throw error.payloadIsNotDefined;
+            if (!payload.person_id)
+                throw error.incompleteData;
+            if (!Array.isArray(payload.roles) || !payload.roles.length)
+                throw new Error('roles are not valid');
+
+            const personRepo = new PersonRepository();
+            let person = await personRepo.getById(payload.person_id);
+            person.assignRoles(payload.roles);
+            return person.newRolesAssigned();
+
+        } catch (err) {
+            throw err;
+        }
+    }
+}
+
+module.exports = AssignRolesToPerson;

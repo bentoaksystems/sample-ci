@@ -1,8 +1,8 @@
-const SysContextHandler = require('../../context/Sys/handler').handler;
+const SysContext = require('../../context/Sys/handler');
 const errors = require('../../utils/errors.list');
 
 let localStrategy = (req, username, password, done) => {
-  SysContextHandler({
+  new SysContext().handler({
     is_command: false,
     payload: {
       username: username,
@@ -25,41 +25,55 @@ let serialize = (person, done) => {
 };
 
 let deserialize = (req, id, done) => {
+  if (req.url.includes('api/logout')) {
+    done(null, null);
+  } else {
+    if(req.url.includes('api/uploading')) {
+      req.body.name = req.headers.name;
+      req.body.is_command = req.headers.is_command;
+      req.body.context = req.headers.context;
+      req.body.payload = JSON.parse(req.headers.payload);
+    }
 
-  SysContextHandler({
-    is_command: false,
-    payload: {
-      id,
-      name: req.body.name,
-      context: req.body.context,
-    },
-    name: 'checkUserAccess',
-  })
-    .then(foundPerson => {
-      if (id && !foundPerson) {
-        req.logout();
-        done(errors.noUser);
-      } else if (!foundPerson) {
-        done(errors.noUser);
-      } else {
-        delete foundPerson.password;
-        done(null, foundPerson);
-      }
+    new SysContext().handler({
+      is_command: false,
+      payload: {
+        id,
+        name: req.body.name,
+        context: req.body.context,
+      },
+      name: 'checkUserAccess',
     })
-    .catch(err => {
-      if (id) {
-        console.error('-> ', err);
-
-        if (err.status === errors.noUser.status && err.message === errors.noUser.message) {
+      .then(foundPerson => {
+        if (id && !foundPerson) {
           req.logout();
           done(errors.noUser);
-        } else
+        } else if (!foundPerson) {
+          done(errors.noUser);
+        } else {
+          delete foundPerson.password;
+          done(null, foundPerson);
+        }
+      })
+      .catch(err => {
+        if (id) {
+          console.error('-> ', err);
+
+          if (req.url.includes('api/login')) {
+            req.logout();
+            done(null, null);
+          }
+          else if (err.status === errors.noUser.status && err.message === errors.noUser.message) {
+            req.logout();
+            done(errors.noUser);
+          } else
+            done(err);
+        } else {
+          console.error('Error in desrialized function: ', err.message);
           done(err);
-      } else {
-        console.error('Error in desrialized function: ', err.message);
-        done(err);
-      }
-    });
+        }
+      });
+  }
 };
 
 module.exports = {
