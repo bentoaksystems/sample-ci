@@ -7,6 +7,8 @@ module.exports = class DMSHandler extends BaseHandler{
   
     const commands = {
       'uploadDocument': require('./write-side/commands/uploadDocument'),
+      'updateDocument': require('./write-side/commands/updateDocument'),
+      'removeDocument': require('./write-side/commands/removeDocument'),
     };
 
     super(queries, commands);

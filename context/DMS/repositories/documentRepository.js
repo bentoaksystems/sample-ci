@@ -18,7 +18,7 @@ module.exports = class DocumentRepository {
    * **/
 
   async findOrCreateDocument(id) {
-    const doc = Document.model().findOne({where: {id}});
+    const doc = await Document.model().findOne({where: {id}});
 
     if (id && !doc)
       throw new Error('The document with this id not found');
@@ -45,5 +45,17 @@ module.exports = class DocumentRepository {
         }
       }
     });
+  }
+
+  async updateDocument(id, document) {
+    if (!id)
+      throw new Error("Document's id is not defined");
+
+    return Document.model().update(document, {
+      where: {id},
+    })
+      .then(() => {
+        return Document.model().findOne({where: {id}});
+      });
   }
 }

@@ -30,55 +30,63 @@ function apiResponse() {
 
 // General APIs (except authentication)
 router.use('/uploading', function (req, res, next) {
-  let contextUploadPath = path.sep + (req.body.payload.doc_context || 'not_categorised') + path.sep;
-  const destination = env.uploadDocumentPath + contextUploadPath;
+  try {
+    let contextUploadPath = path.sep + (req.body.payload.doc_context || 'not_categorised') + path.sep;
+    // const destination = env.uploadDocumentPath + contextUploadPath;
+    const destination = "public/documents/dms/not_categorised/";
 
-  const documentStorage = multer.diskStorage({
-    destination,
-    filename: (req, file, cb) => {
-      cb(null, (new Date().getTime()) + '-' + file.originalname);
-    }
-  });
+    const documentStorage = multer.diskStorage({
+      destination,
+      filename: (req, file, cb) => {
+        cb(null, (new Date().getTime()) + '-' + file.originalname);
+      }
+    });
 
-  const documentUpload = multer({storage: documentStorage});
-  let fileDetails;
+    const documentUpload = multer({storage: documentStorage});
+    let fileDetails;
 
-  const uploadingPayload = {
-    context: req.body.context,
-    doc_type_id: req.body.payload.doc_type_id,
-  };
+    const uploadUpdatePayload = {
+      id: req.body.payload.id,
+      context: req.body.context,
+      doc_type_id: req.body.payload.doc_type_id,
+    };
 
-  const body = Object.assign({}, req.body);
+    const body = Object.assign({}, req.body);
 
-  documentUpload.single('file')(req, res, err => {
-    if (err) {
-      console.error('Error in uploading file: ', err);
-      res.status(500)
-        .send(err);
-    } else {
-      (new Context.DMS()).handler({
-        is_command: true,
-        name: 'uploadDocument',
-        payload: Object.assign(uploadingPayload, {file_details: req.file}),
-      }, req.user)
-        .then(result => {
-          req.body = body;
-          req.body.payload.document_id = result.id;
-          req.body.payload.file_path = result.file_path;
+    documentUpload.single('file')(req, res, err => {
+      if (err) {
+        console.error('Error in uploading file: ', err);
+        res.status(500)
+          .send(err);
+      } else {
+        (new Context.DMS()).handler({
+          is_command: true,
+          name: body.context.toLowerCase() === 'dms' ? body.name : 'uploadDocument',
+          payload: Object.assign(uploadUpdatePayload, {file_details: req.file}),
+        }, req.user)
+          .then(result => {
+            req.body = body;
+            req.body.payload.document_id = result.id;
+            req.body.payload.file_path = result.file_path;
 
-          if (req.body.context.toLowerCase() === 'dms') {
-            result.document_id = result.id;
-            delete result.id;
-            res.status(200).json(result);
-          } else
-            next();
-        })
-        .catch(er => {
-          res.status(500)
-            .send(er);
-        });
-    }
-  });
+            if (req.body.context.toLowerCase() === 'dms') {
+              result.document_id = result.id;
+              delete result.id;
+              res.status(200).json(result);
+            } else
+              next();
+          })
+          .catch(er => {
+            console.error('--> Error in uploading/updating document: ', er);
+            res.status(500)
+              .send(er);
+          });
+      }
+    });
+  } catch (err) {
+    console.log('--> Error in uploading: ', err);
+    res.status(500).send(err);
+  }
 });
 router.post('/uploading', apiResponse());
 
