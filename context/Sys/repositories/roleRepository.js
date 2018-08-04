@@ -69,7 +69,7 @@ class RoleRepository {
       include: [
         {
           model: RoleAction.model(),
-          attributes: ['action_id'],
+          attributes: ['action_id', 'access'],
           include: [
             {
               model: Action.model()

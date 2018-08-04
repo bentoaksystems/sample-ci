@@ -3,7 +3,7 @@ const errors = require('../../../utils/errors.list');
 
 module.exports = async payload => {
   try {
-    let roleActions = await new RoleRepository().roleAccecibleActionsShown(payload.id);
+    let roleActions = await new RoleRepository().roleAccecibleActionsShown(payload.role_id);
     if (!roleActions) {
       throw new Error('role actions is not defined');
     }
