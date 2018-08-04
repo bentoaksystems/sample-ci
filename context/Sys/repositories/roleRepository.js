@@ -86,7 +86,11 @@ class RoleRepository {
 
   grantAction(role_id, action_id, access) {
     if (access && !action_id) {
-      return RoleAction.model().create({ role_id, access });
+      return RoleAction.model()
+        .findOrCreate({ where: { role_id, access } })
+        .spread((action_role, created) => {
+          if (!created) throw new Error('duplicate actions can not');
+        });
     } else {
       return RoleAction.model()
         .findOrCreate({ where: { role_id, action_id } })
