@@ -52,7 +52,12 @@ class PersonRepository {
                     required: true,
                     attributes: [
                         'name',
-                    ]
+                    ],
+                    where: {
+                        name: {
+                            $like: `${search.role}%`
+                        }
+                    }
                 }],
             }, {
                 model: User.model(),

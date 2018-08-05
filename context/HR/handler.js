@@ -5,13 +5,7 @@ module.exports = class HRHandler extends BaseHandler {
         const queries = {
             'searchPersonnel': require('./read-side/searchPerson'),
             'showOnePerson': require('./read-side/showOnePerson'),
-            // TODO: Move this on a separate file!
-            'showRoleList': async () => {
-                const RoleRepo = require('../Shared-Kernel/repositories/roleRepository');
-                const roleRepo = new RoleRepo();
-                const roles = await roleRepo.load();
-                return roles;
-            },
+            'showRoleList': require('./read-side/showRoleList'),
         };
 
         const commands = {

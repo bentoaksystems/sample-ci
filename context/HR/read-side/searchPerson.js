@@ -3,8 +3,6 @@ const PersonRepository = require('../repositories/personRepository');
 
 module.exports = async (payload) => {
     try {
-        console.log('payload: ', payload, !payload);
-
         if (!payload)
             throw error.payloadIsNotDefined;
         ['offset', 'limit', 'name', 'role'].forEach(el => {
