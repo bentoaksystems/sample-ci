@@ -24,6 +24,7 @@ describe('grant Action Access of Role:', () => {
     role = await Role.model().create({ name: 'Hr' });
     // create action
     actions = await Action.model().bulkCreate(actionsArr);
+    await RoleAction.model().create({ role_id: role.id, access: '/sys/read/*' });
     userId = result.userId;
     rpJar = result.rpJar;
     done();
@@ -48,14 +49,9 @@ describe('grant Action Access of Role:', () => {
         json: true,
         resolveWithFullResponse: true
       });
-      console.log('actions', actions[0].id, actions[1].id);
       expect(res.statusCode).toBe(200);
-
-      console.log('res.body: ', res.body);
-
-      // const _role_actions = await RoleAction.model().findAll({ raw: true });
-      const role_ok = await RoleAction.model().find();
-      console.log(role_ok);
+      // const _role_actions = await RoleAction.model().findAll({ where: { role_id: role.id }, raw: true });
+      // expect(_role_actions.length).toBe(2)
 
       done();
     } catch (error) {
@@ -63,7 +59,7 @@ describe('grant Action Access of Role:', () => {
     }
   });
 
-  xit('expect add action access from this role', async function(done) {
+  it('expect add action access from this role', async function(done) {
     try {
       this.done = done;
       const res = await rp({
@@ -90,6 +86,60 @@ describe('grant Action Access of Role:', () => {
       done();
     } catch (error) {
       helpers.errorHandler.bind(this)(error);
+    }
+  });
+
+  it('expect error when role_id is not defined', async function(done) {
+    try {
+      this.done = done;
+      const res = await rp({
+        method: 'POST',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Sys',
+          is_command: true,
+          name: 'grantActionAcess',
+          payload: {
+            // role_id: role.id,
+            actionIds: [actions[0].id, actions[1].id]
+          }
+        },
+        jar: rpJar,
+        json: true,
+        resolveWithFullResponse: true
+      });
+      this.fail('expect error when role_id is not defined');
+      done();
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
+    }
+  });
+
+  it('expect error when access is duplicate', async function(done) {
+    try {
+      this.done = done;
+      const res = await rp({
+        method: 'POST',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Sys',
+          is_command: true,
+          name: 'grantActionAcess',
+          payload: {
+            role_id: role.id,
+            access: '/sys/read/*'
+          }
+        },
+        jar: rpJar,
+        json: true,
+        resolveWithFullResponse: true
+      });
+      this.fail('expect error when access is duplicate');
+      done();
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
     }
   });
 });

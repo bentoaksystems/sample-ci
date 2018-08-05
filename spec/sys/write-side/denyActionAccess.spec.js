@@ -35,7 +35,7 @@ describe('deny Action Access of Role', () => {
     done();
   });
 
-  xit('expect delete action ids from this role', async function(done) {
+  it('expect delete action ids from this role', async function(done) {
     try {
       this.done = done;
       const res = await rp({
