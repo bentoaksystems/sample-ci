@@ -34,7 +34,8 @@ isReady = (isTest = false) => {
   });
 
   let connect = () => {
-    return sequelize.authenticate()
+    return sequelize
+      .authenticate()
       .then(() => {
         console.log('-> ', 'Connection to db has been established successfully :)');
         [
@@ -51,7 +52,7 @@ isReady = (isTest = false) => {
           Document,
           EMRDoc,
           TypeDictionary,
-          Insurer,
+          Insurer
         ].forEach(model => {
           model.init(sequelize);
         });
@@ -96,9 +97,8 @@ isReady = (isTest = false) => {
         Address.model().belongsTo(Person.model(), {foreignKey: 'address_id', sourceKey: 'id'});
         Person.model().hasOne(Address.model(), {foreignKey: 'address_id', sourceKey: 'id', onDelete: 'cascade'});
 
-        return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+        return isTest ? sequelize.sync({ force: true }) : sequelize.sync();
         // return sequelize.sync({force: true});
-
       })
       .catch(err => {
         console.error('-> ', 'Unable to connect to the database:', err);
@@ -114,4 +114,3 @@ module.exports = {
   sequelize: () => sequelize,
   Op,
 };
-
