@@ -50,7 +50,7 @@ describe("Search For Personnel", () => {
                     city: 'Teh',
                     street: 'baharestan',
                     district: 12,
-                    postal_code: 12345,
+                    postal_code: 1234567890,
                     unit: 2,
                     complete_address: 'Some str, some alley, ...',
                     person_id: persons[0].id,

@@ -22,7 +22,7 @@ const init = (seq) => {
             type: Sequelize.INTEGER,
         },
         postal_code: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.BIGINT,
         },
         unit: {
             type: Sequelize.INTEGER,
