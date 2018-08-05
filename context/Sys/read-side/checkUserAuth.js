@@ -17,7 +17,9 @@ module.exports = async (payload) => {
         if (!res)
           return Promise.reject(errors.invalidPassword)
 
-        user = user.get({plain: true});
+        user = user.get({
+          plain: true
+        });
 
         let accessed_routes;
         if (user.username === 'admin')
