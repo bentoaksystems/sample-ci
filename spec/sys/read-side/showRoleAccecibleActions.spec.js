@@ -48,7 +48,7 @@ describe('show systems actions', () => {
           is_command: false,
           name: 'showRoleAccecibleActions',
           payload: {
-            id: _role.id
+            role_id: _role.id
           }
         },
         jar: rpJar,
@@ -61,6 +61,33 @@ describe('show systems actions', () => {
       done();
     } catch (err) {
       helpers.errorHandler.bind(this)(err);
+    }
+  });
+
+  it('expect error when role_id is not defined', async function(done) {
+    try {
+      this.done = done;
+      const res = await rp({
+        method: 'POST',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Sys',
+          is_command: false,
+          name: 'showRoleAccecibleActions',
+          payload: {
+            // role_id: ''
+          }
+        },
+        jar: rpJar,
+        json: true,
+        resolveWithFullResponse: true
+      });
+      this.fail('expect error when role_id is not defined');
+
+      done();
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
     }
   });
 });
