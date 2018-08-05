@@ -2,6 +2,7 @@ const Person = require('../../../infrastructure/db/models/person.model');
 const EMR = require('../../../infrastructure/db/models/emr.model');
 const EMRDocument = require('../../../infrastructure/db/models/emrdoc.model');
 const Address = require('../../../infrastructure/db/models/address.model');
+const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
 const IPatient = require('../write-side/aggregates/patient');
 const db = require('../../../infrastructure/db');
 
@@ -40,6 +41,11 @@ module.exports = class PatientRepository {
         {
           model: EMR.model(),
           required: true,
+          include: [
+            {
+              model: TypeDictionary.model(),
+            }
+          ],
         }
       ],
       offset: offset || 0,
@@ -77,13 +83,13 @@ module.exports = class PatientRepository {
     return user ? new IPatient(id, user.emr, user.emr.emrdocs, user.address) : new IPatient();
   }
 
-  async addPatient(patient, address) {
+  async addPatient(patient, address, patientTypeId) {
     let patientData = {};
     patientData.address = (await Address.model().create(address)).get({plain: true});
     patient.address_id = patientData.address.id;
     const pd = (await Person.model().create(patient)).get({plain: true});
     patientData = Object.assign(patientData, pd);
-    patientData.emr = (await EMR.model().create({person_id: patientData.id})).get({plain: true});
+    patientData.emr = (await EMR.model().create({person_id: patientData.id, patient_type_id: patientTypeId})).get({plain: true});
     return Promise.resolve(patientData);
   }
 

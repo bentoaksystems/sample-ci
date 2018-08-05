@@ -58,7 +58,7 @@ module.exports = class Patient {
       phone_number: payload.phone_number,
       mobile_number: payload.mobile_number,
     };
-    return patientRepository.addPatient(patient, payload.address);
+    return patientRepository.addPatient(patient, payload.address, payload.patient_type_id);
   }
 
   async patientDocumentUploaded(payload) {

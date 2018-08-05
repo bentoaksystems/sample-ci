@@ -62,6 +62,7 @@ describe('Admit patient in reception', () => {
       expect(emr).toBeDefined();
       expect(emr.exit_date).toBeNull();
       expect(moment(emr.entry_date).format('YYYY-MM-DD')).toBe(moment().format('YYYY-MM-DD'));
+      expect(emr.patient_type_id).toBe(dialysisType.id);
 
       done();
     } catch (err) {
