@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
     "server_test": "set NODE_ENV=test & node ./bin/www",
     "test": "jasmine-node --verbose spec --forceexit --captureExceptions"
   },
