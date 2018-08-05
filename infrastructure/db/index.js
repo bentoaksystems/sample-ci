@@ -101,7 +101,7 @@ isReady = (isTest = false) => {
         setTimeout(connect, 1000);
       });
   };
-  connect();
+  return connect();
 };
 
 module.exports = {
