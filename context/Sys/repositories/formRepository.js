@@ -28,17 +28,8 @@ class FormRepository {
    *
    * **/
 
-  async findOrCreate(id) {
-    if (id) {
-      const form = await Form.model().findById(id);
-
-      if (!form)
-        throw new Error('form with this id is not found');
-
-      return new IForm(form.id);
-    } else {
-      return new IForm();
-    }
+  async createNewForm() {
+    return new IForm();
   }
 
   async getFormById(id) {
@@ -46,7 +37,6 @@ class FormRepository {
       throw new Error('id is not passed to get form');
 
     const form = await Form.model().findById(id);
-    console.log(form);
 
     if (!form)
       throw new Error('form with this id is not found');
@@ -54,18 +44,16 @@ class FormRepository {
     return new IForm(form.id, form.user_id, form.name, form.context);
   }
 
-  async formCreated(form_info, id) {
+  async createForm(form_info, id) {
     if (!id) {
       let form = await Form.model().create(form_info);
       id = form.id;
     } else {
       form_info['id'] = id;
-      await Form.model().update(form_info, {where: {id}});
+      await Form.model().update(form_info, {where: {id: id}});
     }
-    console.log('Form created: ', id);
     return Promise.resolve(id);
   }
-
 
   async assignFormFieldsToForm(formFieldList, form_id) {
 
@@ -97,3 +85,22 @@ class FormRepository {
   }
 }
 module.exports = FormRepository;
+
+
+
+
+// async findOrCreate(id) {
+//   if (id) {
+//     console.log('edit mode');
+//     const form = await Form.model().findById(id);
+//
+//     if (!form)
+//       throw new Error('form with this id is not found');
+//
+//
+//     return new IForm(form.id);
+//   } else {
+//     console.log('add mode');
+//     return new IForm();
+//   }
+// }
