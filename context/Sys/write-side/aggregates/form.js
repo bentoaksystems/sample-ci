@@ -6,7 +6,6 @@ class Form {
     this.user_id = user_id;
     this.name = name;
     this.context = context;
-    this.formFieldList = formFieldList;
   }
 
   assignFormBasicInfo(payload, user) {
@@ -22,13 +21,14 @@ class Form {
   }
 
   async formCreated() {
-    this.id = await new FormRepository().createForm(this.form_info, this.id);
+    this.id = await new FormRepository().createForm(this.form_info);
     return new FormRepository().assignFormFieldsToForm(this.formFieldList, this.id);
   }
 
-  async formUpdated() {
-    this.id = await new FormRepository().createForm(this.form_info, this.id);
-    return new FormRepository().assignFormFieldsToForm(this.formFieldList, this.id);
+
+  async formUpdated(form_id) {
+    await new FormRepository().updateFormBasicInfo(this.form_info, form_id);
+    return new FormRepository().assignEditedFormFieldsToForm(this.formFieldList, form_id);
   }
 
   async FormDeleted(form_id) {

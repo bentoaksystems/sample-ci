@@ -45,7 +45,7 @@ class CreateForm extends BaseCommand {
       });
 
 
-      let form = await new FormRepository().createNewForm();
+      let form = await new FormRepository().createNewForm(); // make a root object via form repo
       return super.execut(async () => {
           form.assignFormBasicInfo(payload, user);
           form.assignFormFields(payload.formFieldList);

@@ -48,7 +48,7 @@ class EditForm extends BaseCommand {
       return super.execut(async () => {
           form.assignFormBasicInfo(payload, user);
           form.assignFormFields(payload.formFieldList);
-          await form.formUpdated();
+          await form.formUpdated(form.id);
           return form.getId();
         }
       );
