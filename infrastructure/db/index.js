@@ -21,7 +21,6 @@ const Insurer = require('./models/insurer.model');
 
 Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
 
-
 let sequelize;
 isReady = (isTest = false) => {
   const uri = isTest ? env.db_uri_test : env.db_uri;
@@ -31,7 +30,8 @@ isReady = (isTest = false) => {
   });
 
   let connect = () => {
-    return sequelize.authenticate()
+    return sequelize
+      .authenticate()
       .then(() => {
         console.log('-> ', 'Connection to db has been established successfully :)');
         [
@@ -47,7 +47,7 @@ isReady = (isTest = false) => {
           Document,
           EMRDoc,
           TypeDictionary,
-          Insurer,
+          Insurer
         ].forEach(model => {
           model.init(sequelize);
         });
@@ -71,12 +71,12 @@ isReady = (isTest = false) => {
         User.model().belongsTo(Person.model());
         Person.model().hasOne(User.model());
         EMR.model().belongsTo(Person.model());
-        EMR.model().belongsTo(TypeDictionary.model(), {as: 'patient_type_id'});
-        EMR.model().belongsTo(TypeDictionary.model(), {as: 'regime_type_id'});
-        EMR.model().belongsTo(TypeDictionary.model(), {as: 'exit_type_id'});
-        TypeDictionary.model().hasMany(EMR.model(), {as: 'patient_type_id'});
-        TypeDictionary.model().hasMany(EMR.model(), {as: 'regime_type_id'});
-        TypeDictionary.model().hasMany(EMR.model(), {as: 'exit_type_id'});
+        EMR.model().belongsTo(TypeDictionary.model(), { as: 'patient_type_id' });
+        EMR.model().belongsTo(TypeDictionary.model(), { as: 'regime_type_id' });
+        EMR.model().belongsTo(TypeDictionary.model(), { as: 'exit_type_id' });
+        TypeDictionary.model().hasMany(EMR.model(), { as: 'patient_type_id' });
+        TypeDictionary.model().hasMany(EMR.model(), { as: 'regime_type_id' });
+        TypeDictionary.model().hasMany(EMR.model(), { as: 'exit_type_id' });
         EMR.model().belongsTo(Insurer.model());
         Insurer.model().hasMany(EMR.model());
         Document.model().belongsTo(User.model());
@@ -89,21 +89,18 @@ isReady = (isTest = false) => {
         EMRDoc.model().belongsTo(EMR.model());
         EMR.model().hasMany(EMRDoc.model());
 
-        return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+        return isTest ? sequelize.sync({ force: true }) : sequelize.sync();
         // return sequelize.sync({force: true});
-
       })
       .catch(err => {
         console.error('-> ', 'Unable to connect to the database:', err);
         setTimeout(connect, 1000);
       });
-  }
+  };
   connect();
-}
-
+};
 
 module.exports = {
   isReady,
   sequelize: () => sequelize
 };
-
