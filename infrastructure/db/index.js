@@ -77,7 +77,7 @@ isReady = (isTest = false) => {
         Person.model().hasOne(User.model(), {onDelete: 'cascade'});
         Person.model().hasOne(EMR.model(), {onDelete: 'cascade'});
         EMR.model().belongsTo(Person.model());
-        EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'patient_type_id', sourceKey: 'id'});
+        EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'patient_type_id', sourceKey: 'id', as: 'PatientType'});
         EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'regime_type_id', sourceKey: 'id'});
         EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'exit_type_id', sourceKey: 'id'});
         TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'patient_type_id', sourceKey: 'id'});

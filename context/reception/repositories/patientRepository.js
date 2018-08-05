@@ -44,6 +44,7 @@ module.exports = class PatientRepository {
           include: [
             {
               model: TypeDictionary.model(),
+              as: 'PatientType',
             }
           ],
         }
