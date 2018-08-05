@@ -102,37 +102,4 @@ describe('Update exist document', () => {
       done();
     }
   });
-
-  xit("should get error when new document details is not defined", async function (done) {
-    try {
-      let res = await rp({
-        method: 'post',
-        uri: `${env.appAddress}/api/uploading`,
-        headers: {
-          context: 'DMS',
-          is_command: true,
-          name: 'updateDocument',
-          payload: JSON.stringify({
-            id: document.id,
-          }),
-        },
-        formData: {
-          file: {
-            value: fs.readFileSync(__dirname + path.sep + 'HIS.png'),
-            options: {
-              filename: 'HIS.png',
-            }
-          }
-        },
-        jar: rpJar,
-        resolveWithFullResponse: true,
-      });
-
-      this.fail("Can update document without specifiying the document's type id");
-      done();
-    } catch (err) {
-      expect(err.statusCode).toBe(500);
-      done();
-    }
-  });
 });

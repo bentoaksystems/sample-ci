@@ -3,7 +3,7 @@ const EMR = require('../../../infrastructure/db/models/emr.model');
 const EMRDocument = require('../../../infrastructure/db/models/emrdoc.model');
 const Address = require('../../../infrastructure/db/models/address.model');
 const IPatient = require('../write-side/aggregates/patient');
-const Op = require('../../../infrastructure/db').Op;
+const db = require('../../../infrastructure/db');
 
 module.exports = class PatientRepository {
 
@@ -15,19 +15,36 @@ module.exports = class PatientRepository {
    * QUERY RELATED REPOSITORIES:
    */
 
-  async getPatients() {
-    if (!username)
-      throw new Error('username is not defined');
+  async getPatients(search_data, offset, limit) {
+    let conditions = [];
 
-    const query = {};
-    query.include = [
-      {
-        model: EMR.model(),
-        required: true,
-      }
-    ];
+    if (search_data.name && search_data.name.trim())
+      conditions.push(db.sequelize().where(db.sequelize().fn('concat', db.sequelize().col('firstname'), " ", db.sequelize().col('surname')), {$iLike: `%${search_data.name.trim()}%`}));
 
-    return Person.model().findAll(query);
+    ['mobile', 'phone'].forEach(el => {
+      if (search_data[el + '_number'] && search_data[el + '_number'].trim())
+        conditions.push(el === 'mobile' ? {'mobile_number': search_data[el].trim()} : {'phone_number': search_data[el].trim()});
+    });
+
+    if (search_data.patient_type_id)
+      conditions.push({'$emr.patient_type_id$': search_data.patient_type_id});
+
+    if (search_data.is_exited !== null && search_data.is_exited !== undefined)
+      conditions.push({'$emr.exit_date$': {[db.Op.eq]: null}});
+
+    return Person.model().findAll({
+      where: {
+        $and: conditions,
+      },
+      include: [
+        {
+          model: EMR.model(),
+          required: true,
+        }
+      ],
+      offset: offset || 0,
+      limit: limit || 10
+    });
   }
 
   /** COMMAND RELATED REPOSITORIES:

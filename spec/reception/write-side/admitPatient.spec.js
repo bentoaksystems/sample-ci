@@ -69,7 +69,7 @@ describe('Admit patient in reception', () => {
     }
   });
 
-  xit('should get error when passed data is not complete', async function(done) {
+  it('should get error when passed data is not complete', async function(done) {
     try {
       let res = await rp({
         method: 'post',
