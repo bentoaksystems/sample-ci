@@ -125,7 +125,8 @@ describe('Get list of all patient', () => {
 
       res = res.body;
 
-      expect(res.length).toBe(4);
+      expect(res.patients.length).toBe(4);
+      expect(res.count).toBe(4);
       done();
     } catch (err) {
       helpers.errorHandler.bind(this)(err);
@@ -162,10 +163,11 @@ describe('Get list of all patient', () => {
 
       res = res.body;
 
-      expect(res.length).toBe(1);
-      expect(res[0].firstname).toBe('Ali');
-      expect(res[0].surname).toBe('Amiri');
-      expect(res[0].emr.patient_type_id).toBe(patientTypes[1].id);
+      expect(res.patients.length).toBe(1);
+      expect(res.count).toBe(1);
+      expect(res.patients[0].firstname).toBe('Ali');
+      expect(res.patients[0].surname).toBe('Amiri');
+      expect(res.patients[0].emr.patient_type_id).toBe(patientTypes[1].id);
 
       done();
     } catch (err) {
@@ -203,10 +205,11 @@ describe('Get list of all patient', () => {
 
       res = res.body;
 
-      expect(res.length).toBe(1);
-      expect(res[0].firstname).toBe('Naghi');
-      expect(res[0].surname).toBe('Naghavi');
-      expect(res[0].emr.patient_type_id).toBe(patientTypes[0].id);
+      expect(res.patients.length).toBe(1);
+      expect(res.count).toBe(1);
+      expect(res.patients[0].firstname).toBe('Naghi');
+      expect(res.patients[0].surname).toBe('Naghavi');
+      expect(res.patients[0].emr.patient_type_id).toBe(patientTypes[0].id);
 
       done();
     } catch (err) {
@@ -243,10 +246,11 @@ describe('Get list of all patient', () => {
 
       res = res.body;
 
-      expect(res.length).toBe(1);
-      expect(res[0].firstname).toBe('Taghi');
-      expect(res[0].surname).toBe('Taghavi');
-      expect(res[0].emr.patient_type_id).toBe(patientTypes[0].id);
+      expect(res.patients.length).toBe(1);
+      expect(res.count).toBe(1);
+      expect(res.patients[0].firstname).toBe('Taghi');
+      expect(res.patients[0].surname).toBe('Taghavi');
+      expect(res.patients[0].emr.patient_type_id).toBe(patientTypes[0].id);
 
       done();
     } catch (err) {
@@ -276,7 +280,8 @@ describe('Get list of all patient', () => {
 
       res = res.body;
 
-      expect(res.length).toBe(4);
+      expect(res.patients.length).toBe(4);
+      expect(res.count).toBe(4);
 
       done();
     } catch (err) {

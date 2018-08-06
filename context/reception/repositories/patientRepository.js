@@ -23,7 +23,7 @@ module.exports = class PatientRepository {
       conditions.push(db.sequelize().where(db.sequelize().fn('concat', db.sequelize().col('firstname'), " ", db.sequelize().col('surname')), {$iLike: `%${search_data.name.trim()}%`}));
 
     ['mobile_number', 'national_code'].forEach(el => {
-      if(search_data[el] && search_data[el].trim()) {
+      if (search_data[el] && search_data[el].trim()) {
         const cond = {};
         cond[el] = {[db.Op.like]: '%' + search_data[el].trim() + '%'};
         conditions.push(cond);
@@ -40,7 +40,7 @@ module.exports = class PatientRepository {
         conditions.push({'$emr.exit_date$': {[db.Op.eq]: null}});
     }
 
-    return Person.model().findAll({
+    return Person.model().findAndCountAll({
       where: {
         $and: conditions,
       },
@@ -58,7 +58,10 @@ module.exports = class PatientRepository {
       ],
       offset: offset || 0,
       limit: limit || 10
-    });
+    })
+      .then(result => {
+        return Promise.resolve({count: result.count, patients: result.rows})
+      });
   }
 
   /** COMMAND RELATED REPOSITORIES:
