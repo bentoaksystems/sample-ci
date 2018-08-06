@@ -27,6 +27,9 @@ module.exports = class PatientRepository {
         conditions.push(el === 'mobile' ? {'mobile_number': search_data[el].trim()} : {'phone_number': search_data[el].trim()});
     });
 
+    if (search_data.national_code && search_data.national_code.trim())
+      conditions.push({'national_code': {[db.Op.like]: '%' + search_data.national_code.trim() + '%'}});
+
     if (search_data.patient_type_id)
       conditions.push({'$emr.patient_type_id$': search_data.patient_type_id});
 

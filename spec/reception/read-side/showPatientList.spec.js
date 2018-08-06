@@ -214,6 +214,45 @@ describe('Get list of all patient', () => {
     }
   });
 
+  it('should get patient based on national_code', async function (done) {
+    try {
+      this.done = done;
+
+      let res = await rp({
+        method: 'post',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Reception',
+          is_command: false,
+          name: 'showPatientList',
+          payload: {
+            phone_number: '',
+            national_code: '  12 ',
+            patient_type_id: null,
+            is_exited: null,
+            offset: 0,
+            limit: 10,
+          }
+        },
+        json: true,
+        jar: rpJar,
+        resolveWithFullResponse: true,
+      });
+
+      expect(res.statusCode).toBe(200);
+
+      res = res.body;
+
+      expect(res.length).toBe(1);
+      expect(res[0].firstname).toBe('Taghi');
+      expect(res[0].surname).toBe('Taghavi');
+      expect(res[0].emr.patient_type_id).toBe(patientTypes[0].id);
+
+      done();
+    } catch (err) {
+      helpers.errorHandler.bind(this)(err);
+    }
+  });
 
   it("should get list of patient based on default offset and limit (did not passed to fetch list)", async function (done) {
     try {
