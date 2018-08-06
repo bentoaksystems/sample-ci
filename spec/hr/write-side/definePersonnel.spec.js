@@ -57,7 +57,7 @@ describe("Define new Personnel", () => {
                                 street: 'trivial street',
                                 district: 9,
                                 postal_code: 83921,
-                                unit: 8,
+                                no: 8,
                             }
                         },
                         roles: [

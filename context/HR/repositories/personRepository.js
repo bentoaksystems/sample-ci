@@ -118,10 +118,9 @@ class PersonRepository {
         //         });
         //     });
         // return Promise.resolve(newAddress.get({plain: true}));
-        let newAddress = await Address.model().findAll({
+        let newAddress = await Address.model().findOne({
             where: {person_id}
         });
-        newAddress = newAddress[0];
         if (!newAddress) {
             Object.assign(address, {person_id});
             newAddress = await Address.model().create(address);

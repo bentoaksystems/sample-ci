@@ -51,7 +51,7 @@ describe("Delete Person Complete Information", () => {
                     street: 'baharestan',
                     district: 12,
                     postal_code: 12345,
-                    unit: 2,
+                    no: 2,
                     complete_address: 'Some str, some alley, ...',
                     person_id: persons[0].id,
                 }, {
@@ -60,7 +60,7 @@ describe("Delete Person Complete Information", () => {
                     street: 'meydane asli',
                     district: 1,
                     postal_code: 98765,
-                    unit: 3,
+                    no: 3,
                     complete_address: 'main street',
                     person_id: persons[1].id,
                 }
