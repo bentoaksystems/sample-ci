@@ -14,7 +14,7 @@ module.exports = async (payload) => {
             id: staff.id,
             firstname: staff.firstname,
             surname: staff.surname,
-            national_id: staff.national_code,
+            national_code: staff.national_code,
             title: staff.title,
             addresses: staff.addresses[0],
             user: staff.user,

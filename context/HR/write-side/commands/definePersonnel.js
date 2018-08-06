@@ -15,7 +15,7 @@ class DefinePersonnel extends BaseCommand {
                 throw error.payloadIsNotDefined;
             if (!payload.person)
                 throw error.incompleteData;
-            ['firstname', 'surname', 'title', 'national_id'].forEach(el => {
+            ['firstname', 'surname', 'title', 'national_code'].forEach(el => {
                 if (!payload.person[el])
                     throw error.incompleteData;
             });
@@ -27,12 +27,11 @@ class DefinePersonnel extends BaseCommand {
                 throw new Error('roles are not valid');
 
             const personRepo = new PersonRepository();
-            let person = await personRepo.getById(payload.person.person_id);
+            let person = await personRepo.findOrCreatePerson(payload.person.person_id);
             person.assignPersonInfo(payload.person);
             person.assignAddress(payload.person.address);
-            person.assignRoles(payload.roles);
-            await person.personAddedOrUpdated();
-            await person.newRolesAssigned();
+            await person.personAdded();
+            await person.newRolesAssigned(payload.roles);
             return person.getId();
         } catch (err) {
             throw err;

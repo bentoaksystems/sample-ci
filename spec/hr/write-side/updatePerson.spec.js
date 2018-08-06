@@ -52,7 +52,7 @@ describe("Update Person Information", () => {
                     district: 12,
                     postal_code: 12345,
                     no: 2,
-                    complete_address: 'Some str, some alley, ...',
+                    remain_address: 'Some str, some alley, ...',
                     person_id: persons[0].id,
                 }, {
                     province: 'Karaj',
@@ -61,7 +61,7 @@ describe("Update Person Information", () => {
                     district: 1,
                     postal_code: 98765,
                     no: 3,
-                    complete_address: 'main street',
+                    remain_address: 'main street',
                     person_id: persons[1].id,
                 }
             ]);
@@ -93,7 +93,7 @@ describe("Update Person Information", () => {
                     payload: {
                         firstname: 'new person',
                         surname: 'new person surname',
-                        national_id: 1234567890,
+                        national_code: 1234567890,
                         title: 'f',
                         address: {
                             province: 'Zahedan',
@@ -127,7 +127,7 @@ describe("Update Person Information", () => {
                         person_id: persons[0].id,
                         firstname: 'updated person',
                         surname: 'gholi',
-                        national_id: 1234567890,
+                        national_code: 1234567890,
                         title: 'f',
                         address: {
                             province: 'Zahedan',
@@ -136,7 +136,7 @@ describe("Update Person Information", () => {
                             district: 12,
                             postal_code: 12345,
                             no: 2,
-                            complete_address: 'Some str, some alley, ...',
+                            remain_address: 'Some str, some alley, ...',
                         }
                     }
                 }, baseBody),

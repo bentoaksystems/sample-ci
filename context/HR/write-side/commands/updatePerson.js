@@ -12,7 +12,7 @@ class UpdatePerson extends BaseCommand {
         try {
             if (!payload)
                 throw error.payloadIsNotDefined;
-            ['person_id', 'firstname', 'surname', 'title', 'national_id'].forEach(el => {
+            ['person_id', 'firstname', 'surname', 'title', 'national_code'].forEach(el => {
                 if (!payload[el])
                     throw error.incompleteData;
             });
@@ -22,10 +22,10 @@ class UpdatePerson extends BaseCommand {
             });
 
             const personRepo = new PersonRepository();
-            let person = await personRepo.getById(payload.person_id);
+            let person = await personRepo.findOrCreatePerson(payload.person_id);
             person.assignPersonInfo(payload);
             person.assignAddress(payload.address);
-            await person.personAddedOrUpdated();
+            await person.personUpdated();
             return person.getId();
 
         } catch (err) {

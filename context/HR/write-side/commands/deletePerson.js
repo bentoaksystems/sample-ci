@@ -15,7 +15,7 @@ class DeletePerson extends BaseCommand {
                 throw error.incompleteData;
 
             const personRepo = new PersonRepository();
-            let person = await personRepo.getById(payload.person_id);
+            let person = await personRepo.findOrCreatePerson(payload.person_id);
             return person.personRemoved();
 
         } catch (err) {

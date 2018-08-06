@@ -27,7 +27,7 @@ const init = (seq) => {
     no: {
       type: Sequelize.INTEGER,
     },
-    complete_address: {
+    remain_address: {
       type: Sequelize.STRING,
     }
   }, {

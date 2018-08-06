@@ -55,7 +55,7 @@ class PersonRepository {
                     ],
                     where: {
                         name: {
-                            $like: `${search.role}%`
+                            $ilike: `${search.role}%`
                         }
                     }
                 }],
@@ -84,12 +84,12 @@ class PersonRepository {
      * 
      * **/
 
-    async getById(person_id) {
+    async findOrCreatePerson(person_id) {
         const person = await Person.model().findById(person_id);
         return new IPerson(person ? person.id : person_id);
     };
 
-    async personCreated(person_info, pid) {
+    async createOrUpdatePerson(person_info, pid) {
         if (!pid) {
             let person = await Person.model().create(person_info);
             pid = person.id;
@@ -102,7 +102,7 @@ class PersonRepository {
         return Promise.resolve(pid);
     };
 
-    async addressAssignedToPerson(address, person_id) {
+    async assignAddressToPerson(address, person_id) {
         // Used to work, but now it doesn't !!!
         // let newAddress = await Address.model()
         //     .findOrCreate({
@@ -112,7 +112,6 @@ class PersonRepository {
         //     .spread((newAddress, created) => {
         //         if (created)
         //             return Promise.resolve(newAddress);
-
         //         return newAddress.update(address, {
         //             where: {id: newAddress.id}
         //         });
@@ -132,11 +131,11 @@ class PersonRepository {
         return Promise.resolve(newAddress);
     };
 
-    async personRolesRemoved(person_id) {
+    async removePersonRoles(person_id) {
         return Staff.model().destroy({where: {person_id}});
     };
 
-    async personRolesAssigned(roles, person_id) {
+    async assignPersonRoles(roles, person_id) {
         // looks for user_id
         const staff = await Staff.model().findOne({where: {person_id}});
 
@@ -145,7 +144,7 @@ class PersonRepository {
         return Staff.model().bulkCreate(newData);
     };
 
-    async userAssignedToStaff(user_info, person_id) {
+    async assignUserToStaff(user_info, person_id) {
         user_info.password = await bycript.genSalt(user_info.password);
         const obj = Object.assign(user_info, {person_id});
 
@@ -161,7 +160,7 @@ class PersonRepository {
         return Promise.resolve(obj.id);
     };
 
-    async personRemoved(id) {
+    async removePerson(id) {
         // because its onDelete is set to 'cascade', this removes
         // the person and everything that's their belonging, i.e.
         // their addresses, their staffs, and their probable user

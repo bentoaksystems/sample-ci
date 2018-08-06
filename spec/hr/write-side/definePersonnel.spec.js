@@ -49,7 +49,7 @@ describe("Define new Personnel", () => {
                         person: {
                             firstname: 'new person',
                             surname: 'new person surname',
-                            national_id: 1234567890,
+                            national_code: 1234567890,
                             title: 'f',
                             address: {
                                 province: 'Zahedan',

@@ -17,9 +17,8 @@ class UpdatePersonRoles extends BaseCommand {
                 throw new Error('roles are not valid');
 
             const personRepo = new PersonRepository();
-            let person = await personRepo.getById(payload.person_id);
-            person.assignRoles(payload.roles);
-            return person.newRolesAssigned();
+            let person = await personRepo.findOrCreatePerson(payload.person_id);
+            return person.newRolesAssigned(payload.roles);
 
         } catch (err) {
             throw err;

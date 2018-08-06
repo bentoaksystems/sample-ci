@@ -14,7 +14,7 @@ class Person {
         this.person_info = {
             firstname: person_info.firstname,
             surname: person_info.surname,
-            national_code: person_info.national_id,
+            national_code: person_info.national_code,
             title: person_info.title,
         };
     }
@@ -23,22 +23,26 @@ class Person {
         this.address = address;
     }
 
-    assignRoles(roles) {
+    async personAdded() {
+        const PR = require('../../repositories/personRepository');
+        const PersonRepository = new PR();
+        this.id = await PersonRepository.createOrUpdatePerson(this.person_info, this.id);
+        return PersonRepository.assignAddressToPerson(this.address, this.id);
+    }
+
+    async personUpdated() {
+        const PR = require('../../repositories/personRepository');
+        const PersonRepository = new PR();
+        this.id = await PersonRepository.createOrUpdatePerson(this.person_info, this.id);
+        return PersonRepository.assignAddressToPerson(this.address, this.id);
+    }
+
+    async newRolesAssigned(roles) {
         this.roles = roles;
-    }
-
-    async personAddedOrUpdated() {
         const PR = require('../../repositories/personRepository');
         const PersonRepository = new PR();
-        this.id = await PersonRepository.personCreated(this.person_info, this.id);
-        return PersonRepository.addressAssignedToPerson(this.address, this.id);
-    }
-
-    async newRolesAssigned() {
-        const PR = require('../../repositories/personRepository');
-        const PersonRepository = new PR();
-        await PersonRepository.personRolesRemoved(this.id);
-        return PersonRepository.personRolesAssigned(this.roles, this.id);
+        await PersonRepository.removePersonRoles(this.id);
+        return PersonRepository.assignPersonRoles(this.roles, this.id);
     }
 
     async userAssigned(user) {
@@ -53,14 +57,14 @@ class Person {
         if (user.id !== null)
             this.user['id'] = user.id;
 
-        this.user.id = await PersonRepository.userAssignedToStaff(this.user, this.id);
+        this.user.id = await PersonRepository.assignUserToStaff(this.user, this.id);
         return Promise.resolve();
     }
 
     async personRemoved() {
         const PR = require('../../repositories/personRepository');
         const PersonRepository = new PR();
-        return PersonRepository.personRemoved(this.id);
+        return PersonRepository.removePerson(this.id);
     }
 
     getId() {

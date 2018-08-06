@@ -52,7 +52,7 @@ describe("Search For Personnel", () => {
                     district: 12,
                     postal_code: 1234567890,
                     no: 2,
-                    complete_address: 'Some str, some alley, ...',
+                    remain_address: 'Some str, some alley, ...',
                     person_id: persons[0].id,
                 }, {
                     province: 'Karaj',
@@ -61,7 +61,7 @@ describe("Search For Personnel", () => {
                     district: 1,
                     postal_code: 98765,
                     no: 3,
-                    complete_address: 'main street',
+                    remain_address: 'main street',
                     person_id: persons[1].id,
                 }
             ]);

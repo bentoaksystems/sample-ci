@@ -19,7 +19,7 @@ class AssignUserToPerson extends BaseCommand {
             });
 
             const personRepo = new PersonRepository();
-            let person = await personRepo.getById(payload.person_id);
+            let person = await personRepo.findOrCreatePerson(payload.person_id);
             return person.userAssigned(payload);
 
         } catch (err) {
