@@ -11,11 +11,6 @@ pipeline {
         writeFile(file: 'docker-compose.yml', text: 'hello $MY_SECRET')
       }
     }
-    stage('cleaninig') {
-      steps {
-        deleteDir()
-      }
-    }
   }
   environment {
     NODE_ENV = 'test'
