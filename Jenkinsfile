@@ -5,7 +5,8 @@ pipeline {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
         sh '''set +x
-echo "My secret is $MY_SECRET" >test.txt '''
+echo "My secret is $MY_SECRET"
+printenv '''
       }
     }
     stage('cleaninig') {
