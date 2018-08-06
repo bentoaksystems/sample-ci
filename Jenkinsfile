@@ -8,6 +8,7 @@ pipeline {
         set +x
         echo "My secret is $MY_SECRET"
 '''
+        writeFile(file: 'docker-compose.yml', text: 'hello $MY_SECRET')
       }
     }
     stage('cleaninig') {
