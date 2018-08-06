@@ -2,7 +2,7 @@ const Form = require('../../../infrastructure/db/models/form.model');
 const FormField = require('../../../infrastructure/db/models/form_field.model');
 const IForm = require('../write-side/aggregates/form');
 const errors = require('../../../utils/errors.list');
-
+const db = require('../../../infrastructure/db');
 
 class FormRepository {
   /**
@@ -20,6 +20,16 @@ class FormRepository {
       form: form,
       form_fields: form_fields
     })
+  }
+
+  async getViewList() {
+    return db.sequelize().query("select *\n" +
+      "from INFORMATION_SCHEMA.views\n" +
+      "WHERE table_schema = ANY (current_schemas(false));");
+  }
+
+  async executeViewQuery(query) {
+    return db.sequelize().query(query);
   }
 
   /** COMMAND RELATED REPOSITORIES:

@@ -10,6 +10,8 @@ module.exports = class SysHandler extends BaseHandler{
       'showEntityList': require('./read-side/showEntityList'),
       'getFormList': require('./read-side/getFormList'),
       'getOneFormWithFields': require('./read-side/getOneFormWithFields'),
+      'showViewList': require('./read-side/showViewList'),
+      'runViewQuery': require('./read-side/runViewQuery'),
     };
 
     const commands = {

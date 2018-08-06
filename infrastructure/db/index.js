@@ -99,18 +99,17 @@ isReady = (isTest = false) => {
       Form.model().hasMany(FormField.model());
 
 
-        return isTest ? sequelize.sync({force: true}) : sequelize.sync();
-        // return sequelize.sync({force: true});
+      return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+      // return sequelize.sync({force: true});
 
-      })
-      .catch(err => {
-        console.error('-> ', 'Unable to connect to the database:', err);
-        setTimeout(connect, 1000);
-      });
+    })
+    .catch(err => {
+      console.error('-> ', 'Unable to connect to the database:', err);
+      setTimeout(connect, 1000);
+    });
 
   connect();
-  }
-
+}
 
 
 module.exports = {
