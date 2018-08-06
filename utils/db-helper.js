@@ -42,7 +42,9 @@ const addAdmin = async (username = 'admin', password = '123456') => {
   return Person.model().findOrCreate({
     where: {firstname: 'Admin', surname: 'Admin'},
     defaults: {
-      national_code: '-'
+      national_code: '-',
+      mobile_number:'091234567890',
+      phone_number:'02188776655',
     }
   })
     .spread((person, created) => {
@@ -85,11 +87,14 @@ const addAdmin = async (username = 'admin', password = '123456') => {
 }
 
 const addUser = async (username = 'test_user', password = '123456') => {
-
+``
   const person = await Person.model().create({
     firstname: 'test firstname',
     surname: 'test surname',
-    national_code: '1234567899'
+    national_code: '1234567899',
+    mobile_number:'091234567890',
+    phone_number:'02188776655',
+
   });
 
   const role = await Role.model().create({

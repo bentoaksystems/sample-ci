@@ -12,7 +12,9 @@ main = async () => {
     const person = await Person.model().create({
       firstname: 'test firstname',
       surname: 'test surname',
-      national_code: '1234567899'
+      national_code: '1234567899',
+      mobile_number:'091234567890',
+      phone_number:'02188776655',
     });
 
     const role = await Role.model().create({
