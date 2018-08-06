@@ -11,5 +11,6 @@ echo "My secret is $MY_SECRET"'''
   }
   environment {
     NODE_ENV = 'test'
+    MY_SECRET     = credentials('MY_SECRET')
   }
 }
