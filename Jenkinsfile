@@ -8,9 +8,14 @@ pipeline {
 echo "My secret is $MY_SECRET" >test.txt '''
       }
     }
+    stage('cleaninig') {
+      steps {
+        deleteDir()
+      }
+    }
   }
   environment {
     NODE_ENV = 'test'
-    MY_SECRET     = credentials('MY_SECRET')
+    MY_SECRET = credentials('MY_SECRET')
   }
 }
