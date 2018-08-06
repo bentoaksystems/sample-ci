@@ -11,6 +11,7 @@ echo "My secret is $MY_SECRET" >test.txt '''
     stage('cleaninig') {
       steps {
         deleteDir()
+        cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, cleanupMatrixParent: true, deleteDirs: true)
       }
     }
   }
