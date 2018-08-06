@@ -30,8 +30,12 @@ module.exports = class PatientRepository {
     if (search_data.patient_type_id)
       conditions.push({'$emr.patient_type_id$': search_data.patient_type_id});
 
-    if (search_data.is_exited !== null && search_data.is_exited !== undefined)
-      conditions.push({'$emr.exit_date$': {[db.Op.eq]: null}});
+    if (search_data.is_exited !== null && search_data.is_exited !== undefined) {
+      if (search_data.is_exited)
+        conditions.push({'$emr.exit_date$': {[db.Op.ne]: null}});
+      else
+        conditions.push({'$emr.exit_date$': {[db.Op.eq]: null}});
+    }
 
     return Person.model().findAll({
       where: {
@@ -44,7 +48,7 @@ module.exports = class PatientRepository {
           include: [
             {
               model: TypeDictionary.model(),
-              as: 'PatientType',
+              as: 'patientType',
             }
           ],
         }

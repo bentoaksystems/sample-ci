@@ -148,7 +148,7 @@ describe('Get list of all patient', () => {
             phone_number: '',
             mobile_number: '',
             patient_type_id: patientTypes[1].id,
-            is_exit: false,
+            is_exited: false,
             offset: 0,
             limit: 10,
           }
@@ -172,6 +172,48 @@ describe('Get list of all patient', () => {
       helpers.errorHandler.bind(this)(err);
     }
   });
+
+  it('should get exited patients', async function (done) {
+    try {
+      this.done = done;
+
+      let res = await rp({
+        method: 'post',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Reception',
+          is_command: false,
+          name: 'showPatientList',
+          payload: {
+            name: null,
+            phone_number: '',
+            mobile_number: '',
+            patient_type_id: null,
+            is_exited: true,
+            offset: 0,
+            limit: 10,
+          }
+        },
+        json: true,
+        jar: rpJar,
+        resolveWithFullResponse: true,
+      });
+
+      expect(res.statusCode).toBe(200);
+
+      res = res.body;
+
+      expect(res.length).toBe(1);
+      expect(res[0].firstname).toBe('Naghi');
+      expect(res[0].surname).toBe('Naghavi');
+      expect(res[0].emr.patient_type_id).toBe(patientTypes[0].id);
+
+      done();
+    } catch (err) {
+      helpers.errorHandler.bind(this)(err);
+    }
+  });
+
 
   it("should get list of patient based on default offset and limit (did not passed to fetch list)", async function (done) {
     try {
