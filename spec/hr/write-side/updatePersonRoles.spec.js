@@ -10,11 +10,11 @@ const Role = require('../../../infrastructure/db/models/role.model');
 const User = require('../../../infrastructure/db/models/user.model');
 const Staff = require('../../../infrastructure/db/models/staff.model');
 
-describe("Add & Update Main Person Information", () => {
+describe("Person Roles Assignment", () => {
     const baseBody = {
         context: 'HR',
         is_command: true,
-        name: 'addPerson'
+        name: 'updatePersonRoles'
     };
     let rpJar, userId;
     let roles, persons, addresses, staff, user;
@@ -73,8 +73,6 @@ describe("Add & Update Main Person Information", () => {
             staff = await Staff.model().bulkCreate([
                 {role_id: roles[0].id, person_id: persons[0].id},
                 {role_id: roles[1].id, person_id: persons[0].id},
-                {role_id: roles[2].id, person_id: persons[0].id},
-                {role_id: roles[1].id, person_id: persons[1].id},
             ]);
 
             done();
@@ -83,7 +81,7 @@ describe("Add & Update Main Person Information", () => {
         }
     });
 
-    it('should add a new person with address', async function (done) {
+    it('should assign a set of roles to a person', async function (done) {
         try {
             this.done = done;
             const res = await rp({
@@ -91,18 +89,11 @@ describe("Add & Update Main Person Information", () => {
                 uri: `${env.appAddress}/api`,
                 body: Object.assign({
                     payload: {
-                        firstname: 'new person',
-                        surname: 'new person surname',
-                        national_id: 1234567890,
-                        title: 'f',
-                        address: {
-                            province: 'Zahedan',
-                            city: 'Khoram abad',
-                            street: 'trivial street',
-                            district: 9,
-                            postal_code: 83921,
-                            unit: 8,
-                        }
+                        person_id: persons[1].id,
+                        roles: [
+                            {id: roles[0].id, name: roles[0].name},
+                            {id: roles[2].id, name: roles[2].name},
+                        ]
                     }
                 }, baseBody),
                 jar: rpJar,
@@ -111,16 +102,12 @@ describe("Add & Update Main Person Information", () => {
             });
             expect(res.statusCode).toBe(200);
 
-            const person_id = res.body.person_id;
-            expect(person_id).toBeTruthy();
-            const person = await Person.model().findOne({
-                where: {id: person_id}
+            const thisPersonStaff = await Staff.model().findAll({
+                where: {person_id: persons[1].id}
             });
-            const address = await Address.model().findOne({
-                where: {person_id}
-            });
-            expect(person.firstname).toEqual('new person');
-            expect(address.province).toEqual('Zahedan');
+            expect(thisPersonStaff.length).toBe(2);
+            expect(thisPersonStaff[0].role_id).toEqual(roles[0].id);
+            expect(thisPersonStaff[1].role_id).toEqual(roles[2].id);
 
             done();
         } catch (err) {
@@ -128,7 +115,7 @@ describe("Add & Update Main Person Information", () => {
         }
     });
 
-    it('should update person main info and address of an already created person', async function (done) {
+    it('should update the role set of a person', async function (done) {
         try {
             this.done = done;
             const res = await rp({
@@ -136,20 +123,11 @@ describe("Add & Update Main Person Information", () => {
                 uri: `${env.appAddress}/api`,
                 body: Object.assign({
                     payload: {
-                        id: persons[0].id,
-                        firstname: 'updated person',
-                        surname: 'gholi',
-                        national_id: 1234567890,
-                        title: 'f',
-                        address: {
-                            province: 'Zahedan',
-                            city: 'Teh',
-                            street: 'baharestan',
-                            district: 12,
-                            postal_code: 12345,
-                            unit: 2,
-                            complete_address: 'Some str, some alley, ...',
-                        }
+                        person_id: persons[0].id,
+                        roles: [
+                            {id: roles[1].id, name: roles[1].name},
+                            {id: roles[2].id, name: roles[2].name},
+                        ]
                     }
                 }, baseBody),
                 jar: rpJar,
@@ -158,16 +136,12 @@ describe("Add & Update Main Person Information", () => {
             });
             expect(res.statusCode).toBe(200);
 
-            const person_id = res.body.person_id;
-            expect(person_id).toBeTruthy();
-            const person = await Person.model().findOne({
-                where: {id: person_id}
+            const thisPersonStaff = await Staff.model().findAll({
+                where: {person_id: persons[0].id}
             });
-            const address = await Address.model().findOne({
-                where: {person_id}
-            });
-            expect(person.firstname).toEqual('updated person');
-            expect(address.province).toEqual('Zahedan');
+            expect(thisPersonStaff.length).toBe(2);
+            expect(thisPersonStaff[0].role_id).toEqual(roles[1].id);
+            expect(thisPersonStaff[1].role_id).toEqual(roles[2].id);
 
             done();
         } catch (err) {

@@ -3,7 +3,7 @@ const error = require('../../../../utils/errors.list');
 const BaseCommand = require('../../../../utils/base-command');
 const PersonRepository = require('../../repositories/personRepository');
 
-class AddPerson extends BaseCommand {
+class UpdatePerson extends BaseCommand {
     constructor() {
         super();
     }
@@ -12,7 +12,7 @@ class AddPerson extends BaseCommand {
         try {
             if (!payload)
                 throw error.payloadIsNotDefined;
-            ['firstname', 'surname', 'title', 'national_id'].forEach(el => {
+            ['person_id', 'firstname', 'surname', 'title', 'national_id'].forEach(el => {
                 if (!payload[el])
                     throw error.incompleteData;
             });
@@ -34,4 +34,4 @@ class AddPerson extends BaseCommand {
     }
 }
 
-module.exports = AddPerson;
+module.exports = UpdatePerson;

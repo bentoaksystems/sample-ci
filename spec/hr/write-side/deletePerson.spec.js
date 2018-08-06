@@ -10,7 +10,7 @@ const Role = require('../../../infrastructure/db/models/role.model');
 const User = require('../../../infrastructure/db/models/user.model');
 const Staff = require('../../../infrastructure/db/models/staff.model');
 
-describe("Assign Roles to a Person", () => {
+describe("Delete Person Complete Information", () => {
     const baseBody = {
         context: 'HR',
         is_command: true,

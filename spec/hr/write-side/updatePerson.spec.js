@@ -10,11 +10,11 @@ const Role = require('../../../infrastructure/db/models/role.model');
 const User = require('../../../infrastructure/db/models/user.model');
 const Staff = require('../../../infrastructure/db/models/staff.model');
 
-describe("Assign Roles to a Person", () => {
+describe("Update Person Information", () => {
     const baseBody = {
         context: 'HR',
         is_command: true,
-        name: 'assignRolesToPerson'
+        name: 'updatePerson'
     };
     let rpJar, userId;
     let roles, persons, addresses, staff, user;
@@ -73,6 +73,8 @@ describe("Assign Roles to a Person", () => {
             staff = await Staff.model().bulkCreate([
                 {role_id: roles[0].id, person_id: persons[0].id},
                 {role_id: roles[1].id, person_id: persons[0].id},
+                {role_id: roles[2].id, person_id: persons[0].id},
+                {role_id: roles[1].id, person_id: persons[1].id},
             ]);
 
             done();
@@ -81,41 +83,40 @@ describe("Assign Roles to a Person", () => {
         }
     });
 
-    it('should assign a set of roles to a person', async function (done) {
+    xit('should not add a new person without roles', async function (done) {
         try {
             this.done = done;
-            const res = await rp({
+            await rp({
                 method: 'POST',
                 uri: `${env.appAddress}/api`,
                 body: Object.assign({
                     payload: {
-                        person_id: persons[1].id,
-                        roles: [
-                            {id: roles[0].id, name: roles[0].name},
-                            {id: roles[2].id, name: roles[2].name},
-                        ]
+                        firstname: 'new person',
+                        surname: 'new person surname',
+                        national_id: 1234567890,
+                        title: 'f',
+                        address: {
+                            province: 'Zahedan',
+                            city: 'Khoram abad',
+                            street: 'trivial street',
+                            district: 9,
+                            postal_code: 83921,
+                            unit: 8,
+                        }
                     }
                 }, baseBody),
                 jar: rpJar,
                 json: true,
                 resolveWithFullResponse: true,
             });
-            expect(res.statusCode).toBe(200);
-
-            const thisPersonStaff = await Staff.model().findAll({
-                where: {person_id: persons[1].id}
-            });
-            expect(thisPersonStaff.length).toBe(2);
-            expect(thisPersonStaff[0].role_id).toEqual(roles[0].id);
-            expect(thisPersonStaff[1].role_id).toEqual(roles[2].id);
-
-            done();
+            this.fail('can not register without roles!');
         } catch (err) {
-            helpers.errorHandler.bind(this)(err);
+            expect(err.statusCode).toBe(404);
+            done();
         }
     });
 
-    it('should update the role set of a person', async function (done) {
+    it('should update person main info and address of an already created person', async function (done) {
         try {
             this.done = done;
             const res = await rp({
@@ -124,10 +125,19 @@ describe("Assign Roles to a Person", () => {
                 body: Object.assign({
                     payload: {
                         person_id: persons[0].id,
-                        roles: [
-                            {id: roles[1].id, name: roles[1].name},
-                            {id: roles[2].id, name: roles[2].name},
-                        ]
+                        firstname: 'updated person',
+                        surname: 'gholi',
+                        national_id: 1234567890,
+                        title: 'f',
+                        address: {
+                            province: 'Zahedan',
+                            city: 'Teh',
+                            street: 'baharestan',
+                            district: 12,
+                            postal_code: 12345,
+                            unit: 2,
+                            complete_address: 'Some str, some alley, ...',
+                        }
                     }
                 }, baseBody),
                 jar: rpJar,
@@ -136,12 +146,20 @@ describe("Assign Roles to a Person", () => {
             });
             expect(res.statusCode).toBe(200);
 
-            const thisPersonStaff = await Staff.model().findAll({
-                where: {person_id: persons[0].id}
+            const person_id = res.body.person_id;
+            expect(person_id).toBeTruthy();
+            let person = await Person.model().findAll({
+                where: {id: person_id}
             });
-            expect(thisPersonStaff.length).toBe(2);
-            expect(thisPersonStaff[0].role_id).toEqual(roles[1].id);
-            expect(thisPersonStaff[1].role_id).toEqual(roles[2].id);
+            let address = await Address.model().findAll({
+                where: {person_id}
+            });
+            expect(person.length).toBe(1);
+            expect(address.length).toBe(1);
+            person = person[0];
+            address = address[0];
+            expect(person.firstname).toEqual('updated person');
+            expect(address.province).toEqual('Zahedan');
 
             done();
         } catch (err) {

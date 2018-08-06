@@ -9,9 +9,10 @@ module.exports = class HRHandler extends BaseHandler {
         };
 
         const commands = {
-            'addPerson': require('./write-side/commands/addPerson'),
-            'assignRolesToPerson': require('./write-side/commands/assignRolesToPerson'),
+            'definePersonnel': require('./write-side/commands/definePersonnel'),
             'assignUserToPerson': require('./write-side/commands/assignUserToPerson'),
+            'updatePerson': require('./write-side/commands/updatePerson'),
+            'updatePersonRoles': require('./write-side/commands/updatePersonRoles'),
             'deletePerson': require('./write-side/commands/deletePerson'),
         };
 

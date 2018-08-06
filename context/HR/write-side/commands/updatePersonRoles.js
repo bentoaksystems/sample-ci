@@ -2,7 +2,7 @@ const error = require('../../../../utils/errors.list');
 const BaseCommand = require('../../../../utils/base-command');
 const PersonRepository = require('../../repositories/personRepository');
 
-class AssignRolesToPerson extends BaseCommand {
+class UpdatePersonRoles extends BaseCommand {
     constructor() {
         super();
     }
@@ -27,4 +27,4 @@ class AssignRolesToPerson extends BaseCommand {
     }
 }
 
-module.exports = AssignRolesToPerson;
+module.exports = UpdatePersonRoles;

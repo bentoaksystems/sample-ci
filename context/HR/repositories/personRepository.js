@@ -86,7 +86,7 @@ class PersonRepository {
 
     async getById(person_id) {
         const person = await Person.model().findById(person_id);
-        return new IPerson(person ? person.id : null);
+        return new IPerson(person ? person.id : person_id);
     };
 
     async personCreated(person_info, pid) {
@@ -103,21 +103,34 @@ class PersonRepository {
     };
 
     async addressAssignedToPerson(address, person_id) {
-        // Object.assign(address, {person_id});
-        let newAddress = await Address.model()
-            .findOrCreate({
-                where: address,
-                defaults: {person_id}
-            })
-            .spread((newAddress, created) => {
-                if (created)
-                    return Promise.resolve(newAddress);
+        // Used to work, but now it doesn't !!!
+        // let newAddress = await Address.model()
+        //     .findOrCreate({
+        //         where: address,
+        //         defaults: {person_id}
+        //     })
+        //     .spread((newAddress, created) => {
+        //         if (created)
+        //             return Promise.resolve(newAddress);
 
-                return newAddress.update(address, {
-                    where: {id: newAddress.id}
-                });
+        //         return newAddress.update(address, {
+        //             where: {id: newAddress.id}
+        //         });
+        //     });
+        // return Promise.resolve(newAddress.get({plain: true}));
+        let newAddress = await Address.model().findAll({
+            where: {person_id}
+        });
+        newAddress = newAddress[0];
+        if (!newAddress) {
+            Object.assign(address, {person_id});
+            newAddress = await Address.model().create(address);
+        }
+        else
+            newAddress = await Address.model().update(address, {
+                where: {id: newAddress.id}
             });
-        return Promise.resolve(newAddress.get({plain: true}));
+        return Promise.resolve(newAddress);
     };
 
     async personRolesRemoved(person_id) {
