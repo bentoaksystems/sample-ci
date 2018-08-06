@@ -34,8 +34,6 @@ router.use('/uploading', function (req, res, next) {
     let contextUploadPath = path.sep + (req.body.payload.doc_context || 'not_categorised') + path.sep;
     const destination = env.uploadDocumentPath + contextUploadPath;
 
-    console.log('destination: ', destination);
-
     const documentStorage = multer.diskStorage({
       destination,
       filename: (req, file, cb) => {
