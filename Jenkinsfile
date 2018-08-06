@@ -7,6 +7,7 @@ pipeline {
         sh '''
         set +x
         echo "My secret is $MY_SECRET"
+        printenv
 '''
       }
     }
