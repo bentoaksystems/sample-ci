@@ -4,7 +4,7 @@ pipeline {
     stage('hello') {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
-        sh 'echo "My secret is $some-secret-id"'
+        sh 'echo "My secret is $MY_SECRET"'
       }
     }
   }
