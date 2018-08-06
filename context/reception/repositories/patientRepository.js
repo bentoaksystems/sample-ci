@@ -22,13 +22,13 @@ module.exports = class PatientRepository {
     if (search_data.name && search_data.name.trim())
       conditions.push(db.sequelize().where(db.sequelize().fn('concat', db.sequelize().col('firstname'), " ", db.sequelize().col('surname')), {$iLike: `%${search_data.name.trim()}%`}));
 
-    ['mobile', 'phone'].forEach(el => {
-      if (search_data[el + '_number'] && search_data[el + '_number'].trim())
-        conditions.push(el === 'mobile' ? {'mobile_number': search_data[el].trim()} : {'phone_number': search_data[el].trim()});
+    ['mobile_number', 'national_code'].forEach(el => {
+      if(search_data[el] && search_data[el].trim()) {
+        const cond = {};
+        cond[el] = {[db.Op.like]: '%' + search_data[el].trim() + '%'};
+        conditions.push(cond);
+      }
     });
-
-    if (search_data.national_code && search_data.national_code.trim())
-      conditions.push({'national_code': {[db.Op.like]: '%' + search_data.national_code.trim() + '%'}});
 
     if (search_data.patient_type_id)
       conditions.push({'$emr.patient_type_id$': search_data.patient_type_id});
