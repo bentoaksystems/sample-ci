@@ -71,30 +71,49 @@ class FormRepository {
 
 
   async assignEditedFormFieldsToForm(formFieldList, form_id) {
-    console.log('--**--');
+    let oldFormFieldList = await FormField.model().findAll({where: {form_id: form_id}});
+
+    oldFormFieldList.forEach(el => {
+      if (!(formFieldList.filter(item => item.hashKey === el.hashKey).length))
+        return FormField.model().destroy(
+          {
+            where: {
+              hashKey: el.hashKey,
+              form_id: el.form_id,
+              id: el.id,
+            }
+          });
+    });
+
+
     for (let i = 0; i < formFieldList.length; i++) {
-      await FormField.model().update(formFieldList[i], {
-        where: {
-          id: formFieldList[i].id,
-          form_id: form_id
-        }
-      })
-      // let editFormField = await FormField.model()
-      //   .find({
-      //     where: {
-      //       id: formFieldList[i].id,
-      //       form_id: form_id,
-      //     },
-      //   })
-      //   .spread((newFormField, created) => {
-      //     if (created)
-      //       return Promise.resolve(newFormField);
-      //
-      //     return newFormField.update(formFieldList[i]);
-      //   });
-      // return Promise.resolve(newFormField.get({plain: true}));
+      formFieldList[i].form_id = form_id;
+      await FormField.model()
+        .findOrCreate({
+          where: {
+            hashKey: formFieldList[i].hashKey,
+            form_id: form_id,
+          }, defaults: {
+            title: formFieldList[i].title,
+            answerShowType: formFieldList[i].answerShowType,
+            answerSource: formFieldList[i].answerSource ? formFieldList[i].answerSource : null,
+            staticAnswerArray: formFieldList[i].staticAnswerArray ? formFieldList[i].staticAnswerArray : null,
+            answerWhereClause: formFieldList[i].answerWhereClause ? formFieldList[i].answerWhereClause : null,
+            answerTable: formFieldList[i].answerTable ? formFieldList[i].answerTable : null,
+            fieldPriority: formFieldList[i].fieldPriority,
+            hashKey: formFieldList[i].hashKey,
+            form_id: formFieldList[i].form_id,
+          }
+        })
+        .spread((editFormField, created) => {
+          if (created) {
+            return Promise.resolve();
+          }
+          else {
+            return editFormField.update(formFieldList[i]);
+          }
+        });
     }
-    return Promise.resolve();
   }
 
   async removeFormField(id) {
@@ -109,18 +128,4 @@ class FormRepository {
 module.exports = FormRepository;
 
 
-// async findOrCreate(id) {
-//   if (id) {
-//     console.log('edit mode');
-//     const form = await Form.model().findById(id);
-//
-//     if (!form)
-//       throw new Error('form with this id is not found');
-//
-//
-//     return new IForm(form.id);
-//   } else {
-//     console.log('add mode');
-//     return new IForm();
-//   }
-// }
+// return Promise.resolve(editFormField.get({plain: true}));
