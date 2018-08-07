@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const moment = require('moment');
 const dbHelper = require('../../../utils/db-helper');
 const helpers = require('../../../utils/helpers');
 const db = require('../../../infrastructure/db');
@@ -51,6 +52,8 @@ describe("Define new Personnel", () => {
                             surname: 'new person surname',
                             national_code: 1234567890,
                             title: 'f',
+                            birth_date: moment('1800-10-10'),
+                            phone_number: '123',
                             address: {
                                 province: 'Zahedan',
                                 city: 'Khoram abad',
@@ -84,12 +87,56 @@ describe("Define new Personnel", () => {
                 where: {person_id}
             });
             expect(person.firstname).toEqual('new person');
+            expect(moment(person.birth_date).format('YYYY-MM-DD')).toBe('1800-10-10');
+            expect(person.mobile_number).toBeNull();
+            expect(person.phone_number).toBe('123');
             expect(address.province).toEqual('Zahedan');
             expect(staff.length).toBe(2);
 
             done();
         } catch (err) {
             helpers.errorHandler.bind(this)(err);
+        }
+    });
+
+    it("should get error when birth date is not passed", async function (done) {
+        try {
+            const res = await rp({
+                method: 'POST',
+                uri: `${env.appAddress}/api`,
+                body: Object.assign({
+                    payload: {
+                        person: {
+                            firstname: 'new person',
+                            surname: 'new person surname',
+                            national_code: 1234567890,
+                            title: 'f',
+                            address: {
+                                province: 'Zahedan',
+                                city: 'Khoram abad',
+                                street: 'trivial street',
+                                district: 9,
+                                postal_code: 83921,
+                                no: 8,
+                            }
+                        },
+                        roles: [
+                            {id: roles[0].id, name: roles[0].name},
+                            {id: roles[2].id, name: roles[2].name},
+                        ]
+                    }
+                }, baseBody),
+                jar: rpJar,
+                json: true,
+                resolveWithFullResponse: true,
+            });
+
+            this.fail('The personnel is stored without birth date');
+            done();
+
+        } catch (err) {
+            expect(err.statusCode).toBe(404);
+            done();
         }
     });
 });
