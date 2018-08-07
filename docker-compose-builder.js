@@ -3,17 +3,13 @@ const fs = require('fs');
 
 const portfinder = require('portfinder');
 
-let serverPort, dbPort, redisPort;
-
-
 const main = async () => {
 
   try {
-    const ports = await Promise.all([portfinder.getPortPromise(), portfinder.getPortPromise(), portfinder.getPortPromise()]);
 
-    serverPort = ports[0];
-    dbPort = ports[1];
-    redisPort = ports[2];
+    serverPort = 3000 + Number.parseInt(process.env.BUILD_NUMBER);
+    dbPort = 5432 + Number.parseInt(process.env.BUILD_NUMBER);;
+    redisPort = 6379 + Number.parseInt(process.env.BUILD_NUMBER);;
 
     const template = makeTemplate(serverPort, dbPort, redisPort);
 
@@ -34,9 +30,13 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
     redis:
       container_name: redis-${process.env.BUILD_NUMBER}
       image: "redis:alpine"
+      ports:
+       - "${redisPort}:6379"
     db:
       container_name: db-${process.env.BUILD_NUMBER}
       image: "postgres:9.4"
+      ports:
+       - "${dbPort}:5432"
       environment:
        - POSTGRES_PASSWORD=${process.env.DB_PASS}
        - POSTGRES_USER=${process.env.DB_USER}
