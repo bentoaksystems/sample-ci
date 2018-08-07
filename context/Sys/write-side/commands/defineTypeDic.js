@@ -7,7 +7,7 @@ class GrantPageAccess extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
 
       if (!payload.type || !payload.name)
@@ -15,7 +15,7 @@ class GrantPageAccess extends BaseCommand {
 
       const typeDic = new TypeDic(null, payload.name, payload.type);
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return typeDic.typeDicDefined();
       });
 

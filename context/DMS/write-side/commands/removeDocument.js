@@ -5,7 +5,7 @@ module.exports = class RemoveDocument extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       if (!payload.id)
         throw new Error("Document's id is not passed");
@@ -14,7 +14,7 @@ module.exports = class RemoveDocument extends BaseCommand {
       const docObj = new DocumentRepository();
       let doc = await docObj.findOrCreateDocument();
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return doc.documentsRemoved([payload.id]);
       });
     } catch (err) {

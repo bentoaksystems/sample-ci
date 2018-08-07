@@ -7,7 +7,7 @@ module.exports = class exitPatient extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       if (!payload.id || !payload.exit_type_id)
         throw new Error("incomplete data for exiting patient");
@@ -15,7 +15,7 @@ module.exports = class exitPatient extends BaseCommand {
       const repo = new PatientRepository();
       const patient = await repo.findOrCreatePatient();
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return patient.patientExitted(payload.id, payload.exit_type_id);
       });
 

@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 
 let Address;
 const init = (seq) => {
+
   Address = seq.define('address', {
     id: {
       primaryKey: true,
@@ -10,35 +11,33 @@ const init = (seq) => {
     },
     province: {
       type: Sequelize.STRING,
-      // allowNull: false,
     },
     city: {
-      type: Sequelize.STRING,
-      // allowNull: false,
-    },
-    district: {
       type: Sequelize.STRING,
     },
     street: {
       type: Sequelize.STRING,
     },
-    unit: {
-      type: Sequelize.STRING
-    },
-    no: {
-      type: Sequelize.STRING,
+    district: {
+      type: Sequelize.INTEGER,
     },
     postal_code: {
-      type: Sequelize.STRING,
+      type: Sequelize.BIGINT,
     },
+    no: {
+      type: Sequelize.INTEGER,
+    },
+    remain_address: {
+      type: Sequelize.STRING,
+    }
   }, {
-    tableName: 'address',
-    timestamps: false,
-    underscored: true,
-  });
+      tableName: 'address',
+      timestamps: false,
+      underscored: true,
+    });
 }
 
 module.exports = {
   init,
   model: () => Address,
-};
+}

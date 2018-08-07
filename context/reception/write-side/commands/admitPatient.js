@@ -7,7 +7,7 @@ module.exports = class admitPatient extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       ['firstname', 'surname', 'title', 'national_code', 'mobile_number', 'phone_number', 'patient_type_id', 'address'].forEach(el => {
         if (!payload[el])
@@ -17,7 +17,7 @@ module.exports = class admitPatient extends BaseCommand {
       const repo = new PatientRepository();
       const patient = await repo.findOrCreatePatient();
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return patient.patientAdmitted(payload);
       });
 
