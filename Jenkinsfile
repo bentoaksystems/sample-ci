@@ -10,11 +10,7 @@ pipeline {
         steps {
           sh 'npm install'
           sh 'node docker-compose-builder.js'
-        }
-    }
-    stage('setup containers') {
-        steps {
-          sh 'docker-compose up'
+          sh 'cat docker-compose.yml'
         }
     }
   }

@@ -52,11 +52,12 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
        - DATABASE=his
        - DB_URI=postgres://${process.env.DB_USER}:${process.env.DB_PASS}@db:${dbPort}/
        - REDIS_HOST=redis
-       REDIS_PORT=${redisPort}
+       - REDIS_PORT=${redisPort}
        depends_on:
        - redis
+       - db
       command: bash -c "node configure.js; npm start; npm test"
-  `
+  `.trim()
 }
 
 main();
