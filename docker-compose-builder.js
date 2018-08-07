@@ -57,7 +57,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
        - redis
        - db
       command: bash -c "node configure.js; npm start; npm test"
-  `.trim()
+  `
 }
 
 main();
