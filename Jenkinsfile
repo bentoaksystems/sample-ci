@@ -13,6 +13,12 @@ pipeline {
           sh 'docker-compose up'
         }
     }
+    stage('setup containers') {
+        steps {
+          sh 'docker-compose up'
+        }
+
+    }
   }
   environment {
     NODE_ENV = 'test'
