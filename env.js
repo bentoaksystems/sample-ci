@@ -29,8 +29,7 @@ console.log(`-> app is runnig in ${env} mode`);
  # REDIS_PASSWORD=123465
  ** END **
  */
-if (isDev || isTest)
-  require('dotenv').config(); // loads env variables inside .env file into process.env
+if (isDev || isTest) require('dotenv').config(); // loads env variables inside .env file into process.env
 
 /**
  *  App
@@ -48,10 +47,10 @@ const db_host = getEnvValue(process.env.DB_HOST);
 const db_username = getEnvValue(process.env.DB_USERNAME);
 const db_password = getEnvValue(process.env.DB_PASSWORD);
 
-
 const db_uri = getEnvValue(process.env.DB_URI) + database;
 const db_uri_test = getEnvValue(process.env.DB_URI) + database_test;
 
+console.log('--------------------------->', db_uri_test);
 
 /**
  * Redis
@@ -66,7 +65,6 @@ const redisPass = getEnvValue(process.env.REDIS_PASSWORD);
  */
 const uploadDocumentPath = 'public/documents/dms';
 
-
 /**
  *  in some cases env var name which is declared in .env file is not compatible with server env var in production mode.
  *  for example in Heroku the name of env var for database connection is DATABASE_URL, but it is declared as pg_connection in .env file
@@ -75,12 +73,10 @@ const uploadDocumentPath = 'public/documents/dms';
  * @returns {*}
  */
 function getEnvValue(procEnv) {
-  if (procEnv && procEnv.startsWith('!!'))
-    return process.env[procEnv.substring(2)]; // remove two first char (!!)
-  else
-    return procEnv;
+  if (procEnv && procEnv.startsWith('!!')) return process.env[procEnv.substring(2)];
+  // remove two first char (!!)
+  else return procEnv;
 }
-
 
 module.exports = {
   bcrypt,
@@ -102,7 +98,5 @@ module.exports = {
   redisHost,
   redisPort,
   redisPass,
-  uploadDocumentPath,
+  uploadDocumentPath
 };
-
-
