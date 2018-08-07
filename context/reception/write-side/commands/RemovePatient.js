@@ -6,7 +6,7 @@ module.exports = class RemovePatient extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       if (!payload.id)
         throw new Error("Patient's id is no defined");
@@ -14,7 +14,7 @@ module.exports = class RemovePatient extends BaseCommand {
       const repo = new PatientRepository();
       const patient = await repo.findOrCreatePatient(payload.id);
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return patient.patientRemoved();
       })
     } catch (err) {

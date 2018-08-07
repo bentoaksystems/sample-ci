@@ -7,7 +7,7 @@ module.exports = class admitPatient extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       const isSemiComplete = [
         'firstname',
@@ -26,7 +26,7 @@ module.exports = class admitPatient extends BaseCommand {
       const repo = new PatientRepository();
       const patient = await repo.findOrCreatePatient();
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return patient.patientAdmitted(payload);
       });
 

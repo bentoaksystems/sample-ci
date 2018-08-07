@@ -6,14 +6,14 @@ class GrantActionAcess extends BaseCommand {
     super();
   }
 
-  async execut(payload) {
+  async execute(payload) {
     try {
       if (!payload.role_id && !payload.access) throw new Error('role_id and access is required');
 
       const repo = new RoleRepository();
       const role = await repo.getIAction(payload.role_id);
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return role.actionAssigned(payload.actionIds, payload.access);
       });
     } catch (err) {

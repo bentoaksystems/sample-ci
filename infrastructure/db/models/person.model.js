@@ -31,7 +31,7 @@ const init = (seq) => {
   }, {
     tableName: 'person',
     timestamps: false,
-    underscored: true,
+    underscored: true
   });
 }
 

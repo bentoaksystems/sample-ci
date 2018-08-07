@@ -7,8 +7,10 @@ const errors = require('../../../utils/errors.list');
 const IRole = require('../write-side/aggregates/role');
 
 class RoleRepository {
+
   async getIRoleById(id) {
-    if (!id) throw new Error('role id is not defined');
+    if (!id)
+      throw new Error('role id is not defined');
 
     const role = await Role.model().findOne({
       where: { id }

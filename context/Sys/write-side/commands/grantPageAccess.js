@@ -7,7 +7,7 @@ class GrantPageAccess extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
 
       if (!payload.roleId || (!payload.pageId && !payload.access))
@@ -16,7 +16,7 @@ class GrantPageAccess extends BaseCommand {
       const repo = new RoleRepository();
       const role = await repo.getIRoleById(payload.roleId);
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return role.pageAccessGranted(payload.pageId, payload.access ? payload.access : null)
       });
 
