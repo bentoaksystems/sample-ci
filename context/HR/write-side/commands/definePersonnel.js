@@ -15,14 +15,25 @@ class DefinePersonnel extends BaseCommand {
                 throw error.payloadIsNotDefined;
             if (!payload.person)
                 throw error.incompleteData;
-            ['firstname', 'surname', 'title', 'national_code'].forEach(el => {
-                if (!payload.person[el])
-                    throw error.incompleteData;
-            });
-            ['province', 'city', 'street', 'district', 'postal_code'].forEach(el => {
-                if (!payload.person.address[el])
-                    throw error.incompleteData;
-            });
+            const completeInfo = [
+                'firstname',
+                'surname',
+                'title',
+                'national_code',
+                'birth_date',
+            ].every(el => payload.person[el]);
+
+            const completeAddress = [
+                'province',
+                'city',
+                'street',
+                'district',
+                'postal_code'
+            ].every(el => payload.person.address[el]);
+
+            if (!completeInfo || !completeAddress)
+                throw error.incompleteData;
+
             if (!Array.isArray(payload.roles) || !payload.roles.length)
                 throw new Error('roles are not valid');
 

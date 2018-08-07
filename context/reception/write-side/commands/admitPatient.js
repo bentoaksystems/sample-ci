@@ -18,7 +18,7 @@ module.exports = class admitPatient extends BaseCommand {
         'phone_number',
         'patient_type_id',
         'address'
-      ].every(el => !payload[el]);
+      ].every(el => payload[el]);
 
       if (!isSemiComplete || (!payload.birth_date && !payload.age))
         throw new Error('incomplete payload for adding a new patient');

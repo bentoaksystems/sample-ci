@@ -16,6 +16,9 @@ class Person {
             surname: person_info.surname,
             national_code: person_info.national_code,
             title: person_info.title,
+            mobile_number: person_info.mobile_number,
+            phone_number: person_info.phone_number,
+            birth_date: person_info.birth_date,
         };
     }
 

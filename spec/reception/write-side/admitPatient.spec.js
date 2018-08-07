@@ -7,6 +7,7 @@ const env = require('../../../env');
 const Person = require('../../../infrastructure/db/models/person.model');
 const EMR = require('../../../infrastructure/db/models/emr.model');
 const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
+const Address = require('../../../infrastructure/db/models/address.model');
 
 describe('Admit patient in reception', () => {
   let userId, rpJar;
@@ -59,6 +60,7 @@ describe('Admit patient in reception', () => {
 
       let person = await Person.model().findOne({where: {id: res.id}});
       let emr = await EMR.model().findOne({where: {person_id: person.id}});
+      let address = await Address.model().findOne({where: {person_id: person.id}});
 
       expect(person).toBeDefined();
       expect(moment(person.birth_date).format('YYYY-MM-DD')).toBe('1993-03-02');
@@ -67,6 +69,9 @@ describe('Admit patient in reception', () => {
       expect(emr.exit_date).toBeNull();
       expect(moment(emr.entry_date).format('YYYY-MM-DD')).toBe(moment().format('YYYY-MM-DD'));
       expect(emr.patient_type_id).toBe(dialysisType.id);
+      expect(address.province).toBe('Tehran');
+      expect(address.city).toBe('Tehran');
+      expect(address.district).toBe(3);
 
       done();
     } catch (err) {
@@ -128,7 +133,7 @@ describe('Admit patient in reception', () => {
     }
   });
 
-  it('should get error when passed data is not complete', async function(done) {
+  it('should get error when passed data is not complete', async function (done) {
     try {
       let res = await rp({
         method: 'post',
@@ -153,7 +158,7 @@ describe('Admit patient in reception', () => {
 
       this.fail('Incomplete data for admitting pataient is accepted');
       done();
-    } catch(err) {
+    } catch (err) {
       expect(err.statusCode).toBe(500);
       // expect(err.error).toBe('incomplete payload for adding a new patient');
       done();

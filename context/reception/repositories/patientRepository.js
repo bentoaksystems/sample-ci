@@ -48,11 +48,8 @@ module.exports = class PatientRepository {
   }
 
   async addPatient(patient, address, patientTypeId) {
-    let patientData = {};
-    patientData.address = (await Address.model().create(address)).get({plain: true});
-    patient.address_id = patientData.address.id;
-    const pd = (await Person.model().create(patient)).get({plain: true});
-    patientData = Object.assign(patientData, pd);
+    let patientData = (await Person.model().create(patient)).get({plain: true});
+    patientData.address = (await Address.model().create(Object.assign(address, {person_id: patientData.id}))).get({plain: true});
     patientData.emr = (await EMR.model().create({person_id: patientData.id, patient_type_id: patientTypeId})).get({plain: true});
     return Promise.resolve(patientData);
   }
