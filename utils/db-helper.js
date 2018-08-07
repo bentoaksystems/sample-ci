@@ -21,14 +21,23 @@ const create = async (isTest = false) => {
   }
 
   const client = new Client(config);
-  await client.connect();
 
+  const connect = async () => {
+    try {
+      await client.connect();
+      await client.query(`CREATE DATABASE ${isTest ? env.database_test : env.database}`)
+    }
+    catch (err) {
+      setTimeout(connect, 1000);
+    }
+
+  }
   try {
-    await client.query(`CREATE DATABASE ${isTest ? env.database_test : env.database}`)
+    await client.end();
+  } catch (err) {
+    console.log('-> ', err);
+    return Promise.reject(err);
   }
-  catch (err) {
-  }
-  await client.end();
   return Promise.resolve();
 
 }
