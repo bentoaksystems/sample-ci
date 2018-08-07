@@ -38,7 +38,7 @@ class CreateForm extends BaseCommand {
           }
           else
           {
-            if (!el.answerTable || !el.answerWhereClause || !el.answerWhereClause.length)
+            if (!el.answerView)
               throw errors.incompleteData;
           }
         }

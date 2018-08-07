@@ -11,6 +11,7 @@ class EditForm extends BaseCommand {
   }
 
   async execut(payload, user) {
+console.log('****************************',payload);
     try {
       if (!payload)
         throw  errors.payloadIsNotDefined;
@@ -37,7 +38,7 @@ class EditForm extends BaseCommand {
           }
           else
           {
-            if (!el.answerTable || !el.answerWhereClause || !el.answerWhereClause.length)
+            if (!el.answerView)
               throw errors.incompleteData;
           }
         }

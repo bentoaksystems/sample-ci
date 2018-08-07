@@ -30,12 +30,12 @@ const init = (seq) => {
     staticAnswerArray: {
       type: Sequelize.ARRAY(Sequelize.STRING),
     },
-    answerTable: {
-      type: Sequelize.STRING,
+    answerView: {
+      type: Sequelize.JSON,
     },
-    answerWhereClause: {
-      type: Sequelize.ARRAY(Sequelize.STRING),
-    },
+    // dynamicAnswerArray: {
+    //   type: Sequelize.ARRAY(Sequelize.STRING),
+    // },
     fieldPriority: {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -52,3 +52,5 @@ module.exports = {
   init,
   model: () => FormField,
 }
+
+///dynamicAnswerArray
