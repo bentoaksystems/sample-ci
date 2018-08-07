@@ -24,7 +24,6 @@ Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
 
 const Op = Sequelize.Op;
 
-
 let sequelize;
 isReady = (isTest = false) => {
   const uri = isTest ? env.db_uri_test : env.db_uri;
@@ -68,36 +67,36 @@ isReady = (isTest = false) => {
         Action.model().hasMany(RoleAction.model());
         RoleAction.model().belongsTo(Action.model());
         RoleAction.model().belongsTo(Role.model());
-        Person.model().hasMany(Staff.model(), {onDelete: 'cascade'});
+        Person.model().hasMany(Staff.model(), { onDelete: 'cascade' });
         PageRole.model().belongsTo(Page.model());
         PageRole.model().belongsTo(Role.model());
-        Staff.model().belongsTo(Person.model(), {onDelete: 'cascade'});
+        Staff.model().belongsTo(Person.model(), { onDelete: 'cascade' });
         Staff.model().belongsTo(Role.model());
         User.model().belongsTo(Person.model());
         Person.model().hasOne(User.model(), {onDelete: 'cascade'});
         Person.model().hasOne(EMR.model(), {onDelete: 'cascade'});
         EMR.model().belongsTo(Person.model());
-        EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'patient_type_id', sourceKey: 'id', as: 'patientType'});
-        EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'regime_type_id', sourceKey: 'id'});
-        EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'exit_type_id', sourceKey: 'id'});
-        TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'patient_type_id', sourceKey: 'id'});
-        TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'regime_type_id', sourceKey: 'id'});
-        TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'exit_type_id', sourceKey: 'id'});
+        EMR.model().belongsTo(TypeDictionary.model(), { foreignKey: 'patient_type_id', sourceKey: 'id', as: 'patientType' });
+        EMR.model().belongsTo(TypeDictionary.model(), { foreignKey: 'regime_type_id', sourceKey: 'id' });
+        EMR.model().belongsTo(TypeDictionary.model(), { foreignKey: 'exit_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(EMR.model(), { foreignKey: 'patient_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(EMR.model(), { foreignKey: 'regime_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(EMR.model(), { foreignKey: 'exit_type_id', sourceKey: 'id' });
         EMR.model().belongsTo(Insurer.model());
         Insurer.model().hasMany(EMR.model());
         Document.model().belongsTo(User.model());
-        Document.model().belongsTo(TypeDictionary.model(), {foreignKey: 'document_type_id', sourceKey: 'id'});
-        TypeDictionary.model().hasMany(Document.model(), {foreignKey: 'document_type_id', sourceKey: 'id'});
-        EMRDoc.model().belongsTo(Document.model(), {onDelete: 'cascade'});
+        Document.model().belongsTo(TypeDictionary.model(), { foreignKey: 'document_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(Document.model(), { foreignKey: 'document_type_id', sourceKey: 'id' });
+        EMRDoc.model().belongsTo(Document.model(), { onDelete: 'cascade' });
         Document.model().hasMany(EMRDoc.model());
-        EMRDoc.model().belongsTo(TypeDictionary.model(), {foreignKey: 'emr_doc_type_id', sourceKey: 'id'});
-        TypeDictionary.model().hasMany(EMRDoc.model(), {foreignKey: 'emr_doc_type_id', sourceKey: 'id'});
-        EMRDoc.model().belongsTo(EMR.model(), {onDelete: 'cascade'});
+        EMRDoc.model().belongsTo(TypeDictionary.model(), { foreignKey: 'emr_doc_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(EMRDoc.model(), { foreignKey: 'emr_doc_type_id', sourceKey: 'id' });
+        EMRDoc.model().belongsTo(EMR.model(), { onDelete: 'cascade' });
         EMR.model().hasMany(EMRDoc.model());
-        Address.model().belongsTo(Person.model(), {onDelete: 'cascade'});
+        Address.model().belongsTo(Person.model(), { onDelete: 'cascade' });
         Person.model().hasMany(Address.model());
 
-        return isTest ? sequelize.sync({force: true}) : sequelize.sync();
+        return isTest ? sequelize.sync({ force: true }) : sequelize.sync();
         // return sequelize.sync({force: true});
       })
       .catch(err => {
@@ -111,5 +110,5 @@ isReady = (isTest = false) => {
 module.exports = {
   isReady,
   sequelize: () => sequelize,
-  Op,
+  Op
 };
