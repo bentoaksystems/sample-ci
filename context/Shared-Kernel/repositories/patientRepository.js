@@ -71,8 +71,8 @@ module.exports = class PatientRepository {
           required: true,
           include: [
             {
-              model: TypeDictionary.model()
-              // as: 'patientType'
+              model: TypeDictionary.model(),
+              as: 'patientType'
             },
             {
               model: EMRDoc.model()

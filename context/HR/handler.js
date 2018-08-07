@@ -5,8 +5,7 @@ module.exports = class HRHandler extends BaseHandler {
     const queries = {
       searchPersonnel: require('./read-side/searchPerson'),
       showOnePerson: require('./read-side/showOnePerson'),
-      showRoleList: require('./read-side/showRoleList'),
-      showingPatientInformation: require('./read-side/showingPatientInformation')
+      showRoleList: require('./read-side/showRoleList')
     };
 
     const commands = {
