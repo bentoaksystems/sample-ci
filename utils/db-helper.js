@@ -20,25 +20,47 @@ const create = async (isTest = false) => {
     password: env.db_password,
   }
 
-  const client = new Client(config);
+  let client;
+  let isReady = false;
 
-  const connect = async () => {
-    try {
-      await client.connect();
-      await client.query(`CREATE DATABASE ${isTest ? env.database_test : env.database}`)
-    }
-    catch (err) {
-      setTimeout(connect, 1000);
-    }
-
+  sleep = (time) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, time)
+    })
   }
+
+  while (!isReady) {
+
+    try {
+      client = new Client(config);
+      await client.connect()
+      await client.query(`CREATE DATABASE ${isTest ? env.database_test : env.database}`)
+      console.log('-> ', `database ${isTest ? env.database_test : env.database} created successfully :)`);
+      isReady = true;
+    } catch (err) {
+      if (err.message.includes('already exists')) {
+        console.log('-> ', `database ${isTest ? env.database_test : env.database} already exists!`);
+        isReady = true
+      }
+      else {
+        console.error('-> ', err.message);
+        await client.end();
+        await sleep(1000);
+        isReady = false;
+      }
+    }
+  }
+ 
   try {
     await client.end();
+    return Promise.resolve();
+
   } catch (err) {
     console.log('-> ', err);
     return Promise.reject(err);
   }
-  return Promise.resolve();
 
 }
 
