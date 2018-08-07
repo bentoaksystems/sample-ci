@@ -1,7 +1,4 @@
-const env = require('./env');
 const fs = require('fs');
-
-const portfinder = require('portfinder');
 
 const main = async () => {
 

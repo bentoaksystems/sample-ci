@@ -8,6 +8,7 @@ pipeline {
     }
     stage('build composer') {
         steps {
+          sh 'npm install'
           sh 'node docker-compose-builder.js'
         }
     }
