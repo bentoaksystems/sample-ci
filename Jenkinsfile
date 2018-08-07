@@ -10,7 +10,6 @@ pipeline {
         steps {
           sh 'npm install'
           sh 'node docker-compose-builder.js'
-          sh 'docker-compose up'
         }
     }
     stage('setup containers') {
