@@ -5,11 +5,12 @@ pipeline {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
       }
-  }
-  stage('build composer') {
-      steps {
-        sh 'node docker-compose-builder.js'
-      }
+    }
+    stage('build composer') {
+        steps {
+          sh 'node docker-compose-builder.js'
+        }
+    }
   }
   environment {
     NODE_ENV = 'test'
