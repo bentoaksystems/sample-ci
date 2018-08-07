@@ -63,7 +63,7 @@ describe('Get details of patient information', () => {
         method: 'POST',
         uri: `${env.appAddress}/api`,
         body: {
-          context: 'EMR',
+          context: 'Reception',
           is_command: false,
           name: 'showingPatientInformation',
           payload: {
@@ -93,7 +93,7 @@ describe('Get details of patient information', () => {
         method: 'POST',
         uri: `${env.appAddress}/api`,
         body: {
-          context: 'EMR',
+          context: 'Reception',
           is_command: false,
           name: 'showingPatientInformation',
           payload: {
