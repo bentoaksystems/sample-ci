@@ -16,53 +16,6 @@ module.exports = class PatientRepository {
    * QUERY RELATED REPOSITORIES:
    */
 
-  async getPatients(search_data, offset, limit) {
-    let conditions = [];
-
-    if (search_data.name && search_data.name.trim())
-      conditions.push(db.sequelize().where(db.sequelize().fn('concat', db.sequelize().col('firstname'), " ", db.sequelize().col('surname')), {$iLike: `%${search_data.name.trim()}%`}));
-
-    ['mobile_number', 'national_code'].forEach(el => {
-      if (search_data[el] && search_data[el].trim()) {
-        const cond = {};
-        cond[el] = {[db.Op.like]: '%' + search_data[el].trim() + '%'};
-        conditions.push(cond);
-      }
-    });
-
-    if (search_data.patient_type_id)
-      conditions.push({'$emr.patient_type_id$': search_data.patient_type_id});
-
-    if (search_data.is_exited !== null && search_data.is_exited !== undefined) {
-      if (search_data.is_exited)
-        conditions.push({'$emr.exit_date$': {[db.Op.ne]: null}});
-      else
-        conditions.push({'$emr.exit_date$': {[db.Op.eq]: null}});
-    }
-
-    return Person.model().findAndCountAll({
-      where: {
-        $and: conditions,
-      },
-      include: [
-        {
-          model: EMR.model(),
-          required: true,
-          include: [
-            {
-              model: TypeDictionary.model(),
-              as: 'patientType',
-            }
-          ],
-        }
-      ],
-      offset: offset || 0,
-      limit: limit || 10
-    })
-      .then(result => {
-        return Promise.resolve({count: result.count, patients: result.rows})
-      });
-  }
 
   /** COMMAND RELATED REPOSITORIES:
    * If a domain model is being requested by repositoris it should be returnd as an instance of domain model (new IUser())
