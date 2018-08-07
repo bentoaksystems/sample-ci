@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    stage('hello') {
+    stage('fetch') {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
         sh '''
