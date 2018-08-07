@@ -50,7 +50,10 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
        - APP_ADDRESS=http://173.249.11.153
        - PORT=3000
        - DATABASE=his
-       - DB_URI=postgres://${process.env.DB_USER}:${process.env.DB_PASS}@db:${dbPort}/
+       - DB_HOST=db
+       - DB_PORT=${dbPort}
+       - DB_USER=${process.env.DB_USER}
+       - DB_PASS=${process.env.DB_PASS}
        - REDIS_HOST=redis
        - REDIS_PORT=${redisPort}
       depends_on:

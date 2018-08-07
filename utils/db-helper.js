@@ -18,6 +18,7 @@ const create = async (isTest = false) => {
     host: env.db_host,
     database: 'postgres',
     password: env.db_password,
+    port: env.db_port
   }
 
   let client;

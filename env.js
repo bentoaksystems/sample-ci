@@ -44,9 +44,8 @@ const port = getEnvValue(process.env.PORT);
  */
 const database = getEnvValue(process.env.DATABASE);
 const database_test = getEnvValue(process.env.DATABASE) + '_test';
-const db_uri = getEnvValue(process.env.DB_URI) + database;
-const db_uri_test = getEnvValue(process.env.DB_URI) + database_test;
 const db_host = getEnvValue(process.env.DB_HOST);
+const db_port = getEnvValue(process.env.DB_PORT);
 const db_username = getEnvValue(process.env.DB_USER);
 const db_password = getEnvValue(process.env.DB_PASS);
 
@@ -91,9 +90,8 @@ module.exports = {
   port,
   database,
   database_test,
-  db_uri,
-  db_uri_test,
   db_host,
+  db_port,
   db_username,
   db_password,
   redisURL,
