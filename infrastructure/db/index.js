@@ -16,7 +16,6 @@ const Document = require('./models/document.model');
 const EMRDoc = require('./models/emrdoc.model');
 const TypeDictionary = require('./models/type_dictionary.model');
 const Insurer = require('./models/insurer.model');
-const Address = require('./models/address.model');
 const Form = require('./models/form.model');
 const FormField = require('./models/form_field.model');
 
@@ -113,9 +112,9 @@ isReady = (isTest = false) => {
         console.error('-> ', 'Unable to connect to the database:', err);
         setTimeout(connect, 1000);
       });
-  };
   return connect();
-};
+  };
+
 
 module.exports = {
   isReady,
