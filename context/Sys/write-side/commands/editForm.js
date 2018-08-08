@@ -10,7 +10,7 @@ class EditForm extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       if (!payload)
         throw  errors.payloadIsNotDefined;
@@ -45,7 +45,7 @@ class EditForm extends BaseCommand {
 
 
       let form = await new FormRepository().getFormById(payload.formId);
-      return super.execut(async () => {
+      return super.execute(async () => {
           form.assignFormBasicInfo(payload, user);
           form.assignFormFields(payload.formFieldList);
           await form.formUpdated(form.id);

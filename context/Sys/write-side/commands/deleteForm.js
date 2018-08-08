@@ -10,14 +10,14 @@ class DeleteForm extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       if (!payload)
         throw  errors.payloadIsNotDefined;
 
 
       let form = await new FormRepository().getFormById(payload);
-      return super.execut(async () => {
+      return super.execute(async () => {
           return form.FormDeleted(payload);
         }
       );

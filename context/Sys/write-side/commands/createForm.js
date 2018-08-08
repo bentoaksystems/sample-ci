@@ -10,7 +10,7 @@ class CreateForm extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       if (!payload)
         throw  errors.payloadIsNotDefined;
@@ -46,7 +46,7 @@ class CreateForm extends BaseCommand {
 
 
       let form = await new FormRepository().createNewForm(); // make a root object via form repo
-      return super.execut(async () => {
+      return super.execute(async () => {
           form.assignFormBasicInfo(payload, user);
           form.assignFormFields(payload.formFieldList);
           await form.formCreated();
