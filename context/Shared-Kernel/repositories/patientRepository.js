@@ -48,6 +48,10 @@ module.exports = class PatientRepository {
               {
                 model: TypeDictionary.model(),
                 as: 'patientType'
+              },
+              {
+                model: TypeDictionary.model(),
+                as: 'exitType'
               }
             ]
           }
