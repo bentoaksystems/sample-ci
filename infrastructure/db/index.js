@@ -7,6 +7,7 @@ const Role = require('./models/role.model');
 const Action = require('./models/action.model');
 const RoleAction = require('./models/role_action');
 const Person = require('./models/person.model');
+const Address = require('./models/address.model');
 const PageRole = require('./models/page_role.model');
 const Staff = require('./models/staff.model');
 const User = require('./models/user.model');
@@ -20,6 +21,8 @@ const Insurer = require('./models/insurer.model');
 // Sequelize.useCLS(namespace);
 
 Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
+
+const Op = Sequelize.Op;
 
 let sequelize;
 isReady = (isTest = false) => {
@@ -35,6 +38,7 @@ isReady = (isTest = false) => {
       .then(() => {
         console.log('-> ', 'Connection to db has been established successfully :)');
         [
+          Address,
           Page,
           Role,
           Action,
@@ -63,31 +67,34 @@ isReady = (isTest = false) => {
         Action.model().hasMany(RoleAction.model());
         RoleAction.model().belongsTo(Action.model());
         RoleAction.model().belongsTo(Role.model());
-        Person.model().hasMany(Staff.model());
+        Person.model().hasMany(Staff.model(), { onDelete: 'cascade' });
         PageRole.model().belongsTo(Page.model());
         PageRole.model().belongsTo(Role.model());
-        Staff.model().belongsTo(Person.model());
+        Staff.model().belongsTo(Person.model(), { onDelete: 'cascade' });
         Staff.model().belongsTo(Role.model());
         User.model().belongsTo(Person.model());
-        Person.model().hasOne(User.model());
+        Person.model().hasOne(User.model(), {onDelete: 'cascade'});
+        Person.model().hasOne(EMR.model(), {onDelete: 'cascade'});
         EMR.model().belongsTo(Person.model());
-        EMR.model().belongsTo(TypeDictionary.model(), { as: 'patient_type_id' });
-        EMR.model().belongsTo(TypeDictionary.model(), { as: 'regime_type_id' });
-        EMR.model().belongsTo(TypeDictionary.model(), { as: 'exit_type_id' });
-        TypeDictionary.model().hasMany(EMR.model(), { as: 'patient_type_id' });
-        TypeDictionary.model().hasMany(EMR.model(), { as: 'regime_type_id' });
-        TypeDictionary.model().hasMany(EMR.model(), { as: 'exit_type_id' });
+        EMR.model().belongsTo(TypeDictionary.model(), { foreignKey: 'patient_type_id', sourceKey: 'id', as: 'patientType' });
+        EMR.model().belongsTo(TypeDictionary.model(), { foreignKey: 'regime_type_id', sourceKey: 'id' });
+        EMR.model().belongsTo(TypeDictionary.model(), { foreignKey: 'exit_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(EMR.model(), { foreignKey: 'patient_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(EMR.model(), { foreignKey: 'regime_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(EMR.model(), { foreignKey: 'exit_type_id', sourceKey: 'id' });
         EMR.model().belongsTo(Insurer.model());
         Insurer.model().hasMany(EMR.model());
         Document.model().belongsTo(User.model());
-        Document.model().belongsTo(TypeDictionary.model());
-        TypeDictionary.model().hasMany(Document.model());
-        EMRDoc.model().belongsTo(Document.model());
+        Document.model().belongsTo(TypeDictionary.model(), { foreignKey: 'document_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(Document.model(), { foreignKey: 'document_type_id', sourceKey: 'id' });
+        EMRDoc.model().belongsTo(Document.model(), { onDelete: 'cascade' });
         Document.model().hasMany(EMRDoc.model());
-        EMRDoc.model().belongsTo(TypeDictionary.model());
-        TypeDictionary.model().hasMany(EMRDoc.model());
-        EMRDoc.model().belongsTo(EMR.model());
+        EMRDoc.model().belongsTo(TypeDictionary.model(), { foreignKey: 'emr_doc_type_id', sourceKey: 'id' });
+        TypeDictionary.model().hasMany(EMRDoc.model(), { foreignKey: 'emr_doc_type_id', sourceKey: 'id' });
+        EMRDoc.model().belongsTo(EMR.model(), { onDelete: 'cascade' });
         EMR.model().hasMany(EMRDoc.model());
+        Address.model().belongsTo(Person.model(), { onDelete: 'cascade' });
+        Person.model().hasMany(Address.model());
 
         return isTest ? sequelize.sync({ force: true }) : sequelize.sync();
         // return sequelize.sync({force: true});
@@ -97,10 +104,11 @@ isReady = (isTest = false) => {
         setTimeout(connect, 1000);
       });
   };
-  connect();
+  return connect();
 };
 
 module.exports = {
   isReady,
-  sequelize: () => sequelize
+  sequelize: () => sequelize,
+  Op
 };

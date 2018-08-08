@@ -64,8 +64,6 @@ module.exports = class Role {
     if (!access && actionIds && actionIds.length) {
       let actions = actionIds.filter(el => this.actions.map(i => i.action_id).includes(el));
 
-      console.log('actions', actions);
-
       if (!actions.length) return Promise.resolve();
       actions.forEach(async (id, index) => {
         const act = await roleRepository.loadAction(id);

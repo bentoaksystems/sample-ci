@@ -20,7 +20,7 @@ module.exports = class BaseHandler {
     if (!command.payload)
       throw errors.payloadIsNotDefined;
 
-    return new this.commands[command.name]().execut(command.payload, user);
+    return new this.commands[command.name]().execute(command.payload, user);
   }
 
   async handler(body, user) {

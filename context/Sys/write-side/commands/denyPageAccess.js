@@ -7,7 +7,7 @@ class DenyPageAccess extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
 
       if (!payload.role_id && !payload.id)
@@ -16,7 +16,7 @@ class DenyPageAccess extends BaseCommand {
       const repo = new RoleRepository();
       const role = await repo.getIRoleById(payload.roleId);
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return role.pageAccessDenied(payload.id)
       });
 

@@ -14,7 +14,6 @@ const init = (seq) => {
     },
     exit_date: {
       type: Sequelize.DATE,
-      defaultValue: new Date(),
     },
   }, {
     tableName: 'emr',
