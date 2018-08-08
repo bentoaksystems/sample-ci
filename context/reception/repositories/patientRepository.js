@@ -81,7 +81,17 @@ module.exports = class PatientRepository {
     if (!Object.keys(emr).length)
       return Promise.resolve();
 
-    return EMR.model().update(emr, {where: {person_id: id}});
+    return EMR.model().update(emr, {
+      where: {
+        person_id: id,
+        exit_type_id: {
+          [db.Op.eq]: null,
+        },
+        exit_date: {
+          [db.Op.eq]: null,
+        }
+      }
+    });
   }
 
   async addDocumentToPatientEMR(emr_id, document_id, emr_doc_type_id) {
@@ -101,6 +111,18 @@ module.exports = class PatientRepository {
   }
 
   async removePatient(id) {
-    return Person.model().destroy({where: {id}});
+    return Person.model().findOne({
+      where: {id},
+      include: [
+        {
+          model: EMR.model(),
+        }
+      ]
+    })
+      .then(res => {
+        if (res.exit_type_id || res.exit_date)
+          throw new Error("Patient is exited before. Cannot exit again");
+        return Person.model().destroy({where: {id}});
+      })
   }
 };
