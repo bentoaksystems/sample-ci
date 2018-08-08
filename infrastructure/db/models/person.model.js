@@ -28,10 +28,16 @@ const init = (seq) => {
     phone_number: {
       type: Sequelize.STRING,
     },
+    birth_date: {
+      type: Sequelize.DATE,
+    },
+    age: {
+      type: Sequelize.INTEGER,
+    },
   }, {
     tableName: 'person',
     timestamps: false,
-    underscored: true,
+    underscored: true
   });
 }
 

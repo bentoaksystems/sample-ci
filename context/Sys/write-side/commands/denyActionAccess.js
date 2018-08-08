@@ -5,14 +5,14 @@ class DenyActionAccess extends BaseCommand {
     super();
   }
 
-  async execut(payload) {
+  async execute(payload) {
     try {
       if (!payload.role_id && !payload.actionIds) throw new Error('action role access id required');
 
       const roleRepository = require('../../repositories/roleRepository');
       const repo = new roleRepository();
       const role = await repo.getIAction(payload.role_id);
-      return super.execut(async () => {
+      return super.execute(async () => {
         return role.actionAccessDenied(payload.actionIds, payload.access);
       });
     } catch (err) {

@@ -26,6 +26,8 @@ module.exports = class Patient {
       'phone_number',
       'title',
       'mobile_number',
+      'birth_date',
+      'age',
     ].forEach(el => {
       if (payload[el])
         patient[el] = payload[el];
@@ -38,7 +40,7 @@ module.exports = class Patient {
       'patient_type_id',
       'regime_type_id',
       'exit_type_id',
-      'insurer_id'
+      'insurer_id',
     ].forEach(el => {
       if (payload[el])
         emr[el] = payload[el];
@@ -57,6 +59,8 @@ module.exports = class Patient {
       national_code: payload.national_code,
       phone_number: payload.phone_number,
       mobile_number: payload.mobile_number,
+      age: payload.age,
+      birth_date: payload.birth_date,
     };
     return patientRepository.addPatient(patient, payload.address, payload.patient_type_id);
   }

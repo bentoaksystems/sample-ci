@@ -5,7 +5,7 @@ module.exports = class UpdateDocument extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       if (!payload.id)
         throw new Error("The target document's id is not passed");
@@ -17,7 +17,7 @@ module.exports = class UpdateDocument extends BaseCommand {
       const docObj = new DocumentRepository();
       let doc = await docObj.findOrCreateDocument(payload.id);
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return doc.documentUpdated(payload.file_details, payload.context, payload.doc_type_id, user.id);
       })
     } catch (err) {
