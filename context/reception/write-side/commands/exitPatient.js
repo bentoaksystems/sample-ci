@@ -13,7 +13,7 @@ module.exports = class exitPatient extends BaseCommand {
         throw new Error("incomplete data for exiting patient");
 
       const repo = new PatientRepository();
-      const patient = await repo.findOrCreatePatient();
+      const patient = await repo.findOrCreatePatient(payload.id);
 
       return super.execute(async () => {
         return patient.patientExitted(payload.id, payload.exit_type_id);

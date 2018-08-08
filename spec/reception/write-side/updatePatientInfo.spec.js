@@ -9,7 +9,7 @@ const Person = require('../../../infrastructure/db/models/person.model');
 const EMR = require('../../../infrastructure/db/models/emr.model');
 
 describe("Update patient's information", () => {
-  let userId, rpJar, patient;
+  let userId, rpJar, patient, exitedPatient;
 
   beforeEach(async done => {
     await db.isReady(true);
@@ -26,6 +26,11 @@ describe("Update patient's information", () => {
       patient_type_id: pType.id,
       entry_date: moment('2010-10-10').format('YYYY-MM-DD'),
     })).get({plain: true});
+
+    // Add exited patient
+    exitedPatient = (await Person.model().create({firstname: 'exited', surname: 'patient'})).get({plain: true});
+    const eType = (await TypeDictionary.model().create({name: 'خارج شده', type: 'exit'}));
+    await EMR.model().create({person_id: exitedPatient.id, patient_type_id: pType.id, exit_type_id: eType.id, exit_date: moment('2010-10-10')});
 
     done();
   });
@@ -128,6 +133,34 @@ describe("Update patient's information", () => {
 
       this.fail("Update without patient's id");
 
+      done();
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
+    }
+  });
+
+  it("should get error when updating exited patient", async function(done) {
+    try {
+      let res = await rp({
+        method: 'post',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Reception',
+          is_command: true,
+          name: 'updatePatientInfo',
+          payload: {
+            id: exitedPatient.id,
+            firstname: 'no matter',
+            title: 'm',
+          },
+        },
+        json: true,
+        jar: rpJar,
+        resolveWithFullResponse: true,
+      });
+
+      this.fail("Exited patient is updated");
       done();
     } catch (err) {
       expect(err.statusCode).toBe(500);
