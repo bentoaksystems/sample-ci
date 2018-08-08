@@ -14,11 +14,7 @@ const init = (seq) => {
       type: Sequelize.STRING,
       allowNull: false,
       unique: true,
-    },
-    context: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
+    }
   }, {
     tableName: 'form',
     timestamps: false,
