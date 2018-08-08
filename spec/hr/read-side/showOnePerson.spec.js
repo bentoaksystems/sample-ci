@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const moment = require('moment');
 const dbHelper = require('../../../utils/db-helper');
 const helpers = require('../../../utils/helpers');
 const db = require('../../../infrastructure/db');
@@ -36,12 +37,15 @@ describe("Show One Person Details", () => {
                     firstname: 'ali',
                     surname: 'gholi',
                     national_code: 1212121212,
-                    title: 'm'
+                    title: 'm',
+                    birth_date: moment('1990-10-10'),
+                    mobile_number: '123',
                 }, {
                     firstname: 'reza',
                     surname: 'ahmadi',
                     national_code: 3213213213,
                     title: 'm',
+                    birth_date: moment('1970-10-10'),
                 }
             ]);
             addresses = await Address.model().bulkCreate([
@@ -102,6 +106,9 @@ describe("Show One Person Details", () => {
 
             const person = res.body;
             expect(person.id).toEqual(persons[0].id);
+            expect(person.mobile_number).toBe(persons[0].mobile_number);
+            expect(person.phone_number).toBeNull();
+            expect(moment(person.birth_date).format('YYYY-MM-DD')).toBe(moment(persons[0].birth_date).format('YYYY-MM-DD'));
             expect(person.firstname).toEqual(persons[0].firstname);
             expect(person.addresses.id).toEqual(addresses[0].id);
             expect(person.addresses.province).toEqual(addresses[0].province);
