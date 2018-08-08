@@ -25,7 +25,9 @@ let serialize = (person, done) => {
 };
 
 let deserialize = (req, id, done) => {
-  if (req.url.includes('api/logout')) {
+  if(!req.url.includes('api')) {
+    done(null, null);
+  } else if (req.url.includes('api/logout')) {
     done(null, null);
   } else {
     if(req.url.includes('api/uploading')) {
