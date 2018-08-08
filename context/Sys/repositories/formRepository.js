@@ -52,7 +52,7 @@ class FormRepository {
     if (!form)
       throw new Error('form with this id is not found');
 
-    return new IForm(form.id, form.user_id, form.name, form.context);
+    return new IForm(form.id, form.user_id, form.name);
   }
 
   async createForm(form_info) {
@@ -108,7 +108,6 @@ class FormRepository {
             answerShowType: formFieldList[i].answerShowType,
             answerSource: formFieldList[i].answerSource ? formFieldList[i].answerSource : null,
             staticAnswerArray: formFieldList[i].staticAnswerArray ? formFieldList[i].staticAnswerArray : null,
-            // dynamicAnswerArray: formFieldList[i].dynamicAnswerArray ? formFieldList[i].dynamicAnswerArray : null,
             answerView: formFieldList[i].answerView ? formFieldList[i].answerView : null,
             fieldPriority: formFieldList[i].fieldPriority,
             hashKey: formFieldList[i].hashKey,
