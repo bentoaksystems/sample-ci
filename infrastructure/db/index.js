@@ -29,7 +29,6 @@ Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
 
 const Op = Sequelize.Op;
 
-
 let sequelize;
 let tableList = [
   Address,
@@ -89,7 +88,7 @@ isReady = (isTest = false) => {
       EMR.model().belongsTo(Person.model());
       EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'patient_type_id', sourceKey: 'id', as: 'patientType'});
       EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'regime_type_id', sourceKey: 'id'});
-      EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'exit_type_id', sourceKey: 'id'});
+      EMR.model().belongsTo(TypeDictionary.model(), {foreignKey: 'exit_type_id', sourceKey: 'id', as: 'exitType'});
       TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'patient_type_id', sourceKey: 'id'});
       TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'regime_type_id', sourceKey: 'id'});
       TypeDictionary.model().hasMany(EMR.model(), {foreignKey: 'exit_type_id', sourceKey: 'id'});
@@ -148,5 +147,5 @@ module.exports = {
   isReady,
   sequelize: () => sequelize,
   tableList,
-  Op,
+  Op
 };
