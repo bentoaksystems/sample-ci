@@ -16,6 +16,8 @@ const Document = require('./models/document.model');
 const EMRDoc = require('./models/emrdoc.model');
 const TypeDictionary = require('./models/type_dictionary.model');
 const Insurer = require('./models/insurer.model');
+const Form = require('./models/form.model');
+const FormField = require('./models/form_field.model');
 
 // namespace = cls.createNamespace('HIS-NS');
 // Sequelize.useCLS(namespace);
@@ -24,7 +26,27 @@ Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
 
 const Op = Sequelize.Op;
 
+
 let sequelize;
+let tableList = [
+  Address,
+  Page,
+  Role,
+  Action,
+  RoleAction,
+  Person,
+  PageRole,
+  Staff,
+  User,
+  FormField,
+  Form,
+  EMR,
+  Document,
+  EMRDoc,
+  TypeDictionary,
+  Insurer,
+];
+
 isReady = (isTest = false) => {
   const uri = isTest ? env.db_uri_test : env.db_uri;
   sequelize = new Sequelize(uri, {
@@ -32,29 +54,12 @@ isReady = (isTest = false) => {
     logging: false
   });
 
-  let connect = () => {
-    return sequelize
-      .authenticate()
-      .then(() => {
-        console.log('-> ', 'Connection to db has been established successfully :)');
-        [
-          Address,
-          Page,
-          Role,
-          Action,
-          RoleAction,
-          Person,
-          PageRole,
-          Staff,
-          User,
-          EMR,
-          Document,
-          EMRDoc,
-          TypeDictionary,
-          Insurer
-        ].forEach(model => {
-          model.init(sequelize);
-        });
+  return sequelize.authenticate()
+    .then(() => {
+      console.log('-> ', 'Connection to db has been established successfully :)');
+      tableList.forEach(model => {
+        model.init(sequelize);
+      });
 
         /**
          * Please define relations between tables (models) here
@@ -95,6 +100,10 @@ isReady = (isTest = false) => {
         EMR.model().hasMany(EMRDoc.model());
         Address.model().belongsTo(Person.model(), { onDelete: 'cascade' });
         Person.model().hasMany(Address.model());
+        User.model().hasMany(Form.model());
+        Form.model().belongsTo(User.model());
+        FormField.model().belongsTo(Form.model());
+        Form.model().hasMany(FormField.model());
 
         return isTest ? sequelize.sync({ force: true }) : sequelize.sync();
         // return sequelize.sync({force: true});
@@ -103,12 +112,13 @@ isReady = (isTest = false) => {
         console.error('-> ', 'Unable to connect to the database:', err);
         setTimeout(connect, 1000);
       });
-  };
   return connect();
-};
+  };
+
 
 module.exports = {
   isReady,
   sequelize: () => sequelize,
-  Op
+  tableList,
+  Op,
 };
