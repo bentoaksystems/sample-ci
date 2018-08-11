@@ -111,4 +111,26 @@ describe("Delete Person Complete Information", () => {
             helpers.errorHandler.bind(this)(err);
         }
     });
+
+    it('should not be able to delete the admin', async done => {
+        try {
+            this.done = done;
+            const u = await User.model().findOne({where: {id: userId}});
+            const res = await rp({
+                method: 'POST',
+                uri: `${env.appAddress}/api`,
+                body: Object.assign({
+                    payload: {person_id: u.person_id}
+                }, baseBody),
+                jar: rpJar,
+                json: true,
+                resolveWithFullResponse: true,
+            });
+            this.fail('admin is undeletable!');
+            done();
+        } catch (err) {
+            expect(err.statusCode).toBe(500);
+            done();
+        }
+    });
 });

@@ -38,43 +38,122 @@ class PersonRepository {
     };
 
     async searchPerson(search) {
-        return Person.model().findAll({
-            attributes: [
-                'id',
-                'firstname',
-                'surname',
-            ],
-            include: [{
-                model: Staff.model(),
-                required: true,
-                include: [{
-                    model: Role.model(),
-                    required: true,
-                    attributes: [
-                        'name',
-                    ],
-                    where: {
-                        name: {
-                            $ilike: `${search.role}%`
-                        }
-                    }
-                }],
-            }, {
-                model: User.model(),
-                attributes: [
-                    'username',
-                ]
-            }],
-            limit: search.limit,
-            offset: search.offset,
-            subQuery: false,
-            where: db.sequelize().where(
-                db.sequelize().fn("concat", db.sequelize().col("firstname"), ' ', db.sequelize().col("surname")),
-                {
-                    ilike: `%${search.name}%`
-                }
-            )
-        })
+        /** IMPORTANT NOTE FOR SEQUELIZE QUERIES: 
+        process of Limiting, Offsetting and Counting might
+        need the usage of separate, subQuery and distinct
+        in the right place for the query to work correctly
+        otherwise, it MIGHT BREAK at some test cases !!!
+        And sometimes we have to stick to the raw queries!
+
+        'subQuery: false' must be provided because otherwise
+        an error will be thrown saying "... FROM-clause ..."!
+
+        'separate: true' should be in a hasMany relation,
+        and if not provided, the limit will affect the
+        number of the included model too! (and vice versa)
+
+        'distinct: true' should be provided for findAndCountAll
+        so that the count doesn't affect the included model!
+        */
+
+        let count = 0, rows = [];
+        await db.sequelize().query(`
+            SELECT
+                COUNT (DISTINCT("person"."id")) AS "count"
+            FROM
+                "person" AS "person"
+            INNER JOIN "staff" AS "staffs" ON "person"."id" = "staffs"."person_id"
+            INNER JOIN "role" AS "staffs->role" ON "staffs"."role_id" = "staffs->role"."id"
+            AND "staffs->role"."name" ILIKE ?
+            LEFT OUTER JOIN "user" AS "user" ON "person"."id" = "user"."person_id"
+            WHERE
+                concat ("firstname", ' ', "surname") ILIKE ?
+            AND
+                "firstname" <> 'Admin';`,
+            {
+                replacements: [
+                    search.role + '%',
+                    '%' + search.name + '%'
+                ],
+                type: db.sequelize().QueryTypes.SELECT
+            }
+        ).spread(function (results) {
+            count = +results['count'];
+        });
+
+        await db.sequelize().query(`
+            SELECT DISTINCT
+                "person"."id",
+                "person"."firstname",
+                "person"."surname",
+                "user"."id" AS "user.id",
+                "user"."username" AS "user.username"
+            FROM
+                "person" AS "person"
+            LEFT OUTER JOIN "user" AS "user" ON "person"."id" = "user"."person_id"
+            INNER JOIN "staff" AS "staffs" ON "person"."id" = "staffs"."person_id"
+            INNER JOIN "role" AS "staffs->role" ON "staffs"."role_id" = "staffs->role"."id"
+            AND "staffs->role"."name" ILIKE ?
+            WHERE
+                concat ("firstname", ' ', "surname") ILIKE ?
+            AND
+                "firstname" <> 'Admin'
+            ORDER BY
+                "firstname"
+            LIMIT ? OFFSET ?;`,
+            {
+                replacements: [
+                    search.role + '%',
+                    '%' + search.name + '%',
+                    search.limit || 10,
+                    search.offset || 0,
+                ],
+                type: db.sequelize().QueryTypes.SELECT
+            }
+        ).then(results => {
+            results.forEach(res => {
+                if (res['firstname'] === 'Admin')
+                    return;
+                rows.push({
+                    person_id: res['id'],
+                    firstname: res['firstname'],
+                    surname: res['surname'],
+                    roles: [],
+                    username: res['user.username'] || null,
+                });
+            });
+        });
+
+        await db.sequelize().query(`
+            SELECT
+                "staff"."id",
+                "staff"."role_id",
+                "staff"."person_id",
+                "role"."id" AS "role.id",
+                "role"."name" AS "role.name"
+            FROM
+                "staff" AS "staff"
+            INNER JOIN "role" AS "role" ON "staff"."role_id" = "role"."id"
+            AND "role"."name" ILIKE ?
+            WHERE
+                "staff"."person_id" IN (?);`,
+            {
+                replacements: [
+                    search.role + '%',
+                    rows.map(el => el['person_id']),
+                ],
+                type: db.sequelize().QueryTypes.SELECT
+            }
+        ).then(results => {
+            results.forEach(role => {
+                rows.forEach(person => {
+                    if (person['person_id'] == role['person_id'])
+                        person['roles'].push(role['role.name']);
+                });
+            });
+        });
+
+        return Promise.resolve({count, rows});
     }
 
 
@@ -164,6 +243,11 @@ class PersonRepository {
         // because its onDelete is set to 'cascade', this removes
         // the person and everything that's their belonging, i.e.
         // their addresses, their staffs, and their probable user
+        let p = await Person.model().findOne({
+            where: {id}
+        });
+        if (p['firstname'] === 'Admin')
+            throw new Error('Admin can not be deleted!');
         return Person.model().destroy({where: {id}});
     };
 };
