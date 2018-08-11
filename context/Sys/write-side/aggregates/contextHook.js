@@ -1,4 +1,4 @@
-module.exports = class Context {
+module.exports = class ContextHook {
   constructor(id, policies) {
     this.id = id;
     this.policies = policies;
@@ -11,5 +11,11 @@ module.exports = class Context {
 
     const contextHookRepository = require('../../repositories/contextHookRepository');
     return new contextHookRepository().addPolicy(this.id, policy_data);
+  }
+
+  denyPolicyContexHook(policy_id) {
+    const ContextRepository = require('../../repositories/contextRepository');
+    const repo = new ContextRepository();
+    return repo.denyPolicyContexHook(this.id, policy_id);
   }
 }

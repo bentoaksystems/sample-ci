@@ -28,11 +28,33 @@ class contextHookRepository {
     return Promise.resolve(returnContextHooks);
   }
 
+  async loadPolicies(context_hook_id) {
+    const query = {
+      where: {context_hook_id},
+      include: [{model: ContextHook.model(), required: true}, {model: Form.model()}, {model: TypeDictionary.model()}],
+      raw: true
+    };
+    const returnParams = await ContextHookPolicy.model().findAll(query);
+    return Promise.resolve(returnParams);
+  }
+
   /** COMMAND RELATED REPOSITORIES:
    * If a domain model is being requested by repositoris it should be returnd as an instance of domain model (new IForm())
    * e.g: IForm  = require ('../write-side/aggregates/form.js')
    *
    * **/
+
+  async getIContextHookeById(id) {
+    if (!id) throw new Error('context_hook_id is not defined');
+    const contextHook = await ContextHook.model().findOne({
+      where: {id}
+    });
+    if (contextHook) {
+      return new IContextHook(contextHook.id);
+    } else {
+      throw new Error('no context found');
+    }
+  }
 
   async getByContextHookNames(context, hook) {
     const ch = await ContextHook.model().findOne({
@@ -52,8 +74,6 @@ class contextHookRepository {
     if (!ch)
       throw new Error('There is no context-hook with these context and hook names');
 
-    console.log('ch ==> ', ch);
-
     return new IContextHook(ch.id, ch.context_hook_policys);
   }
 
@@ -67,6 +87,11 @@ class contextHookRepository {
       document_type_id: data.document_type_id,
       checklist_id: data.checklist_id,
     });
+  }
+
+  denyPolicyContexHook(context_hook_id, policy_id) {
+    const query = {where: {id: policy_id, context_hook_id}};
+    return ContextHookPolicy.model().destroy(query);
   }
 }
 
