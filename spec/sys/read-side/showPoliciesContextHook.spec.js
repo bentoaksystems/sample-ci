@@ -67,7 +67,7 @@ describe('Get Policies Context-Hook', () => {
     done();
   });
 
-  xit('expect error when context_hook_id is undefined', async function(done) {
+  it('expect error when context_hook_id is undefined', async function(done) {
     try {
       this.done = done;
       const res = await rp({
