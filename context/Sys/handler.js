@@ -28,6 +28,8 @@ module.exports = class SysHandler extends BaseHandler {
       defineTypeDic: require('./write-side/commands/defineTypeDic'),
       grantActionAcess: require('./write-side/commands/grantActionAcess'),
       denyActionAccess: require('./write-side/commands/denyActionAccess'),
+      addPolicy: require('./write-side/commands/addPolicy'),
+      correctPolicy: require('./write-side/commands/correctPolicy'),
       denyPolicyContexHook: require('./write-side/commands/denyPolicyContexHook')
     };
 
