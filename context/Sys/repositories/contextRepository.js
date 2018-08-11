@@ -3,6 +3,7 @@ const db = require('../../../infrastructure/db');
 const ContextHook = require('../../../infrastructure/db/models/context_hook.model');
 const ContextHookPolicy = require('../../../infrastructure/db/models/context_hook_policy.model');
 const Form = require('../../../infrastructure/db/models/form.model');
+const Role = require('../../../infrastructure/db/models/role.model');
 const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
 const IContextHook = require('../write-side/aggregates/contextHook');
 class ContextRepository {
@@ -47,7 +48,15 @@ class ContextRepository {
       include: [{ model: ContextHook.model(), required: true }, { model: Form.model() }, { model: TypeDictionary.model() }],
       raw: true
     };
-    const returnParams = await ContextHookPolicy.model().findAll(query);
+    const returnParams = await ContextHookPolicy.model()
+      .findAll(query)
+      .then(async data => {
+        for (let index = 0; index < data.length; index++) {
+          data[index]['role_ids'] = await Role.model().findAll({ where: { id: { $in: data[index]['role_ids'] } } });
+        }
+        return Promise.resolve(data);
+      });
+
     return Promise.resolve(returnParams);
   }
   /** COMMAND RELATED REPOSITORIES:
