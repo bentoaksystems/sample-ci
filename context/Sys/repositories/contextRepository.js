@@ -12,7 +12,7 @@ class ContextRepository {
     const returnContextHooks = [];
     await ContextHook.model()
       .findAll({ raw: true })
-      .map(element => {
+      .forEach(element => {
         if (!contexts.includes(element.context)) {
           contexts.push(element.context);
           element.hooks = [element.hook];
