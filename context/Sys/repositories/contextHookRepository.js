@@ -44,7 +44,7 @@ class contextHookRepository {
    *
    * **/
 
-  async getIContextHookeById(id) {
+  async getContextHookeById(id) {
     if (!id) throw new Error('context_hook_id is not defined');
     const contextHook = await ContextHook.model().findOne({
       where: {id}
@@ -54,27 +54,6 @@ class contextHookRepository {
     } else {
       throw new Error('no context found');
     }
-  }
-
-  async getByContextHookNames(context, hook) {
-    const ch = await ContextHook.model().findOne({
-      where: {
-        $and: [
-          db.sequelize().where(db.sequelize().fn('LOWER', db.sequelize().col('context')), {$iLike: context}),
-          db.sequelize().where(db.sequelize().fn('LOWER', db.sequelize().col('hook')), {$iLike: hook})
-        ]
-      },
-      includes: [
-        {
-          model: ContextHookPolicy.model(),
-        }
-      ]
-    });
-
-    if (!ch)
-      throw new Error('There is no context-hook with these context and hook names');
-
-    return new IContextHook(ch.id, ch.context_hook_policys);
   }
 
   async addPolicy(id, data) {

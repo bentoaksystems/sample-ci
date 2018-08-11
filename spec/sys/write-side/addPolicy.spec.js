@@ -58,8 +58,7 @@ describe('Add policy to specific context hooks', () => {
           name: 'addPolicy',
           is_command: true,
           payload: {
-            context: 'c1',
-            hook: 'H1',
+            id: ContextHooks[0].id,
             document_type_id: dType.id,
             is_required: true,
             role_ids: [role1.id, role2.id],
@@ -111,8 +110,7 @@ describe('Add policy to specific context hooks', () => {
           name: 'addPolicy',
           is_command: true,
           payload: {
-            context: 'c1',
-            hook: 'H1',
+            id: ContextHooks[0].id,            
             document_type_id: dType.id,
             is_required: true,
             role_ids: [role1.id, role2.id],
@@ -142,7 +140,7 @@ describe('Add policy to specific context hooks', () => {
     }
   });
 
-  it("should get error when context or hook name is not defined", async function (done) {
+  it("should get error when context_hook'id is not defined", async function (done) {
     try {
       const dType = (await TypeDictionary.model().create({name: 'lab result', type: 'document'})).get({plain: true});
       const role1 = (await Role.model().create({name: 'role1'})).get({plain: true});
@@ -155,8 +153,7 @@ describe('Add policy to specific context hooks', () => {
           context: 'Sys',
           name: 'addPolicy',
           is_command: true,
-          payload: {
-            hook: 'H1',
+          payload: {            
             document_type_id: dType.id,
             is_required: true,
             role_ids: [role1.id, role2.id],
@@ -175,7 +172,7 @@ describe('Add policy to specific context hooks', () => {
     }
   });
 
-  it("should get error when there is no context-hook matched to passed context and hook name", async function (done) {
+  it("should get error when there is no context-hook with passed id", async function (done) {
     try {
       const dType = (await TypeDictionary.model().create({name: 'lab result', type: 'document'})).get({plain: true});
       const role1 = (await Role.model().create({name: 'role1'})).get({plain: true});
@@ -189,8 +186,7 @@ describe('Add policy to specific context hooks', () => {
           name: 'addPolicy',
           is_command: true,
           payload: {
-            context: 'c5',
-            hook: 'H1',
+            id: ContextHooks[5],            
             document_type_id: dType.id,
             is_required: true,
             role_ids: [role1.id, role2.id],
@@ -222,7 +218,7 @@ describe('Add policy to specific context hooks', () => {
           name: 'addPolicy',
           is_command: true,
           payload: {
-            hook: 'H1',
+            id: ContextHooks[0].id,            
             is_required: true,
             role_ids: [role1.id, role2.id],
           }
@@ -255,8 +251,7 @@ describe('Add policy to specific context hooks', () => {
           name: 'addPolicy',
           is_command: true,
           payload: {
-            context: 'c5',
-            hook: 'H1',
+            id: ContextHooks[0].id,
             document_type_id: dType.id,
             form_id: form.id,
             is_required: true,
@@ -276,7 +271,7 @@ describe('Add policy to specific context hooks', () => {
     }
   });
 
-  it("should get error roles_id is not defined or roles_id is an empty array", async function(done) {
+  it("should get error roles_id is an empty array", async function(done) {
     try {
       const dType = (await TypeDictionary.model().create({name: 'lab result', type: 'document'})).get({plain: true});
 
@@ -288,8 +283,7 @@ describe('Add policy to specific context hooks', () => {
           name: 'addPolicy',
           is_command: true,
           payload: {
-            context: 'c5',
-            hook: 'H1',
+            id: ContextHooks[0].id,
             document_type_id: dType.id,
             is_required: true,
             role_ids: [],
@@ -320,8 +314,7 @@ describe('Add policy to specific context hooks', () => {
           name: 'addPolicy',
           is_command: true,
           payload: {
-            context: 'c5',
-            hook: 'H1',
+            id: ContextHooks[0].id,            
             document_type_id: dType.id,
             is_required: true,
           }
@@ -353,8 +346,7 @@ describe('Add policy to specific context hooks', () => {
           name: 'addPolicy',
           is_command: true,
           payload: {
-            context: 'c1',
-            hook: 'H1',
+            id: ContextHooks[0].id,
             document_type_id: dType.id,
             is_required: true,
           }
