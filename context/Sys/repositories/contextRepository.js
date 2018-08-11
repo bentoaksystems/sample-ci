@@ -4,11 +4,23 @@ const ContextHook = require('../../../infrastructure/db/models/context_hook.mode
 const ContextHookPolicy = require('../../../infrastructure/db/models/context_hook_policy.model');
 const Form = require('../../../infrastructure/db/models/form.model');
 const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
-
+const IContextHook = require('../write-side/aggregates/contextHook');
 class ContextRepository {
   /**
    * QUERY RELATED REPOSOTIROES:
    */
+
+  async getIContextHookeById(id) {
+    if (!id) throw new Error('context_hook_id is not defined');
+    const contextHook = await ContextHook.model().findOne({
+      where: { id }
+    });
+    if (contextHook) {
+      return new IContextHook(contextHook.id);
+    } else {
+      throw new Error('no context found');
+    }
+  }
 
   async loadHooks() {
     const contexts = [];
@@ -43,6 +55,11 @@ class ContextRepository {
    * e.g: IForm  = require ('../write-side/aggregates/form.js')
    *
    * **/
+
+  denyPolicyContexHook(context_hook_id, policy_id) {
+    const query = { where: { id: policy_id, context_hook_id } };
+    return ContextHookPolicy.model().destroy(query);
+  }
 }
 
 module.exports = ContextRepository;
