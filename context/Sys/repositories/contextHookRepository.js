@@ -15,19 +15,18 @@ class contextHookRepository {
   async loadHooks() {
     const contexts = [];
     const returnContextHooks = [];
-    await ContextHook.model()
-      .findAll({ raw: true })
-      .forEach(element => {
-        if (!contexts.includes(element.context)) {
-          contexts.push(element.context);
-          element.hooks = [element.hook];
-          delete element.hook;
-          returnContextHooks.push(element);
-        } else {
-          const findIndex = returnContextHooks.findIndex(el => el.context === element.context);
-          returnContextHooks[findIndex]['hooks'].push(element.hook);
-        }
-      });
+    const context_hooks = await ContextHook.model().findAll({ raw: true });
+    context_hooks.forEach((element, index) => {
+      if (!contexts.includes(element.context)) {
+        contexts.push(element.context);
+        element.hooks = [element.hook];
+        delete element.hook;
+        returnContextHooks.push(element);
+      } else {
+        const findIndex = returnContextHooks.findIndex(el => el.context === element.context);
+        returnContextHooks[findIndex]['hooks'].push(element.hook);
+      }
+    });
     return Promise.resolve(returnContextHooks);
   }
 
