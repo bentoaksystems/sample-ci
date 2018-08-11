@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const moment = require('moment');
 const dbHelper = require('../../../utils/db-helper');
 const helper = require('../../../utils/helpers');
 const env = require('../../../env');
@@ -10,7 +11,7 @@ const Document = require('../../../infrastructure/db/models/document.model');
 const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
 
 describe('Remove patient', () => {
-  let userId, rpJar, patient, emr, emrDoc, document;
+  let userId, rpJar, patient, emr, emrDoc, document, exitedPatient;
 
   beforeEach(async done => {
     await db.isReady(true);
@@ -26,6 +27,11 @@ describe('Remove patient', () => {
 
     document = (await Document.model().create({file_path: 'path/test', context: 'Reception'})).get({plain: true});
     emrDoc = (await EMRDocs.model().create({emr_id: emr.id, document_id: document.id})).get({plain: true});
+
+    // Add exited patient
+    const eType = (await TypeDictionary.model().create({name: 'خارج شده', type: 'exit'})).get({plain: true});
+    exitedPatient = (await Person.model().create({firstname: 'Exited', surname: 'Patient'})).get({plain: true});
+    await EMR.model().create({person_id: exitedPatient.id, patient_type_id: pType.id, exit_type_id: eType.id, exit_date: moment('2010-10-10')});
 
     done();
   });
@@ -86,6 +92,32 @@ describe('Remove patient', () => {
 
       this.fail('Remove patient without specific id');
 
+      done();
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
+    }
+  });
+
+  it("should get error when removing exited patient", async function (done) {
+    try {
+      const res = await rp({
+        method: 'post',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Reception',
+          is_command: true,
+          name: 'removePatient',
+          payload: {
+            id: exitedPatient.id,
+          }
+        },
+        json: true,
+        jar: rpJar,
+        resolveWithFullResponse: true,
+      });
+
+      this.fail("Exited patient can removed from database");
       done();
     } catch (err) {
       expect(err.statusCode).toBe(500);

@@ -11,6 +11,9 @@ module.exports = class Patient {
     if (!payload.id)
       throw new Error('There is no patient id');
 
+    if (this.emr.exit_type_id || this.emr.exit_date)
+      throw new Error("Patient is exited before. Cannot exit again");
+
     const PatientRepository = require('../../repositories/patientRepository');
     const patientRepository = new PatientRepository();
 
@@ -69,6 +72,9 @@ module.exports = class Patient {
     if (!payload.emr_doc_type_id || !payload.document_id)
       throw new Error("incomplete data for assigning document to emr (patient)");
 
+    if (this.emr.exit_type_id || this.emr.exit_date)
+      throw new Error("Patient is exited before. Cannot exit again");
+
     const PatientRepository = require('../../repositories/patientRepository');
 
     return (new PatientRepository()).addDocumentToPatientEMR(this.emr.id, payload.document_id, payload.emr_doc_type_id)
@@ -78,6 +84,9 @@ module.exports = class Patient {
   }
 
   async patientRemoved() {
+    if (this.emr.exit_type_id || this.emr.exit_date)
+      throw new Error("Patient is exited before. Cannot exit again");
+
     const IDocument = require('../../../DMS/write-side/aggregate/document');
     const document = new IDocument();
     await document.documentsRemoved(this.emrDocs.map(el => el.document_id));
@@ -91,7 +100,10 @@ module.exports = class Patient {
   async patientExitted(id, exit_type_id) {
     if (!id || !exit_type_id)
       throw new Error("incomplete data to exit patient");
-    
+
+    if (this.emr.exit_type_id || this.emr.exit_date)
+      throw new Error("Patient is exited before. Cannot exit again");
+
     const exitData = {
       exit_type_id: exit_type_id,
       exit_date: new Date(),

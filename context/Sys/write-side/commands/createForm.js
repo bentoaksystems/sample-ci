@@ -15,7 +15,7 @@ class CreateForm extends BaseCommand {
       if (!payload)
         throw  errors.payloadIsNotDefined;
 
-      ['name', 'context', 'formFieldList'].forEach(el => {
+      ['name', 'formFieldList'].forEach(el => {
         if (!payload[el])
           throw errors.incompleteData;
         if (el === 'formFieldList' && !el.length)

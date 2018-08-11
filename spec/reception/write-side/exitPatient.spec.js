@@ -11,7 +11,7 @@ const Document = require('../../../infrastructure/db/models/document.model');
 const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
 
 describe('Exit Patient', () => {
-  let userId, rpJar, patient;
+  let userId, rpJar, patient, exitedPatient;
 
   beforeEach(async done => {
     await db.isReady(true);
@@ -21,12 +21,17 @@ describe('Exit Patient', () => {
 
     // Add patient
     const pType = (await TypeDictionary.model().create({name: 'دیالیزی', type: 'patient'})).get({plain: true});
+    const eType = (await TypeDictionary.model().create({name: 'خارج شده', type: 'exit'})).get({plain: true});
 
     patient = (await Person.model().create({firstname: 'Test', surname: 'Patient'})).get({plain: true});
-    emr = (await EMR.model().create({person_id: patient.id, patient_type_id: pType.id})).get({plain: true});
+    let emr = (await EMR.model().create({person_id: patient.id, patient_type_id: pType.id})).get({plain: true});
 
-    document = (await Document.model().create({file_path: 'path/test', context: 'Reception'})).get({plain: true});
-    emrDoc = (await EMRDocs.model().create({emr_id: emr.id, document_id: document.id})).get({plain: true});
+    let document = (await Document.model().create({file_path: 'path/test', context: 'Reception'})).get({plain: true});
+    let emrDoc = (await EMRDocs.model().create({emr_id: emr.id, document_id: document.id})).get({plain: true});
+
+    // Create exited patient
+    exitedPatient = (await Person.model().create({firstname: 'Exited', surname: 'Patient'})).get({plain: true});
+    emr = (await EMR.model().create({person_id: exitedPatient.id, patient_type_id: pType.id, exit_date: moment('2010-10-10'), exit_type: eType.id})).get({plain: true});
 
     done();
   });
@@ -114,6 +119,35 @@ describe('Exit Patient', () => {
       });
 
       this.fail("Patient can be exit without defined exit type id");
+      done();
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
+    }
+  });
+
+  it("should get error when specified patient is exited", async function(done) {
+    try {
+      const eType = (await TypeDictionary.model().create({name: 'health', type: 'exit'})).get({plain: true});
+
+      const res = await rp({
+        method: 'post',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Reception',
+          is_command: true,
+          name: 'exitPatient',
+          payload: {
+            id: exitedPatient.id,
+            exit_type_id: eType.id,
+          }
+        },
+        json: true,
+        jar: rpJar,
+        resolveWithFullResponse: true,
+      });
+
+      this.fail("Patient can be exit agian (For second time)");
       done();
     } catch (err) {
       expect(err.statusCode).toBe(500);

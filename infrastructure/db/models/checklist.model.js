@@ -1,10 +1,8 @@
 const Sequelize = require('sequelize');
 
-let Form;
-
+let Checklist;
 const init = (seq) => {
-
-  Form = seq.define('form', {
+  Checklist = seq.define('checklist', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
@@ -13,16 +11,18 @@ const init = (seq) => {
     name: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
+    },
+    checklist_line_ids: {
+      type: Sequelize.ARRAY(Sequelize.UUID),
     }
   }, {
-    tableName: 'form',
-    timestamps: false,
-    underscored: true,
-  })
-}
+      tableName: 'checklist',
+      timestamps: false,
+      underscored: true,
+    });
+};
 
 module.exports = {
   init,
-  model: () => Form,
-}
+  model: () => Checklist,
+};

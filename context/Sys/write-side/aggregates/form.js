@@ -1,18 +1,16 @@
 const FormRepository = require('../../repositories/FormRepository');
 
 class Form {
-  constructor(id, user_id, name, context, formFieldList) {
+  constructor(id, user_id, name) {
     this.id = id;
     this.user_id = user_id;
     this.name = name;
-    this.context = context;
   }
 
   assignFormBasicInfo(payload, user) {
     this.form_info = {
       user_id: user.id,
       name: payload.name,
-      context: payload.context,
     };
   }
 
