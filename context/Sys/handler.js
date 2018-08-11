@@ -14,7 +14,8 @@ module.exports = class SysHandler extends BaseHandler {
       showSystemActions: require('./read-side/showSystemActions'),
       showSystemRoles: require('./read-side/showSystemRoles'),
       showRoleAccecibleActions: require('./read-side/showRoleAccecibleActions'),
-      showContextHooks: require('./read-side/showContextHooks')
+      showContextHooks: require('./read-side/showContextHooks'),
+      showPoliciesContextHook: require('./read-side/showPoliciesContextHook')
     };
 
     const commands = {
@@ -26,7 +27,8 @@ module.exports = class SysHandler extends BaseHandler {
       denyPageAccess: require('./write-side/commands/denyPageAccess'),
       defineTypeDic: require('./write-side/commands/defineTypeDic'),
       grantActionAcess: require('./write-side/commands/grantActionAcess'),
-      denyActionAccess: require('./write-side/commands/denyActionAccess')
+      denyActionAccess: require('./write-side/commands/denyActionAccess'),
+      denyPolicyContexHook: require('./write-side/commands/denyPolicyContexHook')
     };
 
     super(queries, commands);
