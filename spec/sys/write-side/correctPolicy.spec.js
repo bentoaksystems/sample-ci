@@ -61,7 +61,7 @@ describe('Correct exist policy details', () => {
     done();
   });
 
-  it("should update is_required part of policy", async function(done) {
+  it("should update is_required part of policy", async function (done) {
     try {
       this.done = done;
 
@@ -73,6 +73,7 @@ describe('Correct exist policy details', () => {
           name: 'correctPolicy',
           is_command: true,
           payload: {
+            context_hook_id: ContextHooks[0].id,
             id: contextHookPolicy.id,
             is_required: false,
           }
@@ -83,18 +84,18 @@ describe('Correct exist policy details', () => {
       });
 
       expect(res.statusCode).toBe(200);
-      
+
       const chp = (await ContextHookPolicy.model().findOne({where: {id: contextHookPolicy.id}})).get({plain: true});
 
       expect(chp.is_required).toBe(false);
 
       done();
-    } catch(err) {
+    } catch (err) {
       helpers.errorHandler.bind(this)(err);
     }
   });
 
-  it("should change role access (ids)", async function(done) {
+  it("should change role access (ids)", async function (done) {
     try {
       this.done = done;
 
@@ -106,6 +107,7 @@ describe('Correct exist policy details', () => {
           name: 'correctPolicy',
           is_command: true,
           payload: {
+            context_hook_id: ContextHooks[0].id,
             id: contextHookPolicy.id,
             role_ids: [roles[0].id],
           }
@@ -116,19 +118,98 @@ describe('Correct exist policy details', () => {
       });
 
       expect(res.statusCode).toBe(200);
-      
+
       const chp = (await ContextHookPolicy.model().findOne({where: {id: contextHookPolicy.id}})).get({plain: true});
 
       expect(chp.role_ids.length).toBe(1);
       expect(chp.role_ids[0]).toBe(roles[0].id);
 
       done();
-    } catch(err) {
+    } catch (err) {
       helpers.errorHandler.bind(this)(err);
     }
   });
 
-  it("should change policJson data and target type", async function(done) {
+  it("should change policJson data and target type", async function (done) {
+    try {
+      this.done = done;
+
+      const checklist = (await Checklist.model().create({name: 'cl'})).get({plain: true});
+
+      const res = await rp({
+        method: 'post',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Sys',
+          name: 'correctPolicy',
+          is_command: true,
+          payload: {
+            context_hook_id: ContextHooks[0].id,
+            id: contextHookPolicy.id,
+            checklist_id: checklist.id,
+            policy_json: {
+              b: '1',
+              c: '2',
+            }
+          }
+        },
+        jar: rpJar,
+        json: true,
+        resolveWithFullResponse: true,
+      });
+
+      expect(res.statusCode).toBe(200);
+
+      const chp = (await ContextHookPolicy.model().findOne({where: {id: contextHookPolicy.id}})).get({plain: true});
+
+      expect(chp.document_type_id).toBeNull();
+      expect(chp.checklist_id).toBe(checklist.id);
+      expect(Object.keys(chp.policy_json).length).toBe(2);
+      expect(Object.keys(chp.policy_json)).toContain('b');
+      expect(Object.keys(chp.policy_json)).toContain('c');
+
+      done();
+    } catch (err) {
+      helpers.errorHandler.bind(this)(err);
+    }
+  });
+
+  it("should get error context_hook_policy'id is not passed", async function (done) {
+    try {
+      this.done = done;
+
+      const checklist = (await Checklist.model().create({name: 'cl'})).get({plain: true});
+
+      const res = await rp({
+        method: 'post',
+        uri: `${env.appAddress}/api`,
+        body: {
+          context: 'Sys',
+          name: 'correctPolicy',
+          is_command: true,
+          payload: {
+            context_hook_id: ContextHooks[0].id,
+            checklist_id: checklist.id,
+            policy_json: {
+              b: '1',
+              c: '2',
+            }
+          }
+        },
+        jar: rpJar,
+        json: true,
+        resolveWithFullResponse: true,
+      });
+
+      this.fail('Context-Hook-Policy has updated without context_hook_policy id');
+      done();
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
+    }
+  });
+
+  it("should get error context_hook'id is not passed", async function (done) {
     try {
       this.done = done;
 
@@ -155,23 +236,15 @@ describe('Correct exist policy details', () => {
         resolveWithFullResponse: true,
       });
 
-      expect(res.statusCode).toBe(200);
-      
-      const chp = (await ContextHookPolicy.model().findOne({where: {id: contextHookPolicy.id}})).get({plain: true});
-
-      expect(chp.document_type_id).toBeNull();
-      expect(chp.checklist_id).toBe(checklist.id);
-      expect(Object.keys(chp.policy_json).length).toBe(2);
-      expect(Object.keys(chp.policy_json)).toContain('b');
-      expect(Object.keys(chp.policy_json)).toContain('c');
-
+      this.fail('Context-Hook-Policy has updated without context_hook id');
       done();
-    } catch(err) {
-      helpers.errorHandler.bind(this)(err);
+    } catch (err) {
+      expect(err.statusCode).toBe(500);
+      done();
     }
   });
 
-  it("should get error context_hook_policy'id is not passed", async function(done) {
+  it("should get error when multiple target ids passed to correct", async function (done) {
     try {
       this.done = done;
 
@@ -185,6 +258,8 @@ describe('Correct exist policy details', () => {
           name: 'correctPolicy',
           is_command: true,
           payload: {
+            id: contextHookPolicy.id,
+            form_id: checklist.id,
             checklist_id: checklist.id,
             policy_json: {
               b: '1',
@@ -197,9 +272,9 @@ describe('Correct exist policy details', () => {
         resolveWithFullResponse: true,
       });
 
-      this.fail('Context-Hook-Policy has updated without specified id');
+      this.fail('Context-Hook-Policy has updated with multiple target ids');
       done();
-    } catch(err) {
+    } catch (err) {
       expect(err.statusCode).toBe(500);
       done();
     }

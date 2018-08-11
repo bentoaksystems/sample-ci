@@ -47,10 +47,16 @@ class contextHookRepository {
   async getContextHookeById(id) {
     if (!id) throw new Error('context_hook_id is not defined');
     const contextHook = await ContextHook.model().findOne({
-      where: {id}
+      where: {id},
+      include: [
+        {
+          model: ContextHookPolicy.model(),
+        }
+      ]
     });
+
     if (contextHook) {
-      return new IContextHook(contextHook.id);
+      return new IContextHook(contextHook.id, contextHook.context_hook_policies);
     } else {
       throw new Error('no context found');
     }
@@ -68,9 +74,13 @@ class contextHookRepository {
     });
   }
 
-  denyPolicyContexHook(context_hook_id, policy_id) {
+  async denyPolicyContexHook(context_hook_id, policy_id) {
     const query = {where: {id: policy_id, context_hook_id}};
     return ContextHookPolicy.model().destroy(query);
+  }
+
+  async correctPolicy(id, data) {
+    return ContextHookPolicy.model().update(data, {where: {id}});
   }
 }
 

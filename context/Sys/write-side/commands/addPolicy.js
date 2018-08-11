@@ -15,14 +15,12 @@ module.exports = class AddPolicy extends BaseCommand {
         throw new Error("There is not role id to set");
 
       let passedIds = 0;
-      if (payload.checklist_id)
-        passedIds++;
-
-      if (payload.form_id)
-        passedIds++;
-
-      if (payload.document_typd_id)
-        passedIds++;
+      
+      ['checklist_id', 'form_id', 'document_type_id'].forEach(el => {
+        if (payload[el]) {
+          passedIds++;
+        }
+      });
 
       if (passedIds > 1)
         throw new Error('more than one policy target id were passed');

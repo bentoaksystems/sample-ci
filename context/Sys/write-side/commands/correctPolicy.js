@@ -11,11 +11,14 @@ module.exports = class CorrectPolicy extends BaseCommand {
       if (!payload.id)
         throw new Error("context_hook_policy'id is not defined");
 
-      const repo = new contextHookRepository();
-      const contextHook = await repo.getById(payload.id);
-      
-      return super.execute(async () => {
+      if (!payload.context_hook_id)
+        throw new Error("context_hook'id is not defined");
 
+      const repo = new contextHookRepository();
+      const contextHook = await repo.getContextHookeById(payload.context_hook_id);
+
+      return super.execute(async () => {
+        return contextHook.policyCorrected(payload);
       });
     } catch (err) {
       throw err;
