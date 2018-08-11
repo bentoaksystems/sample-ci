@@ -26,7 +26,8 @@ module.exports = class SysHandler extends BaseHandler {
       denyPageAccess: require('./write-side/commands/denyPageAccess'),
       defineTypeDic: require('./write-side/commands/defineTypeDic'),
       grantActionAcess: require('./write-side/commands/grantActionAcess'),
-      denyActionAccess: require('./write-side/commands/denyActionAccess')
+      denyActionAccess: require('./write-side/commands/denyActionAccess'),
+      addPolicy: require('./write-side/commands/addPolicy'),
     };
 
     super(queries, commands);
