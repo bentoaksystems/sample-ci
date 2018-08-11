@@ -9,7 +9,7 @@ const Form = require('../../../infrastructure/db/models/form.model');
 const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
 const Role = require('../../../infrastructure/db/models/role.model');
 
-describe('Get c', () => {
+describe('Get Policies Context-Hook', () => {
   let contextHookArr = [
     { context: 'context1', hook: 'hook1' },
     { context: 'context1', hook: 'hook2' },
@@ -117,7 +117,7 @@ describe('Get c', () => {
       const objectBack = res.body;
       expect(objectBack.length).toBe(1);
       expect(objectBack[0].role_ids.length).toBe(2);
-      expect(objectBack[0].role_ids).toMatch([roles[0].id, roles[1].id]);
+      expect(objectBack[0].role_ids[0].name).toBe('role0');
       expect(objectBack[0].context_hook_id).toBe(contextHooks[0].id);
       done();
     } catch (err) {

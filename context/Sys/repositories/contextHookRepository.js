@@ -2,6 +2,9 @@ const errors = require('../../../utils/errors.list');
 const db = require('../../../infrastructure/db');
 const ContextHook = require('../../../infrastructure/db/models/context_hook.model');
 const ContextHookPolicy = require('../../../infrastructure/db/models/context_hook_policy.model');
+const Form = require('../../../infrastructure/db/models/form.model');
+const Role = require('../../../infrastructure/db/models/role.model');
+const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
 const IContextHook = require('../write-side/aggregates/contextHook');
 
 class contextHookRepository {
@@ -13,7 +16,7 @@ class contextHookRepository {
     const contexts = [];
     const returnContextHooks = [];
     await ContextHook.model()
-      .findAll({raw: true})
+      .findAll({ raw: true })
       .forEach(element => {
         if (!contexts.includes(element.context)) {
           contexts.push(element.context);
@@ -30,11 +33,19 @@ class contextHookRepository {
 
   async loadPolicies(context_hook_id) {
     const query = {
-      where: {context_hook_id},
-      include: [{model: ContextHook.model(), required: true}, {model: Form.model()}, {model: TypeDictionary.model()}],
+      where: { context_hook_id },
+      include: [{ model: ContextHook.model(), required: true }, { model: Form.model() }, { model: TypeDictionary.model() }],
       raw: true
     };
-    const returnParams = await ContextHookPolicy.model().findAll(query);
+    const returnParams = await ContextHookPolicy.model()
+      .findAll(query)
+      .then(async data => {
+        for (let index = 0; index < data.length; index++) {
+          data[index]['role_ids'] = await Role.model().findAll({ where: { id: { $in: data[index]['role_ids'] } } });
+        }
+        return Promise.resolve(data);
+      });
+
     return Promise.resolve(returnParams);
   }
 
@@ -47,10 +58,10 @@ class contextHookRepository {
   async getContextHookeById(id) {
     if (!id) throw new Error('context_hook_id is not defined');
     const contextHook = await ContextHook.model().findOne({
-      where: {id},
+      where: { id },
       include: [
         {
-          model: ContextHookPolicy.model(),
+          model: ContextHookPolicy.model()
         }
       ]
     });
@@ -70,17 +81,17 @@ class contextHookRepository {
       policy_json: data.policy_json,
       form_id: data.form_id,
       document_type_id: data.document_type_id,
-      checklist_id: data.checklist_id,
+      checklist_id: data.checklist_id
     });
   }
 
   async denyPolicyContexHook(context_hook_id, policy_id) {
-    const query = {where: {id: policy_id, context_hook_id}};
+    const query = { where: { id: policy_id, context_hook_id } };
     return ContextHookPolicy.model().destroy(query);
   }
 
   async correctPolicy(id, data) {
-    return ContextHookPolicy.model().update(data, {where: {id}});
+    return ContextHookPolicy.model().update(data, { where: { id } });
   }
 }
 
