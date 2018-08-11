@@ -1,4 +1,4 @@
-const ContextRepository = require('../../repositories/contextRepository');
+const contextHookRepository = require('../../repositories/contextHookRepository');
 const BaseCommand = require('../../../../utils/base-command');
 
 module.exports = class AddPolicy extends BaseCommand {
@@ -24,7 +24,7 @@ module.exports = class AddPolicy extends BaseCommand {
       if (passedIds > 1)
         throw new Error('more than one policy target id were passed');
 
-      const repo = new ContextRepository();
+      const repo = new contextHookRepository();
       const contextHook = await repo.getByContextHookNames(payload.context, payload.hook);
 
       return super.execute(async () => {

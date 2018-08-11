@@ -125,14 +125,21 @@ isReady = (isTest = false) => {
     })
     .then(() => {
       // Set constraints on tables manually
-      return Promise.all([
-        sequelize.query("ALTER TABLE context_hook_policy ADD CONSTRAINT unique_ids UNIQUE (form_id, checklist_id, document_type_id, context_hook_id);"),
-        sequelize.query("ALTER TABLE context_hook_policy ADD CONSTRAINT only_one_type CHECK (" +
-          "(form_id is not null and checklist_id is null and document_type_id is null) or" +
-          "(form_id is null and checklist_id is not null and document_type_id is null) or" +
-          "(form_id is null and checklist_id is null and document_type_id is not null)" +
-          ")"),
-      ]);
+      const queries = [
+        "ALTER TABLE context_hook_policy DROP CONSTRAINT IS EXISTS unique_ids",
+        "ALTER TABLE context_hook_policy DROP CONSTRAINT IS EXISTS only_one_type",
+        "ALTER TABLE context_hook_policy ADD CONSTRAINT unique_ids UNIQUE (form_id, checklist_id, document_type_id, context_hook_id);",
+        "ALTER TABLE context_hook_policy ADD CONSTRAINT only_one_type CHECK (" +
+        "(form_id is not null and checklist_id is null and document_type_id is null) or" +
+        "(form_id is null and checklist_id is not null and document_type_id is null) or" +
+        "(form_id is null and checklist_id is null and document_type_id is not null)" +
+        ")"
+      ];
+
+      for (let index = 0; index < queries.length; index++)
+        await sequelize.query(queries[index]);
+
+      return Promise.resolve();
     })
     .catch(err => {
       console.error('-> ', 'Unable to connect to the database:', err);

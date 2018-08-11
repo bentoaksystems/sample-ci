@@ -4,7 +4,7 @@ const ContextHook = require('../../../infrastructure/db/models/context_hook.mode
 const ContextHookPolicy = require('../../../infrastructure/db/models/context_hook_policy.model');
 const IContextHook = require('../write-side/aggregates/contextHook');
 
-class ContextRepository {
+class contextHookRepository {
   /**
    * QUERY RELATED REPOSOTIROES:
    */
@@ -70,4 +70,4 @@ class ContextRepository {
   }
 }
 
-module.exports = ContextRepository;
+module.exports = contextHookRepository;

@@ -9,7 +9,7 @@ module.exports = class Context {
       this.policies.some(el => el.form_id === targetId.form_id && el.document_type_id === targetId.document_type_id && el.checklist_id === targetId.checklist_id))
       throw new Error('There is policy for specified target');
 
-    const ContextRepository = require('../../repositories/contextRepository');
-    return new ContextRepository().addPolicy(this.id, policy_data);
+    const contextHookRepository = require('../../repositories/contextHookRepository');
+    return new contextHookRepository().addPolicy(this.id, policy_data);
   }
 }
