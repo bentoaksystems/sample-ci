@@ -1,6 +1,9 @@
 const errors = require('../../../utils/errors.list');
 const db = require('../../../infrastructure/db');
 const ContextHook = require('../../../infrastructure/db/models/context_hook.model');
+const ContextHookPolicy = require('../../../infrastructure/db/models/context_hook_policy.model');
+const Form = require('../../../infrastructure/db/models/form.model');
+const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
 
 class ContextRepository {
   /**
@@ -24,6 +27,16 @@ class ContextRepository {
         }
       });
     return Promise.resolve(returnContextHooks);
+  }
+
+  async loadPolicies(context_hook_id) {
+    const query = {
+      where: { context_hook_id },
+      include: [{ model: ContextHook.model(), required: true }, { model: Form.model() }, { model: TypeDictionary.model() }],
+      raw: true
+    };
+    const returnParams = await ContextHookPolicy.model().findAll(query);
+    return Promise.resolve(returnParams);
   }
   /** COMMAND RELATED REPOSITORIES:
    * If a domain model is being requested by repositoris it should be returnd as an instance of domain model (new IForm())
