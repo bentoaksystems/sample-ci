@@ -83,7 +83,7 @@ describe("Search For Personnel", () => {
         }
     });
 
-    it('should search for all the personnel with desired information', async function (done) {
+    it('should search for all the personnel', async function (done) {
         try {
             this.done = done;
             const res = await rp({
@@ -93,7 +93,7 @@ describe("Search For Personnel", () => {
                     payload: {
                         name: '',
                         role: '',
-                        offset: 1, // exclude admin
+                        offset: 0,
                         limit: 8,
                     }
                 }, baseBody),
@@ -103,7 +103,8 @@ describe("Search For Personnel", () => {
             });
             expect(res.statusCode).toBe(200);
 
-            const personnel = res.body;
+            expect(res.body.count).toBe(2);
+            const personnel = res.body.data;
             expect(personnel.length).toBe(2);
             expect(personnel[0].roles[0]).toEqual(roles[0].name);
             expect(personnel[0].roles[1]).toEqual(roles[1].name);
@@ -111,6 +112,90 @@ describe("Search For Personnel", () => {
             expect(personnel[1].roles[0]).toEqual(roles[1].name);
             expect(personnel[0].username).toEqual(user.username);
             expect(personnel[1].username).toBeFalsy();
+            done();
+        } catch (err) {
+            helpers.errorHandler.bind(this)(err);
+        }
+    });
+
+    it('should search for the personnel with offset and not return admin', async function (done) {
+        try {
+            this.done = done;
+            const res = await rp({
+                method: 'POST',
+                uri: `${env.appAddress}/api`,
+                body: Object.assign({
+                    payload: {
+                        name: '',
+                        role: '',
+                        offset: 0,
+                        limit: 8,
+                    }
+                }, baseBody),
+                jar: rpJar,
+                json: true,
+                resolveWithFullResponse: true,
+            });
+            expect(res.statusCode).toBe(200);
+
+            expect(res.body.count).toBe(2);
+            const personnel = res.body.data;
+            expect(personnel.length).toBe(2);
+            expect(personnel[0].roles[0]).toEqual(roles[0].name);
+            expect(personnel[0].roles[1]).toEqual(roles[1].name);
+            expect(personnel[0].roles[2]).toEqual(roles[2].name);
+            expect(personnel[1].roles[0]).toEqual(roles[1].name);
+            expect(personnel[0].username).toEqual(user.username);
+            expect(personnel[1].username).toBeFalsy();
+            done();
+        } catch (err) {
+            helpers.errorHandler.bind(this)(err);
+        }
+    });
+
+    it('should search for the personnel with offset and limit', async function (done) {
+        try {
+            this.done = done;
+
+            const p = await Person.model().bulkCreate([
+                {firstname: '1', surname: '2', national_code: 1233211234, title: 'm'},
+                {firstname: '2', surname: '3', national_code: 1231354363, title: 'f'},
+                {firstname: '3', surname: '4', national_code: 2413253453, title: 'm'},
+                {firstname: '4', surname: '5', national_code: 2356765742, title: 'm'},
+            ]);
+            const s = await Staff.model().bulkCreate([
+                {person_id: p[0].id, role_id: roles[1].id},
+                {person_id: p[0].id, role_id: roles[2].id},
+                {person_id: p[1].id, role_id: roles[1].id},
+                {person_id: p[2].id, role_id: roles[1].id},
+                {person_id: p[3].id, role_id: roles[1].id},
+            ]);
+
+            const res = await rp({
+                method: 'POST',
+                uri: `${env.appAddress}/api`,
+                body: Object.assign({
+                    payload: {
+                        name: '',
+                        role: '',
+                        offset: 3,
+                        limit: 3,
+                    }
+                }, baseBody),
+                jar: rpJar,
+                json: true,
+                resolveWithFullResponse: true,
+            });
+            expect(res.statusCode).toBe(200);
+            expect(res.body.count).toBe(6);
+            const personnel = res.body.data;
+            expect(personnel.length).toBe(3);
+            expect(personnel[0].firstname).toEqual('4');
+            expect(personnel[1].firstname).toEqual('ali');
+            expect(personnel[2].firstname).toEqual('reza');
+            expect(personnel[0].roles[0]).toEqual(roles[1].name);
+            expect(personnel[1].roles[1]).toEqual(roles[1].name);
+            expect(personnel[2].roles[0]).toEqual(roles[1].name);
             done();
         } catch (err) {
             helpers.errorHandler.bind(this)(err);
@@ -137,7 +222,7 @@ describe("Search For Personnel", () => {
             });
             expect(res.statusCode).toBe(200);
 
-            const personnel = res.body;
+            const personnel = res.body.data;
             expect(personnel.length).toBe(1);
             expect(personnel[0].firstname).toBe(persons[0].firstname);
             done();
@@ -165,12 +250,73 @@ describe("Search For Personnel", () => {
                 resolveWithFullResponse: true,
             });
             expect(res.statusCode).toBe(200);
-
-            const personnel = res.body;
+            expect(res.body.count).toBe(2);
+            const personnel = res.body.data;
             expect(personnel.length).toBe(2);
             expect(personnel[0].roles).toContain(roles[1].name);
             expect(personnel[1].roles).toContain(roles[1].name);
 
+            done();
+        } catch (err) {
+            helpers.errorHandler.bind(this)(err);
+        }
+    });
+
+    it('should pass a real world search example with all constraints applied', async done => {
+        try {
+            this.done = done;
+            
+            const p = await Person.model().bulkCreate([
+                {firstname: 'ali reza', surname: 'mahdavi',     national_code: 3129583930, title: 'm'},
+                {firstname: 'ali 2',    surname: 'mohammad',    national_code: 3424234432, title: 'm'},
+                {firstname: 'alie',     surname: 'rezaii',      national_code: 2434234235, title: 'f'}, // NURSE
+                {firstname: 'mahmood',  surname: 'ali rezaii',  national_code: 5463562453, title: 'm'}, // NURSE
+                {firstname: 'ahmad',    surname: 'ali ahmadi',  national_code: 5663562453, title: 'm'},
+                {firstname: 'ali hasan',surname: 'mangooli',    national_code: 5663562454, title: 'm'},
+
+                {firstname: 'ali 3',    surname: 'hessam',      national_code: 5665462454, title: 'm'}, // Patient
+            ]);
+            const r = await Role.model().bulkCreate([
+                {name: 'Doctor 1'},
+                {name: 'Doctor 2'},
+
+                {name: 'Nurse 3'}
+            ]);
+            const s = await Staff.model().bulkCreate([
+                {person_id: p[0].id, role_id: r[0].id},
+                {person_id: p[1].id, role_id: r[0].id},
+                {person_id: p[4].id, role_id: r[1].id},
+                {person_id: p[5].id, role_id: r[1].id},
+
+                {person_id: p[0].id, role_id: roles[0].id},
+                {person_id: p[3].id, role_id: roles[0].id},
+                {person_id: p[2].id, role_id: r[2].id},
+                {person_id: p[3].id, role_id: r[2].id},
+            ]);
+
+            const res = await rp({
+                method: 'POST',
+                uri: `${env.appAddress}/api`,
+                body: Object.assign({
+                    payload: {
+                        name: 'ali',
+                        role: 'Doc',
+                        offset: 1,
+                        limit: 3,
+                    }
+                }, baseBody),
+                jar: rpJar,
+                json: true,
+                resolveWithFullResponse: true,
+            });
+            expect(res.statusCode).toBe(200);
+            expect(res.body.count).toBe(5);
+
+            const personnel = res.body.data;
+            expect(personnel.length).toBe(3);
+            expect(personnel[0].firstname).toEqual('ali');
+            expect(personnel[1].firstname).toEqual('ali 2');
+            expect(personnel[2].firstname).toEqual('ali hasan');
             done();
         } catch (err) {
             helpers.errorHandler.bind(this)(err);

@@ -11,27 +11,12 @@ module.exports = async (payload) => {
         });
 
         const personRepo = new PersonRepository();
-        let staff = await personRepo.searchPerson(payload);
+        let data = await personRepo.searchPerson(payload);
 
-        let personnel = [];
-        staff.forEach(s => {
-            if (!s.staffs)
-                return;
-            let roles = [];
-            s.staffs.forEach(r => {
-                if (!r.role || !r.role.name)
-                    return;
-                roles.push(r.role.name);
-            });
-            personnel.push({
-                person_id: s.id,
-                firstname: s.firstname,
-                surname: s.surname,
-                roles,
-                username: s.user && s.user.username || null,
-            });
+        return Promise.resolve({
+            count: data.count,
+            data: data.rows
         });
-        return Promise.resolve(personnel);
     } catch (err) {
         throw err;
     }
