@@ -44,7 +44,7 @@ describe("Check user authentication", () => {
       this.done = done;
       const user = await dbHelper.addUser();
       const page = await dbHelper.addPage();
-      await dbHelper.assignPageToRole(user.role.id, page.id);
+      await dbHelper.assignPageToRole(user.roles[0].id, page.id);
       const res = await rp({
         method: 'POST',
         uri: `${env.appAddress}/api/login`,
