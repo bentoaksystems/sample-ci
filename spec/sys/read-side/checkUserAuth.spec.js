@@ -39,35 +39,7 @@ describe("Check user authentication", () => {
     }
   })
 
-  it("test user must login with correct user name and password", async function (done) {
-    try {
-      this.done = done;
-      const user = await dbHelper.addUser();
-      const page = await dbHelper.addPage();
-      await dbHelper.assignPageToRole(user.roles[0].id, page.id);
-      const res = await rp({
-        method: 'POST',
-        uri: `${env.appAddress}/api/login`,
-        body: {
-          username: 'test_user',
-          password: '123456'
-        },
-        json: true,
-        resolveWithFullResponse: true
-      })
-      expect(res.statusCode).toBe(200);
-      expect(res.body.username).toBe('test_user');
-      expect(res.body.firstname).toBe('test firstname');
-      expect(res.body.surname).toBe('test surname');
-      expect(res.body.accessed_routes).not.toBeNull();
-      expect(res.body.accessed_routes.length).toBe(1);
-      expect(res.body.accessed_routes[0]).toBe('/test');
-      done();
-    }
-    catch (err) {
-      helpers.errorHandler.bind(this)(err);
-    }
-  })
+
 
   it("expect error on wrong password", async function (done) {
 
