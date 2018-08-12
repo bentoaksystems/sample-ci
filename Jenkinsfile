@@ -4,7 +4,6 @@ pipeline {
     stage('fetch') {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
-        dir(path: 'hello')
       }
     }
     stage('build composer') {
