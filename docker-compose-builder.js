@@ -37,6 +37,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
       environment:
        - POSTGRES_PASSWORD=${process.env.DB_PASS}
        - POSTGRES_USER=${process.env.DB_USER}
+       - POSTGRES_DB: his
       ${
         process.env.NODE_ENV !== 'production' ? '' :
         `volumes:
