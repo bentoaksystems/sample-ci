@@ -3,6 +3,8 @@ const EMR = require('../../../infrastructure/db/models/emr.model');
 const EMRDocument = require('../../../infrastructure/db/models/emrdoc.model');
 const Address = require('../../../infrastructure/db/models/address.model');
 const TypeDictionary = require('../../../infrastructure/db/models/type_dictionary.model');
+const Document = require('../../../infrastructure/db/models/document.model');
+const EMRForm = require('../../../infrastructure/db/models/emr_form.model');
 const IPatient = require('../write-side/aggregates/patient');
 const db = require('../../../infrastructure/db');
 
@@ -16,6 +18,51 @@ module.exports = class PatientRepository {
    * QUERY RELATED REPOSITORIES:
    */
 
+  async getPatientDocumentsBasedOnType(patient_id, type) {
+    return Document.model().findAll({
+      where: {
+        document_type_id: type,
+      },
+      include: [
+        {
+          model: EMRDocument.model(),
+          required: true,
+          include: [
+            {
+              model: EMR.model(),
+              required: true,
+              where: {
+                person_id: patient_id
+              }
+            }
+          ]
+        }
+      ]
+    });
+  }
+
+  async getPatientChecklistFormById(patient_id, id, isForm) {
+    const condition = {};
+
+    if(isForm) {
+      condition.form_id = id;
+    } else {
+      condition.checklist_id = id;
+    }
+
+    return EMR.model().find({
+      where: {
+        person_id: patient_id,
+      },
+      include: [
+        {
+          model: EMRForm.model(),
+          required: true,
+          where: condition,
+        }
+      ]
+    });
+  }
 
   /** COMMAND RELATED REPOSITORIES:
    * If a domain model is being requested by repositoris it should be returnd as an instance of domain model (new IUser())

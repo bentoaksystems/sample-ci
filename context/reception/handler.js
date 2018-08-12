@@ -6,7 +6,8 @@ module.exports = class ReceptionHandler extends BaseHandler {
       showPatientList: require('./read-side/showPatientList'),
       showPatientTypes: require('./read-side/showPatientTypes'),
       showExitTypes: require('./read-side/showExitTypes'),
-      showingPatientInformation: require('./read-side/showingPatientInformation')
+      showingPatientInformation: require('./read-side/showingPatientInformation'),
+      showAdmissionPolicies: require('./read-side/showAdmissionPolicies')
     };
 
     const commands = {
