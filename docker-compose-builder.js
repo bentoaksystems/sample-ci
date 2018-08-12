@@ -56,7 +56,7 @@ const makeTemplate = (serverPort) => {
       depends_on:
        - redis
        - db
-      command: bash -c "node configure.js"
+      command: bash -c "node configure.js || exit 1"
   `
 }
 
