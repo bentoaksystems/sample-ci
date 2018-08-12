@@ -7,10 +7,14 @@ module.exports = class BaseHandler {
   }
 
   async queryHandler(query, user) {
-    if (!this.queries[query.name])
-      throw errors.queryNotFound;
+    try {
+      if (!this.queries[query.name])
+        throw errors.queryNotFound;
 
-    return this.queries[query.name](query.payload, user);
+      return this.queries[query.name](query.payload, user);
+    } catch (err) {
+      throw err;
+    }
   }
 
   async commandHandler(command, user) {

@@ -21,6 +21,7 @@ const FormField = require('./models/form_field.model');
 const ContextHook = require('./models/context_hook.model');
 const ContextHookPolicy = require('./models/context_hook_policy.model');
 const Checklist = require('./models/checklist.model');
+const EMRForm = require('./models/emr_form.model');
 
 // namespace = cls.createNamespace('HIS-NS');
 // Sequelize.useCLS(namespace);
@@ -49,7 +50,8 @@ let tableList = [
   Insurer,
   ContextHook,
   ContextHookPolicy,
-  Checklist
+  Checklist,
+  EMRForm
 ];
 
 isReady = (isTest = false) => {
@@ -121,6 +123,16 @@ isReady = (isTest = false) => {
         TypeDictionary.model().hasMany(ContextHookPolicy.model(), { foreignKey: 'document_type_id', sourceKey: 'id' });
         ContextHookPolicy.model().belongsTo(Checklist.model(), { foreignKey: 'checklist_id', sourceKey: 'id' });
         Checklist.model().hasMany(ContextHookPolicy.model(), { foreignKey: 'checklist_id', sourceKey: 'id' });
+        EMRForm.model().belongsTo(EMR.model(), {foreignKey: 'emr_id', sourceKey: 'id'});
+        EMR.model().hasMany(EMRForm.model(), {foreignKey: 'emr_id', sourceKey: 'id'});
+        EMRForm.model().belongsTo(Checklist.model(), {foreignKey: 'checklist_id', sourceKey: 'id'});
+        Checklist.model().hasMany(EMRForm.model(), {foreignKey: 'checklist_id', sourceKey: 'id'});
+        EMRForm.model().belongsTo(Form.model(), {foreignKey: 'form_id', sourceKey: 'id'});
+        Form.model().hasMany(EMRForm.model(), {foreignKey: 'form_id', sourceKey: 'id'});
+        EMRForm.model().belongsTo(TypeDictionary.model(), {foreignKey: 'type_id', sourceKey: 'id'});
+        TypeDictionary.model().hasMany(EMRForm.model(), {foreignKey: 'type_id', sourceKey: 'id'});
+        EMRForm.model().belongsTo(User.model(), {foreignKey: 'filler_user_id', sourceKey: 'id'});
+        User.model().hasMany(EMRForm.model(), {foreignKey: 'filler_user_id', sourceKey: 'id'});
 
         return isTest ? sequelize.sync({ force: true }) : sequelize.sync();
         // return sequelize.sync({force: true});
