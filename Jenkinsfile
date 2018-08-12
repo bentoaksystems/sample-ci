@@ -13,17 +13,8 @@ pipeline {
       }
     }
     stage('setup containers') {
-      parallel {
-        stage('setup containers') {
-          steps {
-            sh 'docker-compose up'
-          }
-        }
-        stage('say hello') {
-          steps {
-            catchError()
-          }
-        }
+      steps {
+        sh 'docker-compose up'
       }
     }
   }
