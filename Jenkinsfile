@@ -20,10 +20,10 @@ pipeline {
   }
   post {
         always {
-            sh 'echo hello'
-            // sh 'docker stop redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER -f'
-            // sh 'docker rmi redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER'
-            // deleteDir() /* clean up our workspace */
+            sh 'docker stop redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER'
+            sh 'docker rmi -f redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER'
+            sh 'docker rmi $(docker images -f "dangling=true" -q)'
+            deleteDir() /* clean up our workspace */
         }
   }
   environment {
