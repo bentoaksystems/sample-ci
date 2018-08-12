@@ -73,8 +73,9 @@ dbHelper.create()
               ]
             }));
 
+            let formId = null;
+
             if (existContextHook && ContextHookList[index].form) {
-              let formId;
               if (existContextHook.form.name === ContextHookList[index].form.name) {
                 // Delete all form fields for this form and add again
                 await FormField.model().destroy({
@@ -97,16 +98,18 @@ dbHelper.create()
               }
             } else {
               // Add form and its field then add context_hook
-              const newForm = (await Form.model().create({name: ContextHookList[index].form.name, user_id: adminUser.id})).get({plain: true});
+              if (ContextHookList[index].form) {
+                formId = (await Form.model().create({name: ContextHookList[index].form.name, user_id: adminUser.id})).get({plain: true}).id;
 
-              for (let fi = 0; fi < ContextHookList[index].form.fields.length; fi++) {
-                await FormField.model().create(Object.assign(ContextHookList[index].form.fields[fi], {form_id: newForm.id}));
+                for (let fi = 0; fi < ContextHookList[index].form.fields.length; fi++) {
+                  await FormField.model().create(Object.assign(ContextHookList[index].form.fields[fi], {form_id: formId}));
+                }
               }
 
               await ContextHook.model().create({
                 context: ContextHookList[index].context_name,
                 hook: ContextHookList[index].hook_name,
-                form_id: newForm.id,
+                form_id: formId,
               });
             }
           }
