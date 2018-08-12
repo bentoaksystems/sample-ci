@@ -22,6 +22,7 @@ describe("Show admission policies", () => {
     contextHookPolicies,
     documentType,
     form,
+    document,
     patientId;
 
   beforeEach(async done => {
@@ -81,7 +82,7 @@ describe("Show admission policies", () => {
     // Add patient
     patientId = (await Person.model().create({firstname: 'patient', surname: 'patient'})).get({plain: true}).id;
     const emr = (await EMR.model().create({person_id: patientId})).get({plain: true});
-    const document = (await Document.model().create({document_type_id: documentType.id, file_path: 'x/y/z', context: 'Reception'})).get({plain: true});
+    document = (await Document.model().create({document_type_id: documentType.id, file_path: 'x/y/z', context: 'Reception'})).get({plain: true});
     const emrDoc = (await EMRDoc.model().create({emr_id: emr.id, document_id: document.id}));
 
     done();
@@ -110,6 +111,8 @@ describe("Show admission policies", () => {
       expect(res.statusCode).toBe(200);
 
       res = res.body;
+      
+      console.log('res.document_types[0]: ', res.document_types[0]);
 
       expect(res.document_types.length).toBe(1);
       expect(res.forms.length).toBe(1);
@@ -117,6 +120,8 @@ describe("Show admission policies", () => {
       expect(res.document_types[0].is_uploaded).toBe(true);
       expect(res.document_types[0].is_required).toBe(true);
       expect(res.document_types[0].policy_json.a).toBe(1);
+      expect(res.document_types[0].file_path).toBe('x/y/z');
+      expect(res.document_types[0].document_id).toBe(document.id);
       expect(res.forms[0].is_completed).toBe(false);
       expect(res.forms[0].is_required).toBe(true);
 
