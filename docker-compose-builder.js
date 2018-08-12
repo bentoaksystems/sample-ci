@@ -4,7 +4,7 @@ const main = async () => {
 
   try {
 
-    serverPort = 3000 + Number.parseInt(process.env.BUILD_NUMBER);
+    serverPort = 80 + Number.parseInt(process.env.BUILD_NUMBER);
     dbPort = 5432 + Number.parseInt(process.env.BUILD_NUMBER);;
     redisPort = 6379 + Number.parseInt(process.env.BUILD_NUMBER);;
 
@@ -65,7 +65,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
       depends_on:
        - redis
        - db
-      command: bash -c "node configure.js"
+      command: bash -c "npm start"
   `
 }
 
