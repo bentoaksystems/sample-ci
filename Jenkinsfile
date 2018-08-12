@@ -15,7 +15,9 @@ pipeline {
     stage('setup containers') {
       steps {
         sh 'docker-compose up'
+        sh 'echo hello'
       }
+      
     }
   }
   post {
