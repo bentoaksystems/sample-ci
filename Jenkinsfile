@@ -22,7 +22,7 @@ pipeline {
         timeout(10) {
           waitUntil {
             script {
-              def r = sh script: 'wget -qO- http://his-$BUILD_NUMBER:$((80 + BUILD_NUMBER))/api/test', returnStatus: true
+              def r = sh script: 'wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/test', returnStatus: true
               return (r == 'server is fully up and running');
             }
           }

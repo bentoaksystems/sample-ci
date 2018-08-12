@@ -5,7 +5,7 @@ const errors = require('../../utils/errors.list');
 const db = require('../../infrastructure/db')
 
 
-router.get('/ready', async () => {
+router.get('/ready', async (req, res) => {
 
   await db.isReady(true);
   res.status(200).json('server is fully up and running');
