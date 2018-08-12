@@ -14,7 +14,7 @@ const main = async () => {
 
   } catch (err) {
 
-    console.error('-> error: ', JSON.stringify(err, 0 , 2));
+    console.error('-> error: ', err.stack);
   }
 
 }
