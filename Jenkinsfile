@@ -14,12 +14,19 @@ pipeline {
     }
     stage('run server') {
       steps {
-        sh 'docker-compose up -d'
+        sh 'docker-compose up'
       }
     }
     stage('test') {
       steps {
-        waitUntil()
+        timeout(10) {
+          waitUntil {
+            script {
+              def r = sh script: 'wget -qO- http://his-$BUILD_NUMBER:$((80 + BUILD_NUMBER))/api/test', returnStatus: true
+              return (r == 'server is fully up and running');
+            }
+          }
+        }
       }
     }
   }
