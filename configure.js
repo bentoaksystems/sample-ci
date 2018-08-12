@@ -1,10 +1,16 @@
 const Action = require('./infrastructure/db/models/action.model');
 const Page = require('./infrastructure/db/models/page.model');
 const TypeDictionary = require('./infrastructure/db/models/type_dictionary.model');
+const Form = require('./infrastructure/db/models/form.model');
+const FormField = require('./infrastructure/db/models/form_field.model');
+const ContextHook = require('./infrastructure/db/models/context_hook.model');
 const db = require('./infrastructure/db');
 const pageList = require('./utils/pages');
 const dbHelper = require('./utils/db-helper');
 const helpers = require('./utils/helpers');
+const fs = require('fs');
+
+let adminUser;
 
 dbHelper.create()
   .then(() => dbHelper.create(true))
@@ -17,6 +23,7 @@ dbHelper.create()
       // make admin role
       return dbHelper.addAdmin()
         .then(res => {
+          adminUser = res.user;
           console.log('-> ', 'admin user created succesffully');
           return Promise.resolve();
         })
@@ -44,10 +51,72 @@ dbHelper.create()
 
           return Promise.all(typeList.map(el => TypeDictionary.model().findOrCreate({where: {name: el.name, type: el.type}})));
         })
-        .then(res => {
+        .then(async res => {
           console.log('->  Required type are added!');
+          const ContextHookList = JSON.parse(fs.readFileSync('context_hook.json', 'utf8'));
+
+          for (let index = 0; index < ContextHookList.length; index++) {
+            const existContextHook = (await ContextHook.model().findOne({
+              where: {
+                context: ContextHookList[index].context_name,
+                hook: ContextHookList[index].hook_name,
+              },
+              include: [
+                {
+                  model: Form.model(),
+                  include: [
+                    {
+                      model: FormField.model()
+                    }
+                  ]
+                }
+              ]
+            }));
+
+            if (existContextHook && ContextHookList[index].form) {
+              let formId;
+              if (existContextHook.form.name === ContextHookList[index].form.name) {
+                // Delete all form fields for this form and add again
+                await FormField.model().destroy({
+                  where: {
+                    id: {
+                      $in: existContextHook.form.form_fields.map(el => el.id)
+                    }
+                  }
+                })
+
+                formId = existContextHook.form.id;
+              } else {
+                // Should add form and associate to context_hook
+                formId = (await Form.model().create({name: ContextHookList[index].form.name, user_id: adminUser.id})).get({plain: true}).id;
+                await ContextHook.model().update({form_id: newForm.id}, {where: {id: existContextHook.id}});
+              }
+
+              for (let fi = 0; fi < ContextHookList[index].form.fields.length; fi++) {
+                await FormField.model().create(Object.assign(ContextHookList[index].form.fields[fi], {form_id: formId}));
+              }
+            } else {
+              // Add form and its field then add context_hook
+              const newForm = (await Form.model().create({name: ContextHookList[index].form.name, user_id: adminUser.id})).get({plain: true});
+
+              for (let fi = 0; fi < ContextHookList[index].form.fields.length; fi++) {
+                await FormField.model().create(Object.assign(ContextHookList[index].form.fields[fi], {form_id: newForm.id}));
+              }
+
+              await ContextHook.model().create({
+                context: ContextHookList[index].context_name,
+                hook: ContextHookList[index].hook_name,
+                form_id: newForm.id,
+              });
+            }
+          }
+
           return Promise.resolve();
         })
+        .then(res => {
+          console.log('->  Context-Hooks are added!');
+          return Promise.resolve();
+        });
     })
       .then(res => {
         process.exit(0);
