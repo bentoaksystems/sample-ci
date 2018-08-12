@@ -95,7 +95,7 @@ isReady = (isTest = false) => {
       })
       .catch(err => {
         console.error('-> Unable to connect to the database:', err);
-        setTimeout(connect, 1000);
+        setTimeout(connect, 5000);
       });
   }
   connect();
