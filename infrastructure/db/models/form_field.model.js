@@ -31,7 +31,7 @@ const init = (seq) => {
       type: Sequelize.ARRAY(Sequelize.STRING),
     },
     answerView: {
-      type: Sequelize.JSON,
+      type: Sequelize.STRING,
     },
     fieldPriority: {
       type: Sequelize.INTEGER,
