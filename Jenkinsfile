@@ -21,7 +21,7 @@ pipeline {
         }
         stage('say hello') {
           steps {
-            sh 'echo hello'
+            error 'hi'
           }
         }
       }
