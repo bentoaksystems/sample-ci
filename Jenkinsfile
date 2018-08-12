@@ -7,19 +7,19 @@ pipeline {
         sh 'cd $env.BUILD_NUMBER'
         sh 'pwd'
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
+        dir(path: 'hello')
       }
     }
     stage('build composer') {
-        steps {
-          sh 'npm install'
-          sh 'node docker-compose-builder.js'
-        }
+      steps {
+        sh 'npm install'
+        sh 'node docker-compose-builder.js'
+      }
     }
     stage('setup containers') {
-        steps {
-          sh 'docker-compose up'
-        }
-
+      steps {
+        sh 'docker-compose up'
+      }
     }
   }
   environment {
