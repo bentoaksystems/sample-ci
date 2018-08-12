@@ -27,7 +27,6 @@ pipeline {
             sh 'docker rmi -f redis-$BUILD_NUMBER || echo "failed to remove redis-${BUILD_NUMBER}"'
             sh 'docker rmi -f db-$BUILD_NUMBER || echo "failed to remove db-${BUILD_NUMBER}"'
             sh 'docker rmi -f his-$BUILD_NUMBER || echo "failed to remove his-${BUILD_NUMBER}"'
-            sh 'docker image prune -a -f || echo "failed to remove untagged images"'
             // cleanWs() /* clean up our workspace */
         }
   }
