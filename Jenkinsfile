@@ -20,9 +20,8 @@ pipeline {
   }
   post {
         always {
-            sh 'docker stop redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER'
-            sh 'docker rmi -f redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER'
-            sh 'docker rmi $(docker images -f "dangling=true" -q)'
+            sh 'docker stop redis-$BUILD_NUMBER || docker stop db-$BUILD_NUMBER || docker stop his-$BUILD_NUMBER || docker ps -aq --no-trunc -f status=exited | xargs docker rm || echo containers stopped'
+            sh 'docker rmi -f redis-$BUILD_NUMBER || docker rmi -f db-$BUILD_NUMBER || docker rmi -f his-$BUILD_NUMBER || docker rmi $(docker images -f "dangling=true" -q) || echo containers removed'
             deleteDir() /* clean up our workspace */
         }
   }
