@@ -70,7 +70,7 @@ isReady = (isTest = false) => {
           model.init(sequelize);
         });
 
-        /**
+        /** 
          * Please define relations between tables (models) here
          * (Not define in its model)
          */
