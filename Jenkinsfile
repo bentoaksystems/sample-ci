@@ -5,6 +5,7 @@ pipeline {
       steps {
         sh 'mkdir -p $env.BUILD_NUMBER'
         sh 'cd $env.BUILD_NUMBER'
+        sh 'pwd'
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
       }
     }
