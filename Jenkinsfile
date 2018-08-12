@@ -21,12 +21,9 @@ pipeline {
       steps {
         timeout(10) {
           waitUntil {
-            try {
-              sh 'chmod 777 ./scripts/ready.sh'
-              sh 'sh ./scripts/ready.sh'
-              return true
-            } catch (exception) {
-              return false
+            script {
+              def r = sh script: 'wget -q http://localhost:$((80 + BUILD_NUMBER))/api/ready -O /dev/null', returnStatus: true
+              return (r == 0);
             }
           }
         }
