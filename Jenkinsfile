@@ -3,8 +3,8 @@ pipeline {
   stages {
     stage('fetch') {
       steps {
-        sh 'cd env.BUILD_NUMBER'
-        sh ''
+        sh 'mkdir -p $env.BUILD_NUMBER'
+        sh 'cd $env.BUILD_NUMBER'
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
       }
     }
