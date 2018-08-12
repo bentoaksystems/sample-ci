@@ -28,7 +28,7 @@ pipeline {
             sh 'docker rmi -f db-$BUILD_NUMBER || echo "failed to remove db-${BUILD_NUMBER}"'
             sh 'docker rmi -f his-$BUILD_NUMBER || echo "failed to remove his-${BUILD_NUMBER}"'
             sh 'docker rmi $(docker images -f "dangling=true" -q) || echo "failed to remove untagged images"'
-            deleteDir() /* clean up our workspace */
+            cleanWs() /* clean up our workspace */
         }
   }
   environment {
