@@ -14,7 +14,7 @@ const main = async () => {
 
   } catch (err) {
 
-    console.error('-> error: ', err.stack);
+    console.error('-> error: ', err);
   }
 
 }

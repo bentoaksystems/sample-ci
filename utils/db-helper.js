@@ -46,7 +46,7 @@ const create = async (isTest = false) => {
         isReady = true
       }
       else {
-        console.error('-> ', err.message);
+        console.error('-> ', err);
         await client.end();
         await sleep(1000);
         isReady = false;
