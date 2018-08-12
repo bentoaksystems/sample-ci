@@ -9,7 +9,6 @@ const User = require('../infrastructure/db/models/user.model');
 const Page = require('../infrastructure/db/models/page.model');
 const RolePage = require('../infrastructure/db/models/page_role.model');
 const rp = require('request-promise');
-const db = require('../infrastructure/db');
 
 const create = async (isTest = false) => {
 
@@ -37,7 +36,6 @@ const create = async (isTest = false) => {
     try {
       client = new Client(config);
       console.log('-> ', config);
-      console.log('-> ', client);
       await client.connect()
       await client.query(`CREATE DATABASE ${isTest ? env.database_test : env.database}`)
       console.log('-> ', `database ${isTest ? env.database_test : env.database} created successfully :)`);
