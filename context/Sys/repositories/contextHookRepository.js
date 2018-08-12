@@ -19,12 +19,12 @@ class contextHookRepository {
     context_hooks.forEach((element, index) => {
       if (!contexts.includes(element.context)) {
         contexts.push(element.context);
-        element.hooks = [element.hook];
+        element.hooks = [{ context_id: element.id, hook_name: element.hook }];
         delete element.hook;
         returnContextHooks.push(element);
       } else {
         const findIndex = returnContextHooks.findIndex(el => el.context === element.context);
-        returnContextHooks[findIndex]['hooks'].push(element.hook);
+        returnContextHooks[findIndex]['hooks'].push({ context_id: element.id, hook_name: element.hook });
       }
     });
     return Promise.resolve(returnContextHooks);
