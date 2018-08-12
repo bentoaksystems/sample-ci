@@ -20,8 +20,14 @@ pipeline {
   }
   post {
         always {
-            sh 'docker stop redis-$BUILD_NUMBER || docker stop db-$BUILD_NUMBER || docker stop his-$BUILD_NUMBER || docker ps -aq --no-trunc -f status=exited | xargs docker rm || echo containers stopped'
-            sh 'docker rmi -f redis-$BUILD_NUMBER || docker rmi -f db-$BUILD_NUMBER || docker rmi -f his-$BUILD_NUMBER || docker rmi $(docker images -f "dangling=true" -q) || echo containers removed'
+            sh 'docker stop redis-$BUILD_NUMBER || echo "failed to stop redis-${BUILD_NUMBER}"'
+            sh 'docker stop db-$BUILD_NUMBER || echo "failed to stop db-${BUILD_NUMBER}"'
+            sh 'docker stop his-$BUILD_NUMBER || echo "failed to stop his-${BUILD_NUMBER}"'
+            sh 'docker ps -aq --no-trunc -f status=exited | xargs docker rm || echo "failed to remove stopped containers"'
+            sh 'docker rmi -f redis-$BUILD_NUMBER || echo "failed to remove redis-${BUILD_NUMBER}"'
+            sh 'docker rmi -f db-$BUILD_NUMBER || echo "failed to remove db-${BUILD_NUMBER}"'
+            sh 'docker rmi -f his-$BUILD_NUMBER || echo "failed to remove his-${BUILD_NUMBER}"'
+            sh 'docker rmi $(docker images -f "dangling=true" -q) || echo "failed to remove untagged images"'
             deleteDir() /* clean up our workspace */
         }
   }
