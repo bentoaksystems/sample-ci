@@ -17,7 +17,7 @@ pipeline {
         sh 'docker-compose up -d'
       }
     }
-    stage('test') {
+    stage('warm up') {
       steps {
         timeout(10) {
           waitUntil {
@@ -27,6 +27,11 @@ pipeline {
             }
           }
         }
+      }
+    }
+    stage('run server') {
+      steps {
+        sh 'npm test'
       }
     }
   }
