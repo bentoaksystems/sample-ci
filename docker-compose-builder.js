@@ -31,12 +31,14 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
        - "${redisPort}:6379"
     db:
       container_name: db-${process.env.BUILD_NUMBER}
-      image: "postgres:9.4"
+      image: "postgres:10"
       ports:
        - "${dbPort}:5432"
       environment:
        - POSTGRES_PASSWORD=${process.env.DB_PASS}
        - POSTGRES_USER=${process.env.DB_USER}
+      volumes:
+       - ./data:/var/lib/postgresql/data
     web:
       build: .
       container_name: his-${process.env.BUILD_NUMBER}
