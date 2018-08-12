@@ -17,7 +17,7 @@ pipeline {
         sh 'docker-compose up -d'
       }
     }
-  } 
+  }  
   environment {
     NODE_ENV = 'test'
     DB_USER = credentials('DB_USER')
