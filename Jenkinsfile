@@ -21,6 +21,7 @@ pipeline {
       steps {
         timeout(10) {
           waitUntil {
+            sh 'ls'
             sh 'chmod 777 ./scripts/ready.sh'
             sh 'sh ./scripts/ready.sh'
           }
