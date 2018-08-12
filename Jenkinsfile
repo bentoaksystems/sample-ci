@@ -24,6 +24,7 @@ pipeline {
             try {
               sh 'chmod 777 ./scripts/ready.sh'
               sh 'sh ./scripts/ready.sh'
+              return true
             } catch (exception) {
               return false
             }
