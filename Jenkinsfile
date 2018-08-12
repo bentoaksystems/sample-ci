@@ -20,9 +20,10 @@ pipeline {
   }
   post {
         always {
-            sh 'docker stop redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER -f'
-            sh 'docker rmi redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER'
-            deleteDir() /* clean up our workspace */
+            sh 'echo hello'
+            // sh 'docker stop redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER -f'
+            // sh 'docker rmi redis-$BUILD_NUMBER db-$BUILD_NUMBER his-$BUILD_NUMBER'
+            // deleteDir() /* clean up our workspace */
         }
   }
   environment {
