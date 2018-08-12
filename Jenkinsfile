@@ -23,7 +23,7 @@ pipeline {
           waitUntil {
             script {
               def r = sh script: 'wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/ready', returnStatus: true
-              echo r
+              sh script: 'echo r'
               return (r == 'server is fully up and running');
             }
           }
