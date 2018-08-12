@@ -1,0 +1,17 @@
+[
+  {
+    "context_name": "Reception",
+    "hook_name": "Admission",
+    "form": {
+      "name": "کنترل سیاست های پذیرش",
+      "fields": [
+        {
+          "hashKey": "therapy_without_document",
+          "title": "چه تعداد تراپی بدون این مدرک مجاز است؟",
+          "answerShowType": "متنی",
+          "fieldPriority": 1
+        }
+      ]
+    }
+  }
+]
