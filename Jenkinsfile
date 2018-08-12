@@ -12,7 +12,7 @@ pipeline {
         sh 'node docker-compose-builder.js'
       }
     }
-    stage('setup containers') {
+    stage('run server') {
       steps {
         sh 'docker-compose up -d'
       }
