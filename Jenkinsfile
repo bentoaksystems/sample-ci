@@ -17,7 +17,12 @@ pipeline {
         sh 'docker-compose up -d'
       }
     }
-  }  
+    stage('test') {
+      steps {
+        waitUntil()
+      }
+    }
+  }
   environment {
     NODE_ENV = 'test'
     DB_USER = credentials('DB_USER')
