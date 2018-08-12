@@ -3,7 +3,7 @@ RESULT="`wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/ready`"
 EXPECTED="server is fully up and running"
 echo $RESULT
 if [ "$RESULT" = "$EXPECTED" ];then
-  return true
+  exit 0
 else
-  return false
+  exit 1
 fi  
