@@ -36,6 +36,8 @@ const create = async (isTest = false) => {
 
     try {
       client = new Client(config);
+      console.log('-> ', config);
+      console.log('-> ', client);
       await client.connect()
       await client.query(`CREATE DATABASE ${isTest ? env.database_test : env.database}`)
       console.log('-> ', `database ${isTest ? env.database_test : env.database} created successfully :)`);
