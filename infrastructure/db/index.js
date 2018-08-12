@@ -24,6 +24,7 @@ Sequelize.useCLS(require('cls-hooked').createNamespace('HIS-NS'));
 
 let sequelize;
 isReady = (isTest = false) => {
+  console.log('-> ', `postgres://${env.db_username}:${env.db_password}@${env.db_host}:${env.db_port}/${isTest ? env.database : env.database_test}`);
   sequelize = new Sequelize(`postgres://${env.db_username}:${env.db_password}@${env.db_host}:${env.db_port}/${isTest ? env.database : env.database_test}`, {
     dialect: 'postgres',
     logging: false
