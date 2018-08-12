@@ -59,7 +59,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
        - DB_PORT=${dbPort}
        - DB_USER=${process.env.DB_USER}
        - DB_PASS=${process.env.DB_PASS}
-       - REDIS_HOST=redis
+       - REDIS_HOST=redis-${process.env.BUILD_NUMBER}
        - REDIS_PORT=${redisPort}
       depends_on:
        - redis
