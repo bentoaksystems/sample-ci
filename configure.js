@@ -1,5 +1,6 @@
 const Action = require('./infrastructure/db/models/action.model');
 const Page = require('./infrastructure/db/models/page.model');
+const TypeDictionary = require('./infrastructure/db/models/type_dictionary.model');
 const db = require('./infrastructure/db');
 const pageList = require('./utils/pages');
 const dbHelper = require('./utils/db-helper');
@@ -28,6 +29,22 @@ dbHelper.create()
         })
         .then(res => {
           console.log('->  Pages are added!');
+          // Required Types
+          const typeList = [
+            {
+              name: 'عمومی',
+              type: 'patient',
+            },
+            {
+              name: 'دیالیز',
+              type: 'patient',
+            },
+          ];
+
+          return Promise.all(typeList.map(el => TypeDictionary.model().findOrCreate({where: {name: el.name, type: el.type}})));
+        })
+        .then(res => {
+          console.log('->  Required type are added!');
           return Promise.resolve();
         })
     })

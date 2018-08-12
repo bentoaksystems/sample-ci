@@ -5,16 +5,16 @@ module.exports = class UploadDocument extends BaseCommand {
     super();
   }
 
-  async execut(payload, user) {
+  async execute(payload, user) {
     try {
       if (!payload.file_details)
         throw new Error('File details is not passed to add document');
 
       const DocumentRepository = require('../../repositories/documentRepository');
       const docObj = new DocumentRepository();
-      let doc = await docObj.findDocumentById();
+      let doc = await docObj.findOrCreateDocument();
 
-      return super.execut(async () => {
+      return super.execute(async () => {
         return doc.documentIsUploaded(payload.file_details, payload.context, payload.doc_type_id, user.id);
       });
     } catch (err) {

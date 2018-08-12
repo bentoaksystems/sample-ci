@@ -5,7 +5,7 @@ const Context = require('../context');
  * Created by Eabasir on 02/03/2018.
  */
 
- function parseServerError(err) {
+function parseServerError(err) {
   try {
     let a;
     let dashPlace = err.message.indexOf('- ');
@@ -50,22 +50,45 @@ function errorHandler(err) {
 }
 
 
-getActionList = () =>{
+getActionList = () => {
   let actionList = [];
 
-    Object.keys(Context).forEach(el => {
-      const contextObj = new Context[el]();
+  Object.keys(Context).forEach(el => {
+    const contextObj = new Context[el]();
 
-      actionList = actionList.concat(Object.keys(contextObj.getQueries()).map(a => {
-        return {context: el, name: a};
-      }));
+    actionList = actionList.concat(Object.keys(contextObj.getQueries()).map(a => {
+      return {context: el, name: a};
+    }));
 
-      actionList = actionList.concat(Object.keys(contextObj.getCommands()).map(a => {
-        return {context: el, name: a};
-      }));
-    });
+    actionList = actionList.concat(Object.keys(contextObj.getCommands()).map(a => {
+      return {context: el, name: a};
+    }));
+  });
 
-    return actionList;
+  return actionList;
+}
+
+filterPolicies = (policies, user) => {
+  const accessedPolicies = user.username === 'admin' ?
+    policies :
+    policies.filter(el => el.role_ids.filter(i => user.roles.map(el => el.id).indexOf(i) !== -1).length);
+
+  const result = {
+    document_types: [],
+    forms: [],
+    checklists: []
+  };
+
+  accessedPolicies.forEach(el => {
+    if (el.document_type_id)
+      result.document_types.push(el);
+    else if (el.form_id)
+      result.forms.push(el);
+    else if (el.checklist_id)
+      result.checklists.push(el);
+  });
+
+  return result;
 }
 
 
@@ -74,5 +97,6 @@ module.exports = {
   parseServerErrorToString,
   parseJasmineErrorToString,
   errorHandler,
-  getActionList
+  getActionList,
+  filterPolicies
 };

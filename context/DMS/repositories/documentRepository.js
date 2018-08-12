@@ -1,5 +1,6 @@
 const Document = require('../../../infrastructure/db/models/document.model');
 const IDocument = require('../write-side/aggregate/document');
+const Op = require('../../../infrastructure/db').Op;
 
 module.exports = class DocumentRepository {
   constructor() {
@@ -16,8 +17,8 @@ module.exports = class DocumentRepository {
    * 
    * **/
 
-  async findDocumentById(id) {
-    const doc = Document.model().findOne({where: {id}});
+  async findOrCreateDocument(id) {
+    const doc = await Document.model().findOne({where: {id}});
 
     if (id && !doc)
       throw new Error('The document with this id not found');
@@ -31,8 +32,30 @@ module.exports = class DocumentRepository {
         user_id: userId,
         file_path: filePath,
         context: context,
-        type_dictionary_id: docTypeId,
+        document_type_id: docTypeId,
       }
     );
+  }
+
+  async removeDocuments(ids) {
+    return Document.model().destroy({
+      where: {
+        id: {
+          [Op.in]: ids
+        }
+      }
+    });
+  }
+
+  async updateDocument(id, document) {
+    if (!id)
+      throw new Error("Document's id is not defined");
+
+    return Document.model().update(document, {
+      where: {id},
+    })
+      .then(() => {
+        return Document.model().findOne({where: {id}});
+      });
   }
 }

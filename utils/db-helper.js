@@ -8,6 +8,7 @@ const Staff = require('../infrastructure/db/models/staff.model');
 const User = require('../infrastructure/db/models/user.model');
 const Page = require('../infrastructure/db/models/page.model');
 const RolePage = require('../infrastructure/db/models/page_role.model');
+const RoleAction = require('../infrastructure/db/models/role_action');
 const rp = require('request-promise');
 
 const create = async (isTest = false) => {
@@ -73,7 +74,9 @@ const addAdmin = async (username = 'admin', password = '123456') => {
   return Person.model().findOrCreate({
     where: {firstname: 'Admin', surname: 'Admin'},
     defaults: {
-      national_code: '-'
+      national_code: '-',
+      mobile_number: '091234567890',
+      phone_number: '02188776655',
     }
   })
     .spread((person, created) => {
@@ -115,37 +118,37 @@ const addAdmin = async (username = 'admin', password = '123456') => {
     })
 }
 
-const addUser = async (username = 'test_user', password = '123456') => {
-
+const addUser = async (username = 'test_user', password = '123456', roles = []) => {
   const person = await Person.model().create({
     firstname: 'test firstname',
     surname: 'test surname',
-    national_code: '1234567899'
   });
 
-  const role = await Role.model().create({
-    name: 'test role',
+  roles = roles.length ? roles : [{name: 'test role'}];
+  const _roles = await Role.model().bulkCreate(roles);
+  const staffList = _roles.map(el => {
+    return {
+      role_id: el.id,
+      person_id: person.id,
+    }
   });
-  const staff = await Staff.model().create({
-    role_id: role.id,
-    person_id: person.id
-  });
+
+  const _staffList = await Staff.model().bulkCreate(staffList)
   const hash = await bycript.genSalt(password);
-  const user = User.model().create({
+  const user = await User.model().create({
     person_id: person.id,
     username,
     password: hash
   })
-  return Promise.resolve({person, role, staff, user});
-
+  return Promise.resolve({person, roles: _roles, staff: _staffList, user});
 }
 
 
-addAndLoginUser = async (isAdmin = false, username, password = '123456') => {
-
+addAndLoginUser = async (isAdmin = false, username, password = '123456', roles = []) => {
   try {
-    let addedUser = isAdmin ? await addAdmin() : await addUser();
+    let addedUser = isAdmin ? await addAdmin() : await addUser(username, password, roles);
     const rpJar = rp.jar();
+
     const res = await rp({
       method: 'POST',
       uri: `${env.appAddress}/api/login`,
@@ -187,11 +190,20 @@ assignPageToRole = (role_id, page_id, access = null) => {
   })
 }
 
+assignActionToRole = (role_id, action_id, access = null) => {
+  return RoleAction.model().create({
+    role_id,
+    action_id,
+    access,
+  });
+}
+
 module.exports = {
   create,
   addAdmin,
   addUser,
   addPage,
   assignPageToRole,
-  addAndLoginUser
+  addAndLoginUser,
+  assignActionToRole
 }
