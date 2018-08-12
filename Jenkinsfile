@@ -29,7 +29,7 @@ pipeline {
         }
       }
     }
-    stage('run server') {
+    stage('tests') {
       steps {
         sh 'npm test'
       }
