@@ -11,6 +11,7 @@ dbHelper.create()
     return db.isReady();
   })
   .then(result => {
+    console.log('--------------> ', result );
     return db.sequelize().transaction(function (t1) {
       // make admin role
       return dbHelper.addAdmin()
