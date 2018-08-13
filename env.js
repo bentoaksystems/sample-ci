@@ -31,6 +31,8 @@ console.log(`-> app is runnig in ${env} mode`);
  */
 if (isDev || isTest) require('dotenv').config(); // loads env variables inside .env file into process.env
 
+console.log('-> ', process.env);
+
 /**
  *  App
  */
