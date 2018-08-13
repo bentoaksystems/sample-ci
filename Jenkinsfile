@@ -1,11 +1,6 @@
 pipeline {
   agent any
   stages {
-    stage('find hosts') {
-      steps{
-        sh 'printenv'
-      }
-    }
     stage('clone repository') {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
