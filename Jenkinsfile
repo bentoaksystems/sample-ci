@@ -21,7 +21,7 @@ pipeline {
       steps {
         timeout(time: 20, unit: 'SECONDS') {
 
-          sh 'wget -q http://localhost:$((80 + BUILD_NUMBER))/api/ready'
+          sh 'echo  "`wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/ready`"'
           // waitUntil {
           //   script {
           //     def r = sh script: 'wget -q http://localhost:$((80 + BUILD_NUMBER))/api/ready -O /dev/null', returnStatus: true
