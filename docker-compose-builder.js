@@ -9,6 +9,7 @@ const main = async () => {
     redisPort = 6379 + Number.parseInt(process.env.BUILD_NUMBER);;
 
     const template = makeTemplate(serverPort, dbPort, redisPort);
+    console.log('-> ', template);
     fs.writeFileSync('./docker-compose.yml', template, 'utf8');
 
   } catch (err) {
