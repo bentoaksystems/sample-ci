@@ -1,7 +1,16 @@
+def dbHost = 'UNKNOWN'
+def redisHost = 'UNKNOWN'
+
 pipeline {
   agent any
   stages {
-    stage('fetch') {
+    stage('find hosts') {
+      script {
+          dbHost = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
+          redisHost = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
+        }
+    }
+    stage('clone repository') {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
       }
@@ -43,9 +52,7 @@ pipeline {
     APP_ADDRESS = 'http://173.249.11.153'
     PORT = '3000'
     DATABASE = 'his'
-    DB_HOST = 'his-'$BUILD_NUMBER
     DB_PORT = 5432
-    REDIS_HOST = 'redis-'$BUILD_NUMBER
     REDIS_PORT = 6379
     DB_USER = credentials('DB_USER')
     DB_PASS = credentials('DB_PASS')
