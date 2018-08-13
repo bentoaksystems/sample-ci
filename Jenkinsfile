@@ -36,9 +36,11 @@ pipeline {
         sh 'docker exec -i his-$BUILD_NUMBER sh -c "npm test"'
       }
     }
-    stage('tests') {
+    stage('publish') {
       steps {
-        sh 'sleep 10s'
+        waitUntil{
+          sh 'sleep 10s'
+        }
       }
     }
   }
