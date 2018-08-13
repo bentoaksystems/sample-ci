@@ -39,15 +39,15 @@ pipeline {
   }
   environment {
     NODE_ENV = 'test',
-    APP_NAME = 'HIS'
-    APP_ADDRESS = 'http://173.249.11.153'
-    PORT = '3000'
-    DATABASE = 'his'
-    DB_HOST = 'his-'$BUILD_NUMBER
-    DB_PORT = 5432
-    REDIS_HOST = 'redis-'$BUILD_NUMBER 
-    REDIS_PORT=6379
-    DB_USER = credentials('DB_USER')
+    APP_NAME = 'HIS',
+    APP_ADDRESS = 'http://173.249.11.153',
+    PORT = '3000',
+    DATABASE = 'his',
+    DB_HOST = 'his-'$BUILD_NUMBER,
+    DB_PORT = 5432,
+    REDIS_HOST = 'redis-'$BUILD_NUMBER,
+    REDIS_PORT = 6379,
+    DB_USER = credentials('DB_USER'),
     DB_PASS = credentials('DB_PASS')
   }
   post {
