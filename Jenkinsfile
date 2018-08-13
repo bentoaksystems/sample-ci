@@ -5,10 +5,12 @@ pipeline {
   agent any
   stages {
     stage('find hosts') {
-      script {
-          dbHost = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
-          redisHost = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
+      steps{
+        script {
+            dbHost = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
+            redisHost = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
         }
+      }
     }
     stage('clone repository') {
       steps {
