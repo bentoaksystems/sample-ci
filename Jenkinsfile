@@ -52,7 +52,8 @@ pipeline {
   }
   post {
     always {
-      sh 'chmod 777 ./scripts/cleanup.sh && sh ./scripts/cleanup.sh'
+      sh 'echo start cleaning up'
+      // sh 'chmod 777 ./scripts/cleanup.sh && sh ./scripts/cleanup.sh'
     }
 
   }

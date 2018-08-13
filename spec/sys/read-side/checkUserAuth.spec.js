@@ -12,11 +12,8 @@ describe("Check user authentication", () => {
     done();
   });
 
-  it("test", function (done) {
-    done();
-  })
 
-  xit("admin must login with correct user name and password", async function (done) {
+  it("admin must login with correct user name and password", async function (done) {
 
     try {
       this.done = done
@@ -42,8 +39,6 @@ describe("Check user authentication", () => {
       helpers.errorHandler.bind(this)(err);
     }
   })
-
-
 
   xit("expect error on wrong password", async function (done) {
 
