@@ -37,10 +37,10 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
        - POSTGRES_PASSWORD=${process.env.DB_PASS}
        - POSTGRES_USER=${process.env.DB_USER}
       ${
-        process.env.NODE_ENV !== 'production' ? '' :
-        `volumes:
-          - ./pgdata:/var/lib/postgresql/data` 
-      }
+    process.env.NODE_ENV !== 'production' ? '' :
+      `volumes:
+          - ./pgdata:/var/lib/postgresql/data`
+    }
     web:
       build: .
       container_name: his-${process.env.BUILD_NUMBER}
@@ -63,7 +63,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
       depends_on:
        - redis
        - db
-      command: bash -c "node configure.js; npm server_test"
+      command: bash -c "node configure.js; ${process.env.NODE_ENV === 'production' ? 'npm start' : 'npm run server_test'}"
   `
 }
 
