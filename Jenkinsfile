@@ -14,7 +14,7 @@ pipeline {
     }
     stage('run server') {
       steps {
-        sh 'docker-compose up'
+        sh 'docker-compose up -d'
       }
     }
     stage('warm up') {
