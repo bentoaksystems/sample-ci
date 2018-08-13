@@ -1,6 +1,5 @@
 def DB_HOST = 'UNKNOWN'
 def REDIS_HOST = 'UNKNOWN'
-def SERVER_HOST = 'UNKNOWN'
 
 pipeline {
   agent any
@@ -12,8 +11,8 @@ pipeline {
             REDIS_HOST = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
         }
 
-        sh 'echo $DB_HOST'
-        sh 'echo $REDIS_HOST'
+        sh 'echo ${DB_HOST}'
+        sh 'echo ${REDIS_HOST}'
       }
     }
     stage('clone repository') {
