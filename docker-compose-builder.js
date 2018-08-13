@@ -58,7 +58,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
       depends_on:
        - redis
        - db
-      command: bash -c "npm run server_test"
+      command: bash -c "npm start"
   `
 }
 
