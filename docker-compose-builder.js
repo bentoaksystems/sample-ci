@@ -12,7 +12,6 @@ const main = async () => {
     fs.writeFileSync('./docker-compose.yml', template, 'utf8');
 
   } catch (err) {
-
     console.error('-> error: ', err);
   }
 
@@ -36,11 +35,6 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
       environment:
        - POSTGRES_PASSWORD=${process.env.DB_PASS}
        - POSTGRES_USER=${process.env.DB_USER}
-      ${
-    process.env.NODE_ENV !== 'production' ? '' :
-      `volumes:
-          - ./pgdata:/var/lib/postgresql/data`
-    }
     web:
       build: .
       container_name: his-${process.env.BUILD_NUMBER}
@@ -50,6 +44,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
       volumes:
        - .:/usr/src/app
       environment:
+       - NODE_ENV=${process.env.NODE_ENV}
        - APP_NAME=${process.env.APP_NAME}
        - APP_ADDRESS=${process.env.APP_ADDRESS}
        - PORT=${process.env.PORT}
@@ -63,7 +58,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
       depends_on:
        - redis
        - db
-      command: bash -c "node configure.js; npm run server_test"
+      command: bash -c "npm run server_test"
   `
 }
 

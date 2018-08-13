@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "server_test": "set NODE_ENV=test & node ./bin/www",
-    "test": "set NODE_ENV=test & jasmine-node --verbose spec --forceexit --captureExceptions"
+    "test": "jasmine-node --verbose spec --forceexit --captureExceptions"
   },
   "dependencies": {
     "async-lock": "^1.1.3",
