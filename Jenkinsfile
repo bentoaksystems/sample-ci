@@ -11,6 +11,9 @@ pipeline {
             DB_HOST = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
             REDIS_HOST = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
         }
+
+        sh 'echo $DB_HOST'
+        sh 'echo $REDIS_HOST'
       }
     }
     stage('clone repository') {
