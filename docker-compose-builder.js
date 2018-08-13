@@ -4,7 +4,7 @@ const main = async () => {
 
   try {
 
-    serverPort = 3000 + Number.parseInt(process.env.BUILD_NUMBER);
+    serverPort = 80 + Number.parseInt(process.env.BUILD_NUMBER);
     dbPort = 5432 + Number.parseInt(process.env.BUILD_NUMBER);;
     redisPort = 6379 + Number.parseInt(process.env.BUILD_NUMBER);;
 
