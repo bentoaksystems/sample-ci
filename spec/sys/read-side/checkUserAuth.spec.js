@@ -40,7 +40,7 @@ describe("Check user authentication", () => {
     }
   })
 
-  xit("expect error on wrong password", async function (done) {
+  it("expect error on wrong password", async function (done) {
 
     try {
       this.done = done;
