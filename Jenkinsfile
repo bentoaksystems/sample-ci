@@ -33,8 +33,7 @@ pipeline {
     }
     stage('tests') {
       steps {
-        sh 'docker exec his-$BUILD_NUMBER bash'
-        sh 'npm test'
+        sh 'docker exec his-$BUILD_NUMBER bash && npm test'
       }
     }
   }
