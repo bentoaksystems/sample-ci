@@ -52,6 +52,7 @@ pipeline {
   }
   post {
     always {
+      sh 'echo hello'
       // sh 'docker stop redis-$BUILD_NUMBER || echo "failed to stop redis-${BUILD_NUMBER}"'
       // sh 'docker stop db-$BUILD_NUMBER || echo "failed to stop db-${BUILD_NUMBER}"'
       // sh 'docker stop his-$BUILD_NUMBER || echo "failed to stop his-${BUILD_NUMBER}"'
