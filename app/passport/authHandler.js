@@ -2,6 +2,8 @@ const SysContext = require('../../context/Sys/handler');
 const errors = require('../../utils/errors.list');
 
 let localStrategy = (req, username, password, done) => {
+  console.log('-> username: ', username);
+  console.log('-> password: ', password);
   new SysContext().handler({
     is_command: false,
     payload: {
