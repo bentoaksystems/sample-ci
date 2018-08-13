@@ -4,8 +4,7 @@ const main = async () => {
 
   try {
 
-    serverPort = 80 + Number.parseInt(process.env.BUILD_NUMBER);
-    const template = makeTemplate(serverPort);
+    const template = makeTemplate();
     fs.writeFileSync('./docker-compose.yml', template, 'utf8');
 
   } catch (err) {
@@ -15,16 +14,16 @@ const main = async () => {
 
 }
 
-const makeTemplate = (serverPort) => {
+const makeTemplate = () => {
 
   return `
   version: '3'
   services:
     redis:
-      container_name: redis-${process.env.BUILD_NUMBER}
+      container_name: ${process.env.REDIS_HOST}
       image: "redis:alpine"
     db:
-      container_name: db-${process.env.BUILD_NUMBER}
+      container_name: ${process.env.DB_HOST}
       image: "postgres:10"
       environment:
        - POSTGRES_PASSWORD=${process.env.DB_PASS}
@@ -39,7 +38,7 @@ const makeTemplate = (serverPort) => {
       container_name: his-${process.env.BUILD_NUMBER}
       image: his-${process.env.BUILD_NUMBER}
       ports:
-       - "${serverPort}:3000"
+       - "80:3000"
       volumes:
        - .:/usr/src/app
       environment:

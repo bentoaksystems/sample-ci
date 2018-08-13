@@ -1,5 +1,6 @@
-def dbHost = 'UNKNOWN'
-def redisHost = 'UNKNOWN'
+def DB_HOST = 'UNKNOWN'
+def REDIS_HOST = 'UNKNOWN'
+def SERVER_HOST = 'UNKNOWN'
 
 pipeline {
   agent any
@@ -7,8 +8,8 @@ pipeline {
     stage('find hosts') {
       steps{
         script {
-            dbHost = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
-            redisHost = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
+            DB_HOST = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
+            REDIS_HOST = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
         }
       }
     }
