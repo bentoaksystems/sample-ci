@@ -63,7 +63,7 @@ const makeTemplate = (serverPort, dbPort, redisPort) => {
       depends_on:
        - redis
        - db
-      command: bash -c "node configure.js; ${process.env.NODE_ENV === 'production' ? 'npm start' : 'npm run server_test'}"
+      command: bash -c "node configure.js; npm run server_test"
   `
 }
 
