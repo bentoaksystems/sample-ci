@@ -4,7 +4,11 @@ const main = async () => {
 
   try {
 
-    const template = makeTemplate();
+    serverPort = 3000 + Number.parseInt(process.env.BUILD_NUMBER);
+    dbPort = 5432 + Number.parseInt(process.env.BUILD_NUMBER);;
+    redisPort = 6379 + Number.parseInt(process.env.BUILD_NUMBER);;
+
+    const template = makeTemplate(serverPort, dbPort, redisPort);
     fs.writeFileSync('./docker-compose.yml', template, 'utf8');
 
   } catch (err) {
@@ -14,7 +18,7 @@ const main = async () => {
 
 }
 
-const makeTemplate = () => {
+const makeTemplate = (serverPort, dbPort, redisPort) => {
 
   return `
   version: '3'
@@ -22,9 +26,13 @@ const makeTemplate = () => {
     redis:
       container_name: ${process.env.REDIS_HOST}
       image: "redis:alpine"
+      ports:
+       - "${redisPort}:6379"
     db:
       container_name: ${process.env.DB_HOST}
       image: "postgres:10"
+      ports:
+       - "${dbPort}:5432"
       environment:
        - POSTGRES_PASSWORD=${process.env.DB_PASS}
        - POSTGRES_USER=${process.env.DB_USER}
@@ -38,7 +46,7 @@ const makeTemplate = () => {
       container_name: his-${process.env.BUILD_NUMBER}
       image: his-${process.env.BUILD_NUMBER}
       ports:
-       - "80:3000"
+       - "${serverPort}:3000"
       volumes:
        - .:/usr/src/app
       environment:
