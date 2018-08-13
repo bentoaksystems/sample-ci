@@ -38,9 +38,7 @@ pipeline {
     }
     stage('publish') {
       steps {
-        waitUntil{
           sh 'sleep 10s'
-        }
       }
     }
   }
