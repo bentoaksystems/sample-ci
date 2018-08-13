@@ -36,6 +36,11 @@ pipeline {
         sh 'docker exec -i his-$BUILD_NUMBER sh -c "npm test"'
       }
     }
+    stage('tests') {
+      steps {
+        sh 'sleep 10s'
+      }
+    }
   }
   environment {
     NODE_ENV = 'test'

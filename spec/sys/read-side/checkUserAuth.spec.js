@@ -62,10 +62,4 @@ describe("Check user authentication", () => {
     }
   })
 
-  it("testr", async function (done) {
-
-  done()
-  })
-
-
 });
