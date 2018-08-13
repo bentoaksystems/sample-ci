@@ -48,7 +48,7 @@ pipeline {
     DB_USER = credentials('DB_USER')
     DB_PASS = credentials('DB_PASS')
     DB_HOST = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
-    REDIS_HOST = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
+    REDIS_HOST = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
   }
   post {
     always {
