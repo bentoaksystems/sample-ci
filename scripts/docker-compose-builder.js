@@ -10,7 +10,7 @@ const main = async () => {
 
     const template = makeTemplate(serverPort, dbPort, redisPort);
     console.log('-> ', template);
-    fs.writeFileSync('./docker-compose.yml', template, 'utf8');
+    fs.writeFileSync('../docker-compose.yml', template, 'utf8');
 
   } catch (err) {
     console.error('-> error: ', err);

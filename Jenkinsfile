@@ -9,7 +9,7 @@ pipeline {
     stage('build composer') {
       steps {
         sh 'npm install'
-        sh 'node docker-compose-builder.js'
+        sh 'node ./scripts/docker-compose-builder.js'
       }
     }
     stage('run server') {
@@ -33,7 +33,8 @@ pipeline {
     }
     stage('tests') {
       steps {
-        sh 'docker exec his-$BUILD_NUMBER bash && pwd && npm test'
+        sh 'chmod 777 ./scripts/testRunner.sh'
+        sh 'sh ./scripts/testRunner.sh'
       }
     }
   }
