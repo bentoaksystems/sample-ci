@@ -19,7 +19,7 @@ pipeline {
     }
     stage('warm up') {
       steps {
-        timeout(10) {
+        timeout(time: 20, unit: 'SECONDS') {
           waitUntil {
             script {
               def r = sh script: 'wget -q http://localhost:$((80 + BUILD_NUMBER))/api/ready -O /dev/null', returnStatus: true
