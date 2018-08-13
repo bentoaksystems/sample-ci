@@ -33,8 +33,7 @@ pipeline {
     }
     stage('tests') {
       steps {
-        sh 'chmod 777 ./scripts/testRunner.sh'
-        sh 'sh ./scripts/testRunner.sh'
+        sh 'docker exec -i his-$BUILD_NUMBER sh -c "npm test"'
       }
     }
   }
