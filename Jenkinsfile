@@ -91,8 +91,12 @@ def notifyBuild(String buildStatus = 'STARTED') {
   def colorCode = '#FF0000'
   def serverPort = 80  +  (env.BUILD_NUMBER as int)
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-  def summary = "${subject} check logs on: ${env.BUILD_URL}consoleText \r App is accessible for 24h on: http://173.249.11.153:${serverPort}"
-
+  def summary = ""
+  
+  if(buildStatus == 'SUCCESSFUL')
+    summary = "${subject} check logs on: ${env.BUILD_URL}consoleText \r App is accessible for 24h on: http://173.249.11.153:${serverPort}"
+  else
+    summary = "${subject} check logs on: ${env.BUILD_URL}consoleText"
   
   // Override default values based on build status
   if (buildStatus == 'STARTED') {
