@@ -73,11 +73,11 @@ def notifyBuild(String buildStatus = 'STARTED') {
   def colorName = 'RED'
   def colorCode = '#FF0000'
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-  def summary = "${subject} (${env.BUILD_URL}) \r hello"
+  def summary = "${subject} check logs on: ${env.BUILD_URL}consoleText \r 
+                App is accessible for 24h on: http://173.249.11.153:${$((80+env.BUILD_NUMBER))}  
+  "
 
-  def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-    <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
- 
+  
   // Override default values based on build status
   if (buildStatus == 'STARTED') {
     color = 'YELLOW'
