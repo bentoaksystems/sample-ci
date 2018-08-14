@@ -45,7 +45,9 @@ pipeline {
       when {
            branch 'master'
       }
-      m 
+      steps {
+          sh 'sleep 1d'
+      }
     }
     
   }
