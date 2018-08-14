@@ -21,15 +21,8 @@ pipeline {
     stage('warm up') {
       steps {
         timeout(time: 20, unit: 'SECONDS') {
-
           sh 'echo  "`wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/ready`"'
-          // waitUntil {
-          //   script {
-          //     def r = sh script: 'wget -q http://localhost:$((80 + BUILD_NUMBER))/api/ready -O /dev/null', returnStatus: true
-          //     return (r == 0);
-          //   }
-          // }
-        }
+         }
       }
     }
     stage('tests') {
@@ -38,12 +31,17 @@ pipeline {
       }
     }
     stage('publish') {
+      when {
+         not {
+           branch 'master'
+        }
+      }
       steps {
           notifyBuild(currentBuild.result)
           sh 'sleep 1d'
-          
       }
     }
+    
   }
   environment {
     NODE_ENV = 'test'
