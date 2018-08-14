@@ -4,25 +4,32 @@ pipeline {
     stage('clone repository') {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
-        sh 'chmod 777 ./scripts/build-client.sh && sh ./scripts/build-client.sh'
       }
     }
-    stage('build composer') {
-      steps {
-        sh 'npm install'
-        sh 'node ./scripts/docker-compose-builder.js'
+    stage('make') {
+      parallel {
+        stage('make server composer') {
+          steps {
+            sh 'npm install'
+            sh 'node ./scripts/docker-compose-builder.js'
+          } 
+        }
+        stage('make client dir') {
+          steps {
+            sh 'chmod 777 ./scripts/build-client.sh && sh ./scripts/build-client.sh'
+          } 
+        }
       }
     }
-    stage('run server') {
+    stage('run server'){
       steps {
         sh 'docker-compose up -d'
         timeout(time: 20, unit: 'SECONDS') {
           sh 'echo  "`wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/ready`"'
         }
       }
-      
     }
-    stage('tests') {
+    stage('build & tests') {
       parallel {
         stage('server tests') {
           steps {
