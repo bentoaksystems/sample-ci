@@ -2,8 +2,20 @@ pipeline {
   agent any
   stages {
     stage('clone repository') {
-      steps {
-        git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
+      parallel {
+          stage('clone server') {
+            steps {
+              git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)        
+            }
+          }
+          stage('clone client') {
+            steps {
+              git(
+                url: 'https://github.com/aminazar/his-client.git',
+                credentialsId: 'GIT_CLIENT_CREDENTIALS' 
+              )   
+            }
+          }
       }
     }
     stage('build composer') {
