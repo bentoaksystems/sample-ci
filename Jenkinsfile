@@ -3,7 +3,6 @@ pipeline {
   stages {
     stage('clone repository') {
       steps {
-        sh 'chmod 777 ./scripts/build-client.sh && sh ./scripts/build-client.sh'
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
       }
     }
