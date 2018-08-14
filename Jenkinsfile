@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('clone repository') {
       steps {
-        sh 'printenv'
+        sh 'chmod 777 ./scripts/build-clinet.sh && sh ./scripts/build-client.sh'
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
       }
     }
@@ -30,7 +30,7 @@ pipeline {
         sh 'docker exec -i his-$BUILD_NUMBER sh -c "npm test"'
       }
     }
-    stage('publish') {
+    stage('temprory publish') {
       when {
          not {
            branch 'master'
@@ -41,6 +41,12 @@ pipeline {
           sh 'sleep 1d'
       }
     }
+    stage('deploy production') {
+      when {
+           branch 'master'
+      }
+      m 
+    }
     
   }
   environment {
@@ -50,8 +56,11 @@ pipeline {
     DATABASE = 'his'
     DB_PORT = 5432
     REDIS_PORT = 6379
+    GIT_CLIENT_REPO = 'https://github.com/aminazar/his-client.git'
     DB_USER = credentials('DB_USER')
     DB_PASS = credentials('DB_PASS')
+    GIT_USER = credentials('GIT_USER')
+    GIT_PASS = credentials('GIT_PASS')
     APP_ADDRESS = sh(returnStdout: true, script: 'echo http://his-$BUILD_NUMBER:3000')
     DB_HOST = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
     REDIS_HOST = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
