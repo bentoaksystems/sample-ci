@@ -61,7 +61,7 @@ pipeline {
     GIT_CLIENT_REPO = 'github.com/aminazar/his-client.git'
     DB_USER = credentials('DB_USER')
     DB_PASS = credentials('DB_PASS')
-    GIT_CLIENT_CREDENTIALS = credentials('GIT_CLIENT_CREDENTIALS')
+    GIT_CLIENT_CREDENTIALS = credentials('github')
     APP_ADDRESS = sh(returnStdout: true, script: 'echo http://his-$BUILD_NUMBER:3000')
     DB_HOST = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
     REDIS_HOST = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
