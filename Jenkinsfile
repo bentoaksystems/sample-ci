@@ -27,11 +27,11 @@ pipeline {
         stage('server tests') {
           steps {
             sh 'docker exec -i his-$BUILD_NUMBER sh -c "npm test"'
-          }
+          } 
         }
         stage('client build') {
           steps {
-            sh 'cd ./his-client && ng build'
+            sh 'cd ./his-client && npm i && ng build' 
           }
         }
       }
