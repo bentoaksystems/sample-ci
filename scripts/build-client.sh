@@ -1,4 +1,5 @@
 #!/bin/bash
 
-mkdir -p ../his-client && cd ../his-client
-git branch -r
+echo ${GIT_CLIENT}
+# git clone https://${GIT_USER}:${GIT_PASS}@${GIT_CLIENT_REPO}
+# git branch -r

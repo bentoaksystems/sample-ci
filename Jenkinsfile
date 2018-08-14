@@ -2,20 +2,9 @@ pipeline {
   agent any
   stages {
     stage('clone repository') {
-      parallel {
-          stage('clone server') {
-            steps {
-              git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)        
-            }
-          }
-          stage('clone client') {
-            steps {
-              git(
-                url: 'https://github.com/aminazar/his-client.git',
-                credentialsId: 'GIT_CLIENT_CREDENTIALS' 
-              )   
-            }
-          }
+      steps {
+        sh 'chmod 777 ./scripts/build-client.sh && sh ./scripts/build-client.sh'
+        git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
       }
     }
     stage('build composer') {
@@ -69,7 +58,7 @@ pipeline {
     DATABASE = 'his'
     DB_PORT = 5432
     REDIS_PORT = 6379
-    GIT_CLIENT_REPO = 'https://github.com/aminazar/his-client.git'
+    GIT_CLIENT_REPO = 'github.com/aminazar/his-client.git'
     DB_USER = credentials('DB_USER')
     DB_PASS = credentials('DB_PASS')
     GIT_CLIENT_CREDENTIALS = credentials('GIT_CLIENT_CREDENTIALS')
@@ -118,7 +107,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   } else {
     color = 'RED'
     colorCode = '#FF0000'
-  } 
+  }
  
   // Send notifications
   slackSend (color: colorCode, message: summary)
