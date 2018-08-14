@@ -74,7 +74,8 @@ def notifyBuild(String buildStatus = 'STARTED') {
   def colorCode = '#FF0000'
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
   def details = """<p>Job: '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-    <p>Check console output at "<a href="${env.BUILD_URL}/consoleText">logs</a>"</p>
+    <p>Check console output at "<a href="${env.BUILD_URL}consoleText">logs</a>"</p>
+    <p>published on "<a href="http://173.249.11.153:${((80+env.BUILD_NUMBER))}>his-${env.BUILD_NUMBER}</a>"</p>
     """
  
   // Override default values based on build status
