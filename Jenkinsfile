@@ -58,7 +58,7 @@ pipeline {
     DATABASE = 'his'
     DB_PORT = 5432
     REDIS_PORT = 6379
-    GIT_CLIENT_REPO = 'https://github.com/aminazar/his-client.git'
+    GIT_CLIENT_REPO = 'github.com/aminazar/his-client.git'
     DB_USER = credentials('DB_USER')
     DB_PASS = credentials('DB_PASS')
     GIT_USER = credentials('GIT_USER')
