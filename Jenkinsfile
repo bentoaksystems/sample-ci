@@ -3,6 +3,7 @@ pipeline {
   stages {
     stage('clone repository') {
       steps {
+        sh 'echo printenv'
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
       }
     }
