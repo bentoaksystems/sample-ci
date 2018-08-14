@@ -61,6 +61,13 @@ pipeline {
     always {
       sh 'chmod 777 ./scripts/cleanup.sh && sh ./scripts/cleanup.sh'
     }
+    unstable {
+            notifyBuild(currentBuild.result)
+    }
+        failure {
+            notifyBuild(currentBuild.result)
+    }
+
 
   }
 }
@@ -73,7 +80,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   def colorName = 'RED'
   def colorCode = '#FF0000'
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-  def summary = "${subject} check logs on: ${env.BUILD_URL}consoleText \r App is accessible for 24h on: http://173.249.11.153:${$((80+env.BUILD_NUMBER))}"
+  def summary = "${subject} check logs on: ${env.BUILD_URL}consoleText \r App is accessible for 24h on: http://173.249.11.153:${((80+env.BUILD_NUMBER))}"
 
   
   // Override default values based on build status
