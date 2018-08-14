@@ -50,8 +50,5 @@ docker-compose.yml
 # dump
 dump.rdb
 
-# execution
-*.sh
-
 # test
 test.js

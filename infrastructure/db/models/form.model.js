@@ -1,28 +1,28 @@
 const Sequelize = require('sequelize');
 
-let EMR;
+let Form;
+
 const init = (seq) => {
-  EMR = seq.define('emr', {
+
+  Form = seq.define('form', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
-    entry_date: {
-      type: Sequelize.DATE,
-      defaultValue: new Date(),
-    },
-    exit_date: {
-      type: Sequelize.DATE,
-    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    }
   }, {
-    tableName: 'emr',
+    tableName: 'form',
     timestamps: false,
     underscored: true,
-  });
+  })
 }
 
 module.exports = {
   init,
-  model: () => EMR,
-};
+  model: () => Form,
+}

@@ -6,7 +6,7 @@ module.exports = class BaseCommand {
   constructor() {
   }
 
-  async execut(cb) {
+  async execute(cb) {
     return db.sequelize().transaction(async () => {
       return cb();
     });

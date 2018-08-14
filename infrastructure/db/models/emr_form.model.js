@@ -1,22 +1,22 @@
 const Sequelize = require('sequelize');
 
-let EMR;
+let EMRForm;
 const init = (seq) => {
-  EMR = seq.define('emr', {
+  EMRForm = seq.define('emr_form', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
-    entry_date: {
+    filled_at: {
       type: Sequelize.DATE,
       defaultValue: new Date(),
     },
-    exit_date: {
-      type: Sequelize.DATE,
-    },
+    data_json: {
+      type: Sequelize.JSON,
+    }
   }, {
-    tableName: 'emr',
+    tableName: 'emr_form',
     timestamps: false,
     underscored: true,
   });
@@ -24,5 +24,5 @@ const init = (seq) => {
 
 module.exports = {
   init,
-  model: () => EMR,
+  model: () => EMRForm,
 };

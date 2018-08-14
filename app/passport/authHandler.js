@@ -2,6 +2,8 @@ const SysContext = require('../../context/Sys/handler');
 const errors = require('../../utils/errors.list');
 
 let localStrategy = (req, username, password, done) => {
+  console.log('-> username: ', username);
+  console.log('-> password: ', password);
   new SysContext().handler({
     is_command: false,
     payload: {
@@ -25,7 +27,9 @@ let serialize = (person, done) => {
 };
 
 let deserialize = (req, id, done) => {
-  if (req.url.includes('api/logout')) {
+  if(!req.url.includes('api')) {
+    done(null, null);
+  } else if (req.url.includes('api/logout')) {
     done(null, null);
   } else {
     if(req.url.includes('api/uploading')) {

@@ -7,10 +7,14 @@ module.exports = class BaseHandler {
   }
 
   async queryHandler(query, user) {
-    if (!this.queries[query.name])
-      throw errors.queryNotFound;
+    try {
+      if (!this.queries[query.name])
+        throw errors.queryNotFound;
 
-    return this.queries[query.name](query.payload, user);
+      return this.queries[query.name](query.payload, user);
+    } catch (err) {
+      throw err;
+    }
   }
 
   async commandHandler(command, user) {
@@ -20,7 +24,7 @@ module.exports = class BaseHandler {
     if (!command.payload)
       throw errors.payloadIsNotDefined;
 
-    return new this.commands[command.name]().execut(command.payload, user);
+    return new this.commands[command.name]().execute(command.payload, user);
   }
 
   async handler(body, user) {

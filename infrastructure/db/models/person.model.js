@@ -21,11 +21,23 @@ const init = (seq) => {
     national_code: {
       type: Sequelize.STRING(10),
       unique: true
-    }
-  },{
+    },
+    mobile_number: {
+      type: Sequelize.STRING(12),
+    },
+    phone_number: {
+      type: Sequelize.STRING,
+    },
+    birth_date: {
+      type: Sequelize.DATE,
+    },
+    age: {
+      type: Sequelize.INTEGER,
+    },
+  }, {
     tableName: 'person',
     timestamps: false,
-    underscored: true,
+    underscored: true
   });
 }
 
