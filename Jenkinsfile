@@ -67,7 +67,7 @@ pipeline {
     APP_NAME = 'HIS'
     PORT = '3000'
     DATABASE = 'his'
-    SERVER_PORT = serverDefaultPort
+    SERVER_PORT = sh(returnStdout: true, script: 'echo serverDefaultPort')
     DB_PORT = 5432
     REDIS_PORT = 6379
     GIT_CLIENT_REPO = 'github.com/aminazar/his-client.git'
