@@ -50,6 +50,7 @@ const main = async () => {
 
   } catch (err) {
     console.error('-> error: ', err);
+    process.exit(1);
   }
 
 }
@@ -89,7 +90,7 @@ const makeTemplate = () => {
        - DB_HOST=${dbHost}
        - DB_PORT=${dbPort}
        - DB_USER=${dbUser}
-       - DB_PASS=${db}
+       - DB_PASS=${dbPass}
        - REDIS_HOST=${redisHost}
        - REDIS_PORT=${redisPort}
       depends_on:
