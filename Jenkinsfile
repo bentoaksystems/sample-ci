@@ -65,6 +65,7 @@ pipeline {
     APP_NAME = 'HIS'
     PORT = '3000'
     DATABASE = 'his'
+    SERVER_PORT = 80
     DB_PORT = 5432
     REDIS_PORT = 6379
     GIT_CLIENT_REPO = 'github.com/aminazar/his-client.git'

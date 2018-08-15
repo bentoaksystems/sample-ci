@@ -1,46 +1,43 @@
 const fs = require('fs');
 
-let serverHost = 'his';
-let dbHost = 'db';
-let redisHost = 'redis';
+let serverHost;
+let dbHost;
+let redisHost;
 
-let serverPort = 80;
-let dbPort = 5432;
-let redisPort = 6379;
+let serverPort;
+let dbPort;
+let redisPort;
 
-let appAddress = `http://${serverHost}:${process.env.PORT}`
+let appAddress;
 
-let appName, port, database, dbUser, dbPass
-
-let env = 'production';
+let env;
 
 const main = async () => {
 
   try {
 
-    appName = process.env.APP_NAME;
-    port = process.env.PORT;
-    database = process.env.DATABASE;
-    dbUser = process.env.DB_USER;
-    dbPass = process.env.DB_PASS;
-
     const mode = process.argv[2];
-
-
 
     if (mode != 'production') {
       dbHost = process.env.DB_HOST;
       serverHost = process.env.SERVER_HOST;
       redisHost = process.env.REDIS_HOST;
-      serverPort += Number.parseInt(process.env.BUILD_NUMBER);
-      dbPort += Number.parseInt(process.env.BUILD_NUMBER);;
-      redisPort += Number.parseInt(process.env.BUILD_NUMBER);;
+      serverPort = process.env.SERVER_PORT + Number.parseInt(process.env.BUILD_NUMBER);
+      dbPort = process.env.DB_PORT + Number.parseInt(process.env.BUILD_NUMBER);;
+      redisPort = process.env.REDIS_PORT + Number.parseInt(process.env.BUILD_NUMBER);;
       env = process.env.NODE_ENV;
       appAddress = process.env.APP_ADDRESS;
     }
     else {
-      dbHost += '-' + serverHost;
-      redisHost += '-' + serverHost;
+
+      serverHost = 'his'
+      dbHost = 'db-' + serverHost;
+      redisHost = 'redis-' + serverHost;
+      serverPort = process.env.SERVER_PORT;
+      dbPort = process.env.DB_PORT;
+      redisPort = process.env.REDIS_PORT;
+      appAddress = `http://${serverHost}:${serverPort}`
+      env = 'production'
     }
 
 
@@ -83,16 +80,16 @@ const makeTemplate = () => {
        - .:/usr/src/app
       environment:
        - NODE_ENV=${env}
-       - APP_NAME=${appName}
+       - APP_NAME=${process.env.APP_NAME}
+       - PORT=${process.env.PORT}
+       - DATABASE=${process.env.DATABASE}
        - APP_ADDRESS=${appAddress}
-       - PORT=${port}
-       - DATABASE=${database}
+       - DB_USER=${process.env.DB_USER}
+       - DB_PASS=${process.env.DB_PASS}
        - DB_HOST=${dbHost}
-       - DB_PORT=${dbPort}
-       - DB_USER=${dbUser}
-       - DB_PASS=${dbPass}
+       - DB_PORT=${process.env.DB_PORT}
        - REDIS_HOST=${redisHost}
-       - REDIS_PORT=${redisPort}
+       - REDIS_PORT=${process.env.REDIS_PORT}
       depends_on:
        - redis
        - db
