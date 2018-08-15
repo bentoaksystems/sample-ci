@@ -68,8 +68,8 @@ const makeTemplate = () => {
       ports:
        - "${dbPort}:5432"
       environment:
-       - POSTGRES_PASSWORD=${dbPass}
-       - POSTGRES_USER=${dbUser}
+      - POSTGRES_USER=${process.env.DB_USER}
+       - POSTGRES_PASSWORD=${process.env.DB_PASS}
     web:
       build: .
       container_name: ${serverHost}
