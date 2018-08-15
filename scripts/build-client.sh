@@ -7,7 +7,7 @@ mkdir -p ${WORKSPACE}/public
 
 if ls | grep ${GIT_BRANCH}-build
 then
-  cp -R ${GIT_BRANCH}-client/* ${WORKSPACE}/public/
+  cp -R ${GIT_BRANCH}-build/* ${WORKSPACE}/public/
 else
   echo 'current build dir not found on workspace... try to clone repository'
   
