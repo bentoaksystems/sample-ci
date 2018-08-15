@@ -1,3 +1,5 @@
+
+def serverDefaultPort = 83
 pipeline {
   agent any
   stages {
@@ -20,7 +22,7 @@ pipeline {
     stage('warm up'){
       steps {
         timeout(time: 60, unit: 'SECONDS') {
-          sh 'echo  "`wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/ready`"'
+          sh 'echo  "`wget -qO- http://localhost:$((serverDefaultPort + BUILD_NUMBER))/api/ready`"'
         }
       }
     }
@@ -65,7 +67,7 @@ pipeline {
     APP_NAME = 'HIS'
     PORT = '3000'
     DATABASE = 'his'
-    SERVER_PORT = 83
+    SERVER_PORT = serverDefaultPort
     DB_PORT = 5432
     REDIS_PORT = 6379
     GIT_CLIENT_REPO = 'github.com/aminazar/his-client.git'
@@ -100,7 +102,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   // Default values
   def colorName = 'RED'
   def colorCode = '#FF0000'
-  def serverPort = 83  +  (env.BUILD_NUMBER as int)
+  def serverPort = serverDefaultPort  +  (env.BUILD_NUMBER as int)
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
   def summary = ""
   
