@@ -35,7 +35,6 @@ pipeline {
         stage('client build') {
           steps {
             sh 'chmod 777 ./scripts/build-client.sh && sh ./scripts/build-client.sh'
-            sh 'cd ./his-client && npm i && ng build' 
           }
         }
       }
@@ -56,7 +55,8 @@ pipeline {
            branch 'master'
       }
       steps {
-          sh 'sleep 1d'
+          sh 'sh ./scripts/delivery.sh'
+          notifyBuild(currentBuild.result)
       }
     }
     
