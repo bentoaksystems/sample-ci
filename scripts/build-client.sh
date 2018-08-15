@@ -2,6 +2,7 @@
 
 cd ${JENKINS_HOME}/workspace
 
+echo ${GIT_BRANCH}
 mkdir -p ${WORKSPACE}/public
 
 if ls | grep ${GIT_BRANCH}-build
@@ -22,9 +23,9 @@ else
   fi  
   git checkout -b origin/$TARGET -f 
   npm i
-  mkdir -p ../${GIT_BRANCH}-build
-  ng build --output-path=../${GIT_BRANCH}-build
+  mkdir -p ../${TARGET}-build
+  ng build --output-path=../${TARGET}-build
   cd ..
-  cp -R ${GIT_BRANCH}-build/* ${WORKSPACE}/public/
+  cp -R ${TARGET}-build/* ${WORKSPACE}/public/
   rm -r ./his-client        
 fi
