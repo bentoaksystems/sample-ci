@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm -r ./his-client
 docker stop redis-$BUILD_NUMBER || echo "failed to stop redis-${BUILD_NUMBER}"
 docker stop db-$BUILD_NUMBER || echo "failed to stop db-${BUILD_NUMBER}"
 docker stop his-$BUILD_NUMBER || echo "failed to stop his-${BUILD_NUMBER}"
