@@ -20,7 +20,7 @@ pipeline {
     }
     stage('warm up'){
       steps {
-        timeout(time: 20, unit: 'SECONDS') {
+        timeout(time: 60, unit: 'SECONDS') {
           sh 'echo  "`wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/ready`"'
         }
       }
