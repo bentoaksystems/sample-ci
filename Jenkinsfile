@@ -1,3 +1,4 @@
+
 pipeline {
   agent any
   stages {
@@ -20,7 +21,7 @@ pipeline {
     stage('warm up'){
       steps {
         timeout(time: 60, unit: 'SECONDS') {
-          sh 'echo  "`wget -qO- http://localhost:$((80 + BUILD_NUMBER))/api/ready`"'
+          sh 'echo  "`wget -qO- http://localhost:$((83 + BUILD_NUMBER))/api/ready`"'
         }
       }
     }
@@ -79,7 +80,8 @@ pipeline {
   }
   post {
     always {
-      sh 'chmod 777 ./scripts/cleanup.sh && sh ./scripts/cleanup.sh'
+      sh 'echo end'
+      // sh 'chmod 777 ./scripts/cleanup.sh && sh ./scripts/cleanup.sh'
     }
     unstable {
             notifyBuild(currentBuild.result)
