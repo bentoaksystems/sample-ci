@@ -20,12 +20,12 @@ else
   else
     TARGET="master"
     echo 'same branch on client not found... try to build master branch'
-  fi  
+  fi   
   git checkout -b origin/$TARGET -f 
   npm i
   mkdir -p ../${TARGET}-build
   ng build --output-path=../${TARGET}-build
   cd ..
   cp -R ${TARGET}-build/* ${WORKSPACE}/public/
-  rm -r ./his-client        
+  rm -r ./his-client         
 fi
