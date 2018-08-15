@@ -12,8 +12,10 @@ else
   echo 'current build dir not found on workspace... try to clone repository'
   
   if ls | grep master-build
+  then
     echo 'pre master-build exists on workspace... copy to public folder'
     cp -R master-build/* ${WORKSPACE}/public/
+    exit 0
   fi
 
   git clone https://${GIT_CLIENT_CREDENTIALS}@${GIT_CLIENT_REPO}
