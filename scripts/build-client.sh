@@ -16,9 +16,9 @@ else
   TARGET=""
   if git branch -r | grep "origin/${GIT_BRANCH}"
   then
-    TARGET="origin/${GIT_BRANCH}" 
+    TARGET="${GIT_BRANCH}" 
   else
-    TARGET="origin/master"
+    TARGET="master"
     echo 'same branch on client not found... try to build master branch'
   fi  
   git checkout -b origin/$TARGET -f 
