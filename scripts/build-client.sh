@@ -10,6 +10,12 @@ then
   cp -R ${GIT_BRANCH}-client/* ${WORKSPACE}/public/
 else
   echo 'current build dir not found on workspace... try to clone repository'
+  
+  if ls | grep master-build
+    echo 'pre master-build exists on workspace... copy to public folder'
+    cp -R master-build/* ${WORKSPACE}/public/
+  fi
+
   git clone https://${GIT_CLIENT_CREDENTIALS}@${GIT_CLIENT_REPO}
   cd ./his-client
   git branch -r
