@@ -4,7 +4,6 @@ pipeline {
     stage('clone repository') {
       steps {
         git(url: 'https://github.com/eabasir/his-test.git', branch: env.BRANCH_NAME)
-        sh 'printenv'
       }
     }
     stage('build composer') {
@@ -73,6 +72,7 @@ pipeline {
     DB_PASS = credentials('DB_PASS')
     GIT_CLIENT_CREDENTIALS = credentials('github')
     APP_ADDRESS = sh(returnStdout: true, script: 'echo http://his-$BUILD_NUMBER:3000')
+    SERVER_HOST = sh(returnStdout: true, script: 'echo his-$BUILD_NUMBER') 
     DB_HOST = sh(returnStdout: true, script: 'echo db-$BUILD_NUMBER')
     REDIS_HOST = sh(returnStdout: true, script: 'echo redis-$BUILD_NUMBER')
   }
