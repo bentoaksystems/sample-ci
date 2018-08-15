@@ -22,9 +22,9 @@ const main = async () => {
       dbHost = process.env.DB_HOST;
       serverHost = process.env.SERVER_HOST;
       redisHost = process.env.REDIS_HOST;
-      serverPort = process.env.SERVER_PORT + Number.parseInt(process.env.BUILD_NUMBER);
-      dbPort = process.env.DB_PORT + Number.parseInt(process.env.BUILD_NUMBER);;
-      redisPort = process.env.REDIS_PORT + Number.parseInt(process.env.BUILD_NUMBER);;
+      serverPort = Number.parseInt(process.env.SERVER_PORT) + Number.parseInt(process.env.BUILD_NUMBER);
+      dbPort = Number.parseInt(process.env.DB_PORT) + Number.parseInt(process.env.BUILD_NUMBER);;
+      redisPort = Number.parseInt(process.env.REDIS_PORT) + Number.parseInt(process.env.BUILD_NUMBER);;
       env = process.env.NODE_ENV;
       appAddress = process.env.APP_ADDRESS;
     }
