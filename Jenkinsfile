@@ -65,7 +65,7 @@ pipeline {
     APP_NAME = 'HIS'
     PORT = '3000'
     DATABASE = 'his'
-    SERVER_PORT = 80
+    SERVER_PORT = 83
     DB_PORT = 5432
     REDIS_PORT = 6379
     GIT_CLIENT_REPO = 'github.com/aminazar/his-client.git'
@@ -99,7 +99,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   // Default values
   def colorName = 'RED'
   def colorCode = '#FF0000'
-  def serverPort = 80  +  (env.BUILD_NUMBER as int)
+  def serverPort = 83  +  (env.BUILD_NUMBER as int)
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
   def summary = ""
   
